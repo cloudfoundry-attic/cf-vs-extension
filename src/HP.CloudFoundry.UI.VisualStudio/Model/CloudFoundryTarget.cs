@@ -3,11 +3,8 @@ using CloudFoundry.CloudController.V2.Client.Data;
 using CloudFoundry.UAA;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
@@ -42,10 +39,11 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             set { username = value; }
         }
 
+        [Browsable(false)]
         public string Password
         {
-            get { return username; }
-            set { username = value; }
+            get { return password; }
+            set { password = value; }
         }
 
         public bool IgnoreSSLErrors

@@ -1,18 +1,7 @@
 ﻿using HP.CloudFoundry.UI.VisualStudio.Model;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace HP.CloudFoundry.UI.VisualStudio
 {
@@ -67,15 +56,18 @@ namespace HP.CloudFoundry.UI.VisualStudio
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
+            System.Windows.MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
                             "Cloud Foundry Explorer");
 
         }
 
         private void ExplorerTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            ItemProperties.Items.Clear();
-            ItemProperties.Items.Add(ExplorerTree.SelectedItem);
+            CloudItem item = e.NewValue as CloudItem;
+            if (item != null) 
+            {
+                _propertyGrid.SelectedObject = item;
+            }
         }
     }
 }

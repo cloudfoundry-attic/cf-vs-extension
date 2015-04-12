@@ -1,13 +1,10 @@
-﻿using CloudFoundry.CloudController.V2.Client.Data;
-using CloudFoundry.CloudController.V2.Client.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -39,6 +36,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        [Browsable(false)]
         public CancellationToken CancellationToken
         {
             get
@@ -47,6 +45,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        [Browsable(false)]
         public CloudItemType ItemType
         {
             get
@@ -55,6 +54,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        [Browsable(false)]
         public bool IsExpanded
         {
             get
@@ -112,6 +112,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 });
         }
 
+        [Browsable(false)]
         public BitmapImage Icon
         {
             get
@@ -140,6 +141,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        [Browsable(false)]
         public abstract string Text
         {
             get;
@@ -152,6 +154,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
         protected abstract Task<IEnumerable<CloudItem>> UpdateChildren();
 
+        [Browsable(false)]
         public ObservableCollection<CloudItem> Children
         {
             get

@@ -1,10 +1,6 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
@@ -44,5 +40,14 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 return new CloudItem[] {};
             });
         }
+
+        public string AppsUrl { get { return this.route.AppsUrl; } /*private set;*/ }
+        public string DomainGuid { get { return this.route.DomainGuid.ToString(); } /*private set;*/ }
+        public string DomainUrl { get { return this.route.DomainUrl; } /*private set;*/ }
+        public Metadata EntityMetadata { get { return this.route.EntityMetadata; } /*private set;*/ }
+        public string Host { get { return this.route.Host; } /*private set;*/ }
+        public string SpaceGuid { get { return this.route.SpaceGuid.ToString(); } /*private set;*/ }
+        public string SpaceUrl { get { return this.route.SpaceUrl; } /*private set;*/ }
+
     }
 }

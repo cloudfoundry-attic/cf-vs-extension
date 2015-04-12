@@ -1,10 +1,6 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
-using CloudFoundry.UAA;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
@@ -55,5 +51,22 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
             return result;
         }
+
+        public string AppEventsUrl { get { return this.organization.AppEventsUrl; } /*private set;*/ }
+        public string AuditorsUrl { get { return this.organization.AuditorsUrl; } /*private set;*/ }
+        public bool BillingEnabled { get { return this.organization.BillingEnabled; } /*private set;*/ }
+        public string BillingManagersUrl { get { return this.organization.BillingManagersUrl; } /*private set;*/ }
+        public string DomainsUrl { get { return this.organization.DomainsUrl; } /*private set;*/ }
+        public Metadata EntityMetadata { get { return this.organization.EntityMetadata; } /*private set;*/ }
+        public string ManagersUrl { get { return this.organization.ManagersUrl; } /*private set;*/ }
+        public string Name { get { return this.organization.Name; } /*private set;*/ }
+        public string PrivateDomainsUrl { get { return this.organization.PrivateDomainsUrl; } /*private set;*/ }
+        public string QuotaDefinitionGuid { get { return this.organization.QuotaDefinitionGuid.ToString(); } /*private set;*/ }
+        public string QuotaDefinitionUrl { get { return this.organization.QuotaDefinitionUrl; } /*private set;*/ }
+        public string SpaceQuotaDefinitionsUrl { get { return this.organization.SpaceQuotaDefinitionsUrl; } /*private set;*/ }
+        public string SpacesUrl { get { return this.organization.SpacesUrl; } /*private set;*/ }
+        public string Status { get { return this.organization.Status; } /*private set;*/ }
+        public string UsersUrl { get { return this.organization.UsersUrl; } /*private set;*/ }
+
     }
 }
