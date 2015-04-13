@@ -72,7 +72,7 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HP.CloudFoundry.UI.VisualStudio.csproj">
+    <ProjectReference Include="..\HP.CloudFoundry.UI.VisualStudio\HP.CloudFoundry.UI.VisualStudio.csproj">
       <Project>{73C656BF-A2C8-4529-B684-11C2FDDC6106}</Project>
       <Name>HP.CloudFoundry.UI.VisualStudio</Name>
     </ProjectReference>

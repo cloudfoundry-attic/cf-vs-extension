@@ -1,6 +1,11 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
+using CloudFoundry.UAA;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
@@ -52,6 +57,17 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             return result;
         }
 
+        public override ObservableCollection<CloudItemAction> Actions
+        {
+            get 
+            {
+                return new ObservableCollection<CloudItemAction>()
+                {
+                    new CloudItemAction("Remove", Resources.StatusStopped, () => {})
+                };
+            }
+        }
+
         public string AppEventsUrl { get { return this.organization.AppEventsUrl; } /*private set;*/ }
         public string AuditorsUrl { get { return this.organization.AuditorsUrl; } /*private set;*/ }
         public bool BillingEnabled { get { return this.organization.BillingEnabled; } /*private set;*/ }
@@ -67,6 +83,5 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         public string SpacesUrl { get { return this.organization.SpacesUrl; } /*private set;*/ }
         public string Status { get { return this.organization.Status; } /*private set;*/ }
         public string UsersUrl { get { return this.organization.UsersUrl; } /*private set;*/ }
-
     }
 }

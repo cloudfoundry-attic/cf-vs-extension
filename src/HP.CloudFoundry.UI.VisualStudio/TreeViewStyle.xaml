@@ -34,7 +34,6 @@
     <Style x:Key="ButtonImageStyle" TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
         <!--<Setter Property="Padding" Value="0"/>
         <Setter Property="BorderThickness" Value="0"/>-->
-
     </Style>
 
     <Style x:Key="ExpandCollapseToggleStyle" TargetType="ToggleButton">
@@ -169,7 +168,6 @@
 
     <!-- TreeView Style -->
     <Style TargetType="{x:Type TreeView}">
-        <Setter Property="ItemContainerStyle" Value="{StaticResource TreeViewItemStyle}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Background" Value="{DynamicResource {x:Static vsp:TreeViewColors.BackgroundBrushKey}}" />
     </Style>

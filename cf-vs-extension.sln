@@ -5,15 +5,11 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HP.CloudFoundry.UI.VisualStudio", "src\HP.CloudFoundry.UI.VisualStudio\HP.CloudFoundry.UI.VisualStudio.csproj", "{73C656BF-A2C8-4529-B684-11C2FDDC6106}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HP.CloudFoundry.UI.VisualStudio.IntegrationTests", "src\HP.CloudFoundry.UI.VisualStudio\HP.CloudFoundry.UI.VisualStudio_IntegrationTests\HP.CloudFoundry.UI.VisualStudio.IntegrationTests.csproj", "{F6B2643A-C2BC-4C11-8023-0082046614B5}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E58D8DAF-CC20-4A2E-93A5-84FAAF65A2D7}"
 	ProjectSection(SolutionItems) = preProject
 		IntegrationTests.testsettings = IntegrationTests.testsettings
 		UnitTests.testsettings = UnitTests.testsettings
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HP.CloudFoundry.UI.VisualStudio.UnitTests", "src\HP.CloudFoundry.UI.VisualStudio\HP.CloudFoundry.UI.VisualStudio_UnitTests\HP.CloudFoundry.UI.VisualStudio.UnitTests.csproj", "{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4695A2AA-26F2-4E28-B35D-B9C6CD2CFC03}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4695A2
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HP.CloudFoundry.UI.VisualStudio.IntegrationTests", "src\HP.CloudFoundry.UI.VisualStudio.IntegrationTests\HP.CloudFoundry.UI.VisualStudio.IntegrationTests.csproj", "{F6B2643A-C2BC-4C11-8023-0082046614B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HP.CloudFoundry.UI.VisualStudio.UnitTests", "src\HP.CloudFoundry.UI.VisualStudio.UnitTests\HP.CloudFoundry.UI.VisualStudio.UnitTests.csproj", "{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
