@@ -199,7 +199,6 @@
     <Compile Include="Extensions\PushPropertyPage.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extensions\VisualStudioProject.cs" />
     <Compile Include="ImageConverter.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemAction.cs" />

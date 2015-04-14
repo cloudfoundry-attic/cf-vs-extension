@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.OLE.Interop;
+﻿using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +11,7 @@ using System.Windows.Forms;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Extensions
 {
-  
-    [ComVisible(true)]
+    [ComVisible(true), Guid("0f59b9e5-2208-444c-9e4c-d57f698b086d")]
     class PushPropertyPage : Form, IPropertyPage
     {
 
@@ -35,7 +36,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Extensions
 
         public int Apply()
         {
-            return 0;
+            return VSConstants.S_OK;
         }
 
         public new void Deactivate()
@@ -48,7 +49,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Extensions
 
         public int IsPageDirty()
         {
-            return 0;
+            return false ? (int)VSConstants.S_OK : (int)VSConstants.S_FALSE;
         }
 
         public new void Move(RECT[] pRect)

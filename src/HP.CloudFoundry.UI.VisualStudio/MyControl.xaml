@@ -94,7 +94,6 @@
         <GridSplitter Grid.Row="2"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Center"
-              Background="{DynamicResource {x:Static vsp:HeaderColors.SeparatorLineBrushKey}}"
               ShowsPreview="True"
               Height="5" />
 

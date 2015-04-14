@@ -8,7 +8,11 @@
     <BitmapImage x:Key="SSLDisabledImage" UriSource="./Resources/SSLDisabled.png" />
     <BitmapImage x:Key="RefreshImage" UriSource="./Resources/Refresh.png" />
 
-  
+
+
+    <Style TargetType="{x:Type GridSplitter}">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsp:HeaderColors.SeparatorLineBrushKey}}" />
+    </Style>
 
     <Style TargetType="{x:Type xctk:PropertyGrid}">
         <Style.Resources>
