@@ -1,30 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     internal class CloudItemAction
     {
-        private string text;
-        private Bitmap icon;
-        private Action onClick;
+        private readonly string _text;
+        private readonly Bitmap _icon;
+        private readonly Action _onClick;
         
         public CloudItemAction(string text, Bitmap icon, Action onClick)
         {
-            this.text = text;
-            this.icon = icon;
-            this.onClick = onClick;
+            _text = text;
+            _icon = icon;
+            _onClick = onClick;
         }
 
         public string Text
         {
             get
             {
-                return this.text;
+                return _text;
             }
         }
 
@@ -32,7 +28,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return this.onClick;
+                return _onClick;
             }
         }
 
@@ -40,7 +36,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                var bitmapImage = ImageConverter.ConvertBitmapToBitmapImage(this.icon);
+                var bitmapImage = ImageConverter.ConvertBitmapToBitmapImage(_icon);
 
                 if (bitmapImage != null)
                 {
@@ -49,10 +45,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                         Source = bitmapImage
                     };
                 }
-                else
-                { 
-                    return null;
-                }
+                return null;
             }
         }
     }

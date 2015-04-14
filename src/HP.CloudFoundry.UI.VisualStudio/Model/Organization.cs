@@ -1,32 +1,28 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
-using CloudFoundry.UAA;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     class Organization : CloudItem
     {
-        private ListAllOrganizationsResponse organization;
-        private CloudFoundryClient client;
+        private readonly ListAllOrganizationsResponse _organization;
+        private readonly CloudFoundryClient _client;
 
         public Organization(ListAllOrganizationsResponse org, CloudFoundryClient client)
             : base(CloudItemType.Organization)
         {
-            this.client = client;
-            this.organization = org;
+            _client = client;
+            _organization = org;
         }
 
         public override string Text
         {
             get
             {
-                return this.organization.Name;
+                return _organization.Name;
             }
         }
 
@@ -42,13 +38,13 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             List<Space> result = new List<Space>();
 
-            PagedResponseCollection<ListAllSpacesForOrganizationResponse> spaces = await client.Organizations.ListAllSpacesForOrganization(this.organization.EntityMetadata.Guid);
+            PagedResponseCollection<ListAllSpacesForOrganizationResponse> spaces = await _client.Organizations.ListAllSpacesForOrganization(_organization.EntityMetadata.Guid);
 
             while (spaces != null && spaces.Properties.TotalResults != 0)
             {
                 foreach (var space in spaces)
                 {
-                    result.Add(new Space(space, this.client));
+                    result.Add(new Space(space, this._client));
                 }
 
                 spaces = await spaces.GetNextPage();
@@ -68,20 +64,20 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
-        public string AppEventsUrl { get { return this.organization.AppEventsUrl; } /*private set;*/ }
-        public string AuditorsUrl { get { return this.organization.AuditorsUrl; } /*private set;*/ }
-        public bool BillingEnabled { get { return this.organization.BillingEnabled; } /*private set;*/ }
-        public string BillingManagersUrl { get { return this.organization.BillingManagersUrl; } /*private set;*/ }
-        public string DomainsUrl { get { return this.organization.DomainsUrl; } /*private set;*/ }
-        public Metadata EntityMetadata { get { return this.organization.EntityMetadata; } /*private set;*/ }
-        public string ManagersUrl { get { return this.organization.ManagersUrl; } /*private set;*/ }
-        public string Name { get { return this.organization.Name; } /*private set;*/ }
-        public string PrivateDomainsUrl { get { return this.organization.PrivateDomainsUrl; } /*private set;*/ }
-        public string QuotaDefinitionGuid { get { return this.organization.QuotaDefinitionGuid.ToString(); } /*private set;*/ }
-        public string QuotaDefinitionUrl { get { return this.organization.QuotaDefinitionUrl; } /*private set;*/ }
-        public string SpaceQuotaDefinitionsUrl { get { return this.organization.SpaceQuotaDefinitionsUrl; } /*private set;*/ }
-        public string SpacesUrl { get { return this.organization.SpacesUrl; } /*private set;*/ }
-        public string Status { get { return this.organization.Status; } /*private set;*/ }
-        public string UsersUrl { get { return this.organization.UsersUrl; } /*private set;*/ }
+        public string AppEventsUrl { get { return _organization.AppEventsUrl; } }
+        public string AuditorsUrl { get { return _organization.AuditorsUrl; } }
+        public bool BillingEnabled { get { return _organization.BillingEnabled; } }
+        public string BillingManagersUrl { get { return _organization.BillingManagersUrl; } }
+        public string DomainsUrl { get { return _organization.DomainsUrl; } }
+        public Metadata EntityMetadata { get { return _organization.EntityMetadata; } }
+        public string ManagersUrl { get { return _organization.ManagersUrl; } }
+        public string Name { get { return _organization.Name; } }
+        public string PrivateDomainsUrl { get { return _organization.PrivateDomainsUrl; } }
+        public string QuotaDefinitionGuid { get { return _organization.QuotaDefinitionGuid.ToString(); } }
+        public string QuotaDefinitionUrl { get { return _organization.QuotaDefinitionUrl; } }
+        public string SpaceQuotaDefinitionsUrl { get { return _organization.SpaceQuotaDefinitionsUrl; } }
+        public string SpacesUrl { get { return _organization.SpacesUrl; } }
+        public string Status { get { return _organization.Status; } }
+        public string UsersUrl { get { return _organization.UsersUrl; } }
     }
 }

@@ -3,37 +3,34 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     internal abstract class CloudItem
     {
-        private CloudItemType cloudItemType = CloudItemType.Target;
-        private volatile bool isExpanded = false;
-        private volatile bool wasRefreshed = false;
+        private readonly CloudItemType _cloudItemType = CloudItemType.Target;
+        private volatile bool _isExpanded = false;
+        private volatile bool _wasRefreshed = false;
 
         public event EventHandler<ErrorEventArgs> RefreshChildrenError;
         public event EventHandler<EventArgs> RefreshChildrenComplete;
-        private AsyncObservableCollection<CloudItem> children = new AsyncObservableCollection<CloudItem>();
+        private readonly AsyncObservableCollection<CloudItem> _children = new AsyncObservableCollection<CloudItem>();
         private System.Threading.CancellationToken cancellationToken;
 
         protected CloudItem(CloudItemType cloudItemType)
         {
-            this.cloudItemType = cloudItemType;
+            _cloudItemType = cloudItemType;
 
-            if (this.cloudItemType != CloudItemType.LoadingPlaceholder && 
-                this.cloudItemType != CloudItemType.App && 
-                this.cloudItemType != CloudItemType.Route && 
-                this.cloudItemType != CloudItemType.Service && 
-                this.cloudItemType != CloudItemType.Error)
+            if (_cloudItemType != CloudItemType.LoadingPlaceholder && 
+                _cloudItemType != CloudItemType.App && 
+                _cloudItemType != CloudItemType.Route && 
+                _cloudItemType != CloudItemType.Service && 
+                _cloudItemType != CloudItemType.Error)
             {
-                this.children.Add(new LoadingPlaceholder());
+                _children.Add(new LoadingPlaceholder());
             }
         }
 
@@ -42,7 +39,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return this.cancellationToken;
+                return cancellationToken;
             }
         }
 
@@ -51,7 +48,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return cloudItemType;
+                return _cloudItemType;
             }
         }
 
@@ -60,15 +57,15 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return this.isExpanded;
+                return _isExpanded;
             }
             set
             {
-                this.isExpanded = value;
+                _isExpanded = value;
 
-                if (this.isExpanded && !this.wasRefreshed)
+                if (_isExpanded && !_wasRefreshed)
                 {
-                    this.RefreshChildren();
+                    RefreshChildren();
                 }
             }
         }
@@ -82,32 +79,32 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 {
                     if (antecedent.IsFaulted)
                     {
-                        this.children.Clear();
+                        _children.Clear();
 
                         CloudError error = new CloudError(antecedent.Exception);
 
-                        this.children.Add(error);
+                        _children.Add(error);
 
-                        if (this.RefreshChildrenError != null)
+                        if (RefreshChildrenError != null)
                         {
-                            this.RefreshChildrenError(this, new ErrorEventArgs(){
+                            RefreshChildrenError(this, new ErrorEventArgs(){
                                 Error = antecedent.Exception
                             });
                         }
                     }
                     else
                     {
-                        this.children.Clear();
+                        _children.Clear();
 
                         foreach (var child in antecedent.Result)
                         {
-                            this.children.Add(child);
+                            _children.Add(child);
                         }
 
-                        this.wasRefreshed = true;
-                        if (this.RefreshChildrenComplete != null)
+                        _wasRefreshed = true;
+                        if (RefreshChildrenComplete != null)
                         {
-                            this.RefreshChildrenComplete(this, new EventArgs());
+                            RefreshChildrenComplete(this, new EventArgs());
                         }
                     }
                 });
@@ -118,7 +115,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return ImageConverter.ConvertBitmapToBitmapImage(this.IconBitmap);
+                return ImageConverter.ConvertBitmapToBitmapImage(IconBitmap);
             }
         }
 
@@ -140,7 +137,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return this.children;
+                return _children;
             }
         }
 

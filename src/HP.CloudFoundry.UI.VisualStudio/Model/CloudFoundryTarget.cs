@@ -6,61 +6,57 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     class CloudFoundryTarget : CloudItem
     {
-        private Uri targetUri;
-        private string username;
-        private string password;
-        private bool ignoreSSLErrors;
-        private string name;
+        private Uri _targetUri;
+        private string _username;
+        private string _password;
+        private bool _ignoreSslErrors;
+        private readonly string _name;
 
         public CloudFoundryTarget(string name, Uri targetUri, string username, string password, bool ignoreSSLErrors)
             : base(CloudItemType.Target)
         {
-            this.name = name;
-            this.targetUri = targetUri;
-            this.username = username;
-            this.password = password;
-            this.ignoreSSLErrors = ignoreSSLErrors;
+            _name = name;
+            _targetUri = targetUri;
+            _username = username;
+            _password = password;
+            _ignoreSslErrors = ignoreSSLErrors;
         }
 
         public Uri TargetUri
         {
-            get { return targetUri; }
-            set { targetUri = value; }
+            get { return _targetUri; }
+            set { _targetUri = value; }
         }
 
         public string Username
         {
-            get { return username; }
-            set { username = value; }
+            get { return _username; }
+            set { _username = value; }
         }
 
         [Browsable(false)]
         public string Password
         {
-            get { return password; }
-            set { password = value; }
+            get { return _password; }
+            set { _password = value; }
         }
 
         public bool IgnoreSSLErrors
         {
             get 
             { 
-                return this.ignoreSSLErrors; 
+                return _ignoreSslErrors; 
             }
             set 
             { 
-                this.ignoreSSLErrors = value; 
-                if (this.IgnoreSSLErrors)
+                _ignoreSslErrors = value; 
+                if (IgnoreSSLErrors)
                 {
                    
                 }
@@ -71,7 +67,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", this.name, this.targetUri);
+                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", this._name, this._targetUri);
             }
         }
 
@@ -85,12 +81,12 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
-            CloudFoundryClient client = new CloudFoundryClient(this.targetUri, this.CancellationToken);
+            CloudFoundryClient client = new CloudFoundryClient(this._targetUri, this.CancellationToken);
 
             var authenticationContext = await client.Login(new CloudCredentials()
             {
-                User = this.username,
-                Password = this.password
+                User = this._username,
+                Password = this._password
             });
 
             List<Organization> result = new List<Organization>();

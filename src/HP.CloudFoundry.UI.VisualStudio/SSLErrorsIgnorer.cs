@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio
 {
     internal class SSLErrorsIgnorer
     {
 
-        private static bool ignore;
+        private static bool _ignore;
 
         private static bool InternalCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
@@ -23,11 +18,11 @@ namespace HP.CloudFoundry.UI.VisualStudio
         {
             get
             {
-                return SSLErrorsIgnorer.ignore;
+                return SSLErrorsIgnorer._ignore;
             }
             set
             {
-                SSLErrorsIgnorer.ignore = value;
+                SSLErrorsIgnorer._ignore = value;
 
                 if (SSLErrorsIgnorer.Ignore)
                 {

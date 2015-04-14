@@ -97,7 +97,7 @@
               Height="5" />
 
         <xctk:PropertyGrid Grid.Row="3"
-            x:Name="_propertyGrid"
+            x:Name="PropertyGrid"
             Filter=""
             IsCategorized="False"
             IsReadOnly="True"

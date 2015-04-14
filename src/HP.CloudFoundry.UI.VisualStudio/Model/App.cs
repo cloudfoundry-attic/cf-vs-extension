@@ -1,32 +1,28 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     class App : CloudItem
     {
-        private CloudFoundryClient client;
-        private ListAllAppsForSpaceResponse app;
+        private CloudFoundryClient _client;
+        private readonly ListAllAppsForSpaceResponse _app;
 
         public App(ListAllAppsForSpaceResponse app, CloudFoundryClient client)
             : base(CloudItemType.App)
         {
-            this.client = client;
-            this.app = app;
+            _client = client;
+            _app = app;
         }
 
         public override string Text
         {
             get
             {
-                return this.app.Name;
+                return _app.Name;
             }
         }
 
@@ -34,7 +30,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                switch (this.app.State.ToUpperInvariant())
+                if (_app == null) return Resources.StatusUnknown;
+                switch (_app.State.ToUpperInvariant())
                 {
                     case "STARTED":
                         return Resources.StatusStarted;
@@ -67,34 +64,34 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
-        public string Buildpack { get {return this.app.Buildpack;} /*private set;*/ }
-        public string Command { get { return this.app.Command; } /*private set;*/ }
-        public bool Console { get { return this.app.Console; } /*private set;*/ }
-        public string Debug { get { return this.app.Debug; } /*private set;*/ }
-        public string DetectedBuildpack { get { return this.app.DetectedBuildpack; } /*private set;*/ }
-        public string DetectedStartCommand { get { return this.app.DetectedStartCommand; } /*private set;*/ }
-        public int? DiskQuota { get { return this.app.DiskQuota; } /*private set;*/ }
-        public string DockerImage { get { return this.app.DockerImage; } /*private set;*/ }
-        public Metadata EntityMetadata { get { return this.app.EntityMetadata; } /*private set;*/ }
-        public string EnvironmentJson { get { return this.app.EnvironmentJson.ToString(); } /*private set;*/ }
-        public string EventsUrl { get { return this.app.EventsUrl; } /*private set;*/ }
-        public string HealthCheckTimeout { get { return this.app.HealthCheckTimeout; } /*private set;*/ }
-        public string HealthCheckType { get { return this.app.HealthCheckType; } /*private set;*/ }
-        public int? Instances { get { return this.app.Instances; } /*private set;*/ }
-        public int? Memory { get { return this.app.Memory; } /*private set;*/ }
-        public string Name { get { return this.app.Name; } /*private set;*/ }
-        public string PackageState { get { return this.app.PackageState; } /*private set;*/ }
-        public string PackageUpdatedAt { get { return this.app.PackageUpdatedAt; } /*private set;*/ }
-        public bool Production { get { return this.app.Production; } /*private set;*/ }
-        public string RoutesUrl { get { return this.app.RoutesUrl; } /*private set;*/ }
-        public string ServiceBindingsUrl { get { return this.app.ServiceBindingsUrl; } /*private set;*/ }
-        public string SpaceGuid { get { return this.app.SpaceGuid.ToString(); } /*private set;*/ }
-        public string SpaceUrl { get { return this.app.SpaceUrl; } /*private set;*/ }
-        public string StackGuid { get { return this.app.StackGuid.ToString(); } /*private set;*/ }
-        public string StackUrl { get { return this.app.StackUrl; } /*private set;*/ }
-        public string StagingFailedReason { get { return this.app.StagingFailedReason; } /*private set;*/ }
-        public string StagingTaskId { get { return this.app.StagingTaskId; } /*private set;*/ }
-        public string State { get { return this.app.State; } /*private set;*/ }
-        public string Version { get { return this.app.Version.ToString(); } /*private set;*/ }
+        public string Buildpack { get {return this._app.Buildpack;} /*private set;*/ }
+        public string Command { get { return this._app.Command; } /*private set;*/ }
+        public bool Console { get { return this._app.Console; } /*private set;*/ }
+        public string Debug { get { return this._app.Debug; } /*private set;*/ }
+        public string DetectedBuildpack { get { return this._app.DetectedBuildpack; } /*private set;*/ }
+        public string DetectedStartCommand { get { return this._app.DetectedStartCommand; } /*private set;*/ }
+        public int? DiskQuota { get { return this._app.DiskQuota; } /*private set;*/ }
+        public string DockerImage { get { return this._app.DockerImage; } /*private set;*/ }
+        public Metadata EntityMetadata { get { return this._app.EntityMetadata; } /*private set;*/ }
+        public string EnvironmentJson { get { return this._app.EnvironmentJson.ToString(); } /*private set;*/ }
+        public string EventsUrl { get { return this._app.EventsUrl; } /*private set;*/ }
+        public string HealthCheckTimeout { get { return this._app.HealthCheckTimeout; } /*private set;*/ }
+        public string HealthCheckType { get { return this._app.HealthCheckType; } /*private set;*/ }
+        public int? Instances { get { return this._app.Instances; } /*private set;*/ }
+        public int? Memory { get { return this._app.Memory; } /*private set;*/ }
+        public string Name { get { return this._app.Name; } /*private set;*/ }
+        public string PackageState { get { return this._app.PackageState; } /*private set;*/ }
+        public string PackageUpdatedAt { get { return this._app.PackageUpdatedAt; } /*private set;*/ }
+        public bool Production { get { return this._app.Production; } /*private set;*/ }
+        public string RoutesUrl { get { return this._app.RoutesUrl; } /*private set;*/ }
+        public string ServiceBindingsUrl { get { return this._app.ServiceBindingsUrl; } /*private set;*/ }
+        public string SpaceGuid { get { return this._app.SpaceGuid.ToString(); } /*private set;*/ }
+        public string SpaceUrl { get { return this._app.SpaceUrl; } /*private set;*/ }
+        public string StackGuid { get { return this._app.StackGuid.ToString(); } /*private set;*/ }
+        public string StackUrl { get { return this._app.StackUrl; } /*private set;*/ }
+        public string StagingFailedReason { get { return this._app.StagingFailedReason; } /*private set;*/ }
+        public string StagingTaskId { get { return this._app.StagingTaskId; } /*private set;*/ }
+        public string State { get { return this._app.State; } /*private set;*/ }
+        public string Version { get { return this._app.Version.ToString(); } /*private set;*/ }
     }
 }

@@ -1,25 +1,21 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     class RoutesCollection : CloudItem
     {
-        private CloudFoundryClient client;
-        private ListAllSpacesForOrganizationResponse space;
+        private readonly CloudFoundryClient _client;
+        private readonly ListAllSpacesForOrganizationResponse _space;
 
         public RoutesCollection(ListAllSpacesForOrganizationResponse space, CloudFoundryClient client)
             : base(CloudItemType.RoutesCollection)
         {
-            this.client = client;
-            this.space = space;
+            _client = client;
+            _space = space;
         }
 
         public override string Text
@@ -42,13 +38,13 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             List<Route> result = new List<Route>();
 
-            PagedResponseCollection<ListAllRoutesForSpaceResponse> routes = await client.Spaces.ListAllRoutesForSpace(this.space.EntityMetadata.Guid);
+            PagedResponseCollection<ListAllRoutesForSpaceResponse> routes = await _client.Spaces.ListAllRoutesForSpace(this._space.EntityMetadata.Guid);
 
             while (routes != null && routes.Properties.TotalResults != 0)
             {
                 foreach (var route in routes)
                 {
-                    result.Add(new Route(route, this.client));
+                    result.Add(new Route(route, this._client));
                 }
 
                 routes = await routes.GetNextPage();

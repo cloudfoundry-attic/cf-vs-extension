@@ -1,25 +1,21 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     class ServicesCollection : CloudItem
     {
-        private CloudFoundryClient client;
-        private ListAllSpacesForOrganizationResponse space;
+        private readonly CloudFoundryClient _client;
+        private readonly ListAllSpacesForOrganizationResponse _space;
 
         public ServicesCollection(ListAllSpacesForOrganizationResponse space, CloudFoundryClient client)
             : base(CloudItemType.ServicesCollection)
         {
-            this.client = client;
-            this.space = space;
+            _client = client;
+            _space = space;
         }
 
         public override string Text
@@ -42,13 +38,13 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             List<Service> result = new List<Service>();
 
-            PagedResponseCollection<ListAllServiceInstancesForSpaceResponse> services = await client.Spaces.ListAllServiceInstancesForSpace(this.space.EntityMetadata.Guid);
+            PagedResponseCollection<ListAllServiceInstancesForSpaceResponse> services = await _client.Spaces.ListAllServiceInstancesForSpace(_space.EntityMetadata.Guid);
 
             while (services != null && services.Properties.TotalResults != 0)
             {
                 foreach (var service in services)
                 {
-                    result.Add(new Service(service, this.client));
+                    result.Add(new Service(service, _client));
                 }
 
                 services = await services.GetNextPage();

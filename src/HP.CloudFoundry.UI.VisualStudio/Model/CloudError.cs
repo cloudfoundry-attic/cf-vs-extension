@@ -2,23 +2,21 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     class CloudError : CloudItem
     {
-        private Exception exception;
-        private List<string> errorMessages;
+        private Exception _exception;
+        private readonly List<string> _errorMessages;
 
         public CloudError(Exception exception)
             : base(CloudItemType.Error)
         {
-            this.exception = exception;
-            this.errorMessages = new List<string>();
-            FormatExceptionMessage(this.exception, this.errorMessages);
+            _exception = exception;
+            _errorMessages = new List<string>();
+            FormatExceptionMessage(_exception, _errorMessages);
         }
 
         private static void FormatExceptionMessage(Exception ex, List<string> message)
@@ -45,7 +43,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return string.Join("\r\n", this.errorMessages);
+                return string.Join("\r\n", _errorMessages);
             }
         }
 
@@ -53,7 +51,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return this.errorMessages.Last();
+                return _errorMessages.Last();
             }
         }
 
