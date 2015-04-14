@@ -59,6 +59,10 @@
                     Style="{DynamicResource ButtonImageStyle}">
                 <Image Source="{StaticResource RefreshImage}" />
             </Button>
+            
+            <Button Name="PrepareProject" Height="22" Width="200" Grid.Column="2" Click="PrepareProject_Click">
+               Prepare Selected Project 
+            </Button>        
         </Grid>
 
         <TreeView Grid.Row="1" Name="ExplorerTree" SelectedItemChanged="ExplorerTree_SelectedItemChanged"
