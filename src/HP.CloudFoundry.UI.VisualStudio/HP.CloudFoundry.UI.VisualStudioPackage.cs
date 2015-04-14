@@ -33,8 +33,8 @@ namespace HP.CloudFoundry.UI.VisualStudio
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
     
-    //[ProvideObject(typeof(PushPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
-    //[ProvideProjectFactory(typeof(Factory), "ProjectExtender", null, null, null, ".\\NullPath")]
+    [ProvideObject(typeof(PushPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
+    [ProvideProjectFactory(typeof(Factory), "HP_CloudFoundry_UI_VisualStudioPackage", null, null, null, @"..\Templates\Projects")]
 
 
     [Guid(GuidList.guidHP_CloudFoundry_UI_VisualStudioPkgString)]
@@ -84,6 +84,9 @@ namespace HP.CloudFoundry.UI.VisualStudio
         {
             Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
+
+            RegisterProjectFactory(new Factory(this));
+  
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
