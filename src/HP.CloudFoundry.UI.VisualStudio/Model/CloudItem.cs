@@ -144,6 +144,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        [Browsable(false)]
         public abstract ObservableCollection<CloudItemAction> Actions
         {
             get;
