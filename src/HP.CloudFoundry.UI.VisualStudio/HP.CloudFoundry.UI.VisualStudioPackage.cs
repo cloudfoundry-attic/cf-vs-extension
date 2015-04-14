@@ -8,6 +8,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using HP.CloudFoundry.UI.VisualStudio.Extensions;
 
 namespace HP.CloudFoundry.UI.VisualStudio
 {
@@ -31,6 +32,11 @@ namespace HP.CloudFoundry.UI.VisualStudio
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(MyToolWindow))]
+    
+    //[ProvideObject(typeof(PushPropertyPage), RegisterUsing = RegistrationMethod.CodeBase)]
+    //[ProvideProjectFactory(typeof(Factory), "ProjectExtender", null, null, null, ".\\NullPath")]
+
+
     [Guid(GuidList.guidHP_CloudFoundry_UI_VisualStudioPkgString)]
     public sealed class HP_CloudFoundry_UI_VisualStudioPackage : Package
     {

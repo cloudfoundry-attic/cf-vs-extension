@@ -6,9 +6,10 @@
              xmlns:model="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Model"
              xmlns:cf="clr-namespace:HP.CloudFoundry.UI.VisualStudio"
              xmlns:vsp="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:pt="http://propertytools.org/wpf"
              xmlns:ObjectModel="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
@@ -33,6 +34,7 @@
             <RowDefinition Height="28" />
             <RowDefinition Height="2*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
@@ -96,18 +98,15 @@
               ShowsPreview="True"
               Height="5" />
 
-        <xctk:PropertyGrid Grid.Row="3"
-            x:Name="_propertyGrid"
-            Filter=""
-            IsCategorized="False"
-            IsReadOnly="True"
-            UpdateTextBoxSourceOnEnterKey="False"
-            ShowSummary="False"
-            ShowPreview="False"
-            ShowSearchBox="False"
-            ShowAdvancedOptions="False"
-            ShowSortOptions="False"
-            AutoGenerateProperties="True">
+
+        <xctk:PropertyGrid Grid.Row="3" x:Name="propertyGrid" Filter="" IsCategorized="False"
+                           IsReadOnly="True" UpdateTextBoxSourceOnEnterKey="False" ShowSummary="False" ShowPreview="False"
+                           ShowSearchBox="False" ShowAdvancedOptions="False" ShowSortOptions="False" AutoGenerateProperties="True">
+
         </xctk:PropertyGrid>
+
+        <pt:PropertyGrid Grid.Row="4" x:Name="propertyGrid2">
+        </pt:PropertyGrid>
+
     </Grid>
 </UserControl>

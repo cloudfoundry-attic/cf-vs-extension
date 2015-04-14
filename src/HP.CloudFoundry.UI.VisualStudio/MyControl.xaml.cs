@@ -50,22 +50,21 @@ namespace HP.CloudFoundry.UI.VisualStudio
                 false));
 
             ExplorerTree.Items.Add(new CloudFoundryTarget(
-            "Hack For Europe",
-            new Uri("https://h4e.cf.helion-dev.com"),
-            "gert.drapers@hp.com",
-            "",
-            false));
+                "Hack For Europe",
+                new Uri("https://h4e.cf.helion-dev.com"),
+                "gert.drapers@hp.com",
+                "",
+                false));
 
 
             ExplorerTree.Items.Add(new CloudFoundryTarget(
-            "Hack For Europe",
-            new Uri("https://gids.cf.helion-dev.com"),
-            "gert.drapers@hp.com",
-            "",
-            false));
+                "Hack For India",
+                new Uri("https://gids.cf.helion-dev.com"),
+                "gert.drapers@hp.com",
+                "",
+                false));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
         private void treeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var cloudItemAction = ExplorerTree.SelectedItem as CloudItemAction;
@@ -79,16 +78,11 @@ namespace HP.CloudFoundry.UI.VisualStudio
         private void ExplorerTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             CloudItem item = e.NewValue as CloudItem;
-            if (item != null) 
+            if (item != null)
             {
-                _propertyGrid.SelectedObject = item;
+                propertyGrid.SelectedObject = item;
+                propertyGrid2.SelectedObject = item;
             }
-        }
-
-        private void StackPanel_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
-                            "Cloud Foundry Explorer");
         }
     }
 }

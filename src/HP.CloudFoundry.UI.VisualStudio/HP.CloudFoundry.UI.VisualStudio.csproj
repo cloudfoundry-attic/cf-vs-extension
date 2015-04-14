@@ -82,6 +82,16 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NuGet.VisualStudio">
+      <HintPath>..\..\packages\NuGet.VisualStudio.2.8.5\lib\net40\NuGet.VisualStudio.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="PropertyTools">
+      <HintPath>..\..\packages\PropertyTools.Wpf.2015.1.59\lib\net45\PropertyTools.dll</HintPath>
+    </Reference>
+    <Reference Include="PropertyTools.Wpf">
+      <HintPath>..\..\packages\PropertyTools.Wpf.2015.1.59\lib\net45\PropertyTools.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
@@ -186,6 +196,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\PushPropertyPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Extensions\VisualStudioProject.cs" />
     <Compile Include="ImageConverter.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
