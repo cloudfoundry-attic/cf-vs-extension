@@ -8,6 +8,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
     {
 
         public const uint cmdidCloudFoundryExplorer =    0x101;
+        public const uint cmdidButtonPublishProject =    0x000C;
 
     };
 }

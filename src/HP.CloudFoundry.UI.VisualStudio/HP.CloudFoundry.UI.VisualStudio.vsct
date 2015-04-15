@@ -21,8 +21,6 @@
   <Extern href="vsshlids.h"/>
 
 
-
-
   <!--The Commands section is where we the commands, menus and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
   <Commands package="guidHP_CloudFoundry_UI_VisualStudioPkg">
@@ -41,8 +39,11 @@
          must be a menu. -->
     <Groups>
 
+		<Group guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="MyMenuGroup" priority="0x0600">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+		</Group>
 
-    </Groups>
+	</Groups>
     
     <!--Buttons section. -->
     <!--This section defines the elements the user can interact with, like a menu command or a button 
@@ -64,7 +65,15 @@
           <ButtonText>Cloud Foundry Explorer</ButtonText>
         </Strings>
       </Button>
-
+		<Button guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="cmdidButtonPublishProject" priority="0x0100" type="Button">
+			<Parent guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="MyMenuGroup" />
+			<Icon guid="guidImages" id="bmpPic2" />
+			<CommandFlag>TextChanges</CommandFlag>
+			<Strings>
+				<CommandName>cmdidButtonBuildAndPushProject</CommandName>
+				<ButtonText>Enable CF Publish</ButtonText>
+			</Strings>
+		</Button>
 
     </Buttons>
    
@@ -79,9 +88,13 @@
       
     </Bitmaps>
  
+	 
   </Commands>
-
-
+	<CommandPlacements>
+		<CommandPlacement guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="cmdidButtonPublishProject" priority="0x0100">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+		</CommandPlacement>
+	</CommandPlacements>
 
 
 
@@ -94,6 +107,7 @@
 
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidCloudFoundryExplorer" value="0x0101" />
+		<IDSymbol name="cmdidButtonPublishProject" value="0x000C"/>
     </GuidSymbol>
     
     
