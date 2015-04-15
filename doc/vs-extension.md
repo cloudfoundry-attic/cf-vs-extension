@@ -9,29 +9,37 @@ Visual Studio Extension
 Node types:
 
 - `CloudFoundryTarget`
- - actions: remove, refresh   
- - details: version,  services, url, username, ignore ssl errors
+ - actions: refresh, remove    
+ - details: version, url, username, ignore ssl errors
 - `Organization`
  - actions: refresh
  - details: current roles in org, org name, when it was created
 - `Space`
  - actions: refresh
- - details: current roles in org, org name, when it was created
+ - details: current roles in space, space name, when it was created
 - `AppsCollection`
  - actions: refresh
 - `App`
- - actions: delete, stop, restart, start
+ - actions: browse, start, restart, stop, delete
  - details:  when it was created, name, buildpack, max memory, instance count
 - `Service`
- - actions: delete, stop, restart, start
+ - actions: start, restart, stop, delete
  - details: current roles in org, org name, when it was created
 - `Route`
  - actions: delete
  - details: domain for route, apps bound to route
 - `AppFiles`
+ - actions: refresh
+ - details: N/A
 - `File`
+ - action: open
+ - details: filename
 - `ServicesCollection`
+ - action: refresh
+ - details
 - `RoutesCollection`
+ - action: refresh
+ - details
 
 Special node types
 - `CloudError`
@@ -45,6 +53,9 @@ Special node types
 │   │   │   │   │   └── Files
 │   │   │   │   │       ├── default.aspx
 │   │   │   │   │       └── web.config
+                        Services
+                        Routes
+                        *Logs
 │   │   │   │   ├── my-php-app
 │   │   │   │   └── my-ruby-app
 │   │   │   ├── Routes
@@ -57,6 +68,8 @@ Special node types
 │   │   └── test-space
 │   ├── Organization2
 │   └── Organization3
+        Buildpacks
+        Services
 └── my-cf-target2
 ```
 
