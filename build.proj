@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+  Available Targets:
+
+  /t:Clean
+    Removes temporary build outputs.
+    
+  /t:Build
+    Builds assemblies.
+
+  /t:UnitTest
+    Runs unit tests
+    
+  /t:RestoreNugetPackages
+    Restores nuget packages
+    
+  -->
+
+  <PropertyGroup>
+    <ExtensionTasksPath Condition="'$(ExtensionTasksPath)' == ''">$(SolutionDir)\packages\MSBuild.Extension.Pack.1.5.0\tools\net40\</ExtensionTasksPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LibraryRoot>$(MSBuildThisFileDirectory)</LibraryRoot>
+    <VSExtensionSolution>cf-vs-extension.sln</VSExtensionSolution>
+    <PackageOutputDir>$(BinariesFolder)\packages</PackageOutputDir>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <major>1</major>
+    <minor>0</minor>
+    <revision>0</revision>
+    <build Condition="'$(BUILD_NUMBER)' == ''">0</build>
+    <build Condition="'$(BUILD_NUMBER)' != ''">$(BUILD_NUMBER)</build>
+    <commit Condition="'$(GIT_COMMIT)' == ''">?</commit>
+    <commit Condition="'$(GIT_COMMIT)' != ''">$(GIT_COMMIT)</commit>
+    <version>$(major).$(minor).$(revision).$(build)</version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NuGetCommand>&quot;$(LibraryRoot).nuget\nuget.exe&quot;</NuGetCommand>
+    <VSTestCommand>&quot;$(VS120COMNTOOLS)\..\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe&quot;</VSTestCommand>
+    <CoverageCommand>&quot;$(VS120COMNTOOLS)\..\..\Team Tools\Dynamic Code Coverage Tools\CodeCoverage.exe&quot;</CoverageCommand>
+    <ExtensionTasksPath>$(LibraryRoot)\packages\MSBuild.Extension.Pack.1.5.0\tools\net40\</ExtensionTasksPath>
+    <ReportGeneratorCommand>$(LibraryRoot)\packages\ReportGenerator.2.1.4.0\ReportGenerator.exe</ReportGeneratorCommand>
+    
+    <CoverageXml>$(LibraryRoot)\TestResults\cf-vs-extension-wpf.coveragexml</CoverageXml>
+    <CoverageHtmlDir>$(LibraryRoot)\TestResults\coveragehtml</CoverageHtmlDir>
+  </PropertyGroup>
+
+  <!-- Import msbuild extensions -->
+  <Import Project="$(ExtensionTasksPath)MSBuild.ExtensionPack.tasks" Condition="exists('$(ExtensionTasksPath)')"/>
+
+  <!-- Build target -->
+  <Target Name="Build" DependsOnTargets="RestoreNugetPackages; Versioning">
+    <MSBuild Projects="$(VSExtensionSolution)"
+             Properties="Configuration=$(Configuration);Platform=Any CPU;"
+             Targets="Build" />
+  </Target>
+
+  <!-- Clean target -->
+  <Target Name="Clean" DependsOnTargets="RestoreNugetPackages">
+    <MSBuild Projects="$(VSExtensionSolution)"
+             Properties="Configuration=$(Configuration);Platform=Any CPU"
+             Targets="Clean" />
+  </Target>
+
+  <!-- Target for running unit tests -->
+  <Target Name="UnitTest">
+    <ItemGroup>
+      <TestDlls Include=".\src\HP.CloudFoundry.UI.VisualStudio.UnitTests\bin\$(Configuration)\HP.CloudFoundry.UI.VisualStudio.UnitTests.dll"/>
+    </ItemGroup>
+
+    <Exec Command="$(VSTestCommand) %(TestDlls.Identity) /inIsolation /settings:CodeCoverage.runsettings /logger:trx"  ConsoleToMSBuild="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfTestRun" />
+    </Exec>
+
+     <!--Use the VSTest output to discover the Results & Coverage files respectively--> 
+    <PropertyGroup>
+       <!--Unencoded Regex: (?<=(Results file: )).*?(?=\;)|(?<=(Attachments:;)).*?(?=\;)--> 
+      <ResultsFileRegexPattern>(?&lt;=(Results File: )).*.trx</ResultsFileRegexPattern>
+      <CoverageFileRegexPattern>(?&lt;=(Attachments:;)).*.coverage</CoverageFileRegexPattern>
+      <SourceResultsFile>$([System.Text.RegularExpressions.Regex]::Match($(OutputOfTestRun), $(ResultsFileRegexPattern)))</SourceResultsFile>
+      <SourceCoverageFile>$([System.Text.RegularExpressions.Regex]::Match($(OutputOfTestRun), $(CoverageFileRegexPattern)))</SourceCoverageFile>
+    </PropertyGroup>
+
+    <Delete Files="$(CoverageXml)" />
+
+    <Message Text="Analysing coverage file $(SourceCoverageFile)"/>
+    <Exec Command="$(CoverageCommand) analyze /output:&quot;$(CoverageXml)&quot; &quot;$(SourceCoverageFile)&quot;" />
+
+
+    <Message Text="Generating html coverage report"/>
+    <MakeDir Directories="$(CoverageHtmlDir)"/>
+    <Exec Command="$(ReportGeneratorCommand) -reports:&quot;$(CoverageXml)&quot; -targetdir:&quot;$(CoverageHtmlDir)&quot;" />
+  </Target>
+
+  <!-- Target for restoring nuget packages -->
+  <Target Name="RestoreNugetPackages">
+    <Exec Command="$(NuGetCommand) restore $(VSExtensionSolution)"/>
+  </Target>
+
+  <!-- Target for automatically versioning the assemblies -->
+  <Target Name="Versioning">
+    <Message Text="Version: $(version)" />
+
+    <ItemGroup>
+      <AssemblyInfoFiles Include="$(LibraryRoot)\src\HP.CloudFoundry.UI.VisualStudio\Properties\AssemblyInfo.cs"/>
+    </ItemGroup>
+
+    <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
+      AssemblyVersion="$(version)"
+      AssemblyFileVersion="$(version)" />
+  </Target>
+
+</Project>
