@@ -81,7 +81,7 @@ Special node types
 
 ###Flow
 
-![Publish Flow](./publish-to-cloud-foundry.png)
+![Publish Flow](./publish-to-cloudfoundry.png)
 
 
 ###Enabling a project to be published
