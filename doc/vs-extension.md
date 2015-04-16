@@ -79,7 +79,10 @@ Special node types
 
 ##Project Publish
 
-###Publish to CF property page
+###Flow
+
+![Publish Flow](./publish-to-cloud-foundry.png)
+
 
 ###Enabling a project to be published
 
