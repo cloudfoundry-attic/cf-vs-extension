@@ -187,7 +187,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageConverter.cs" />
+    <Compile Include="Converters\ImageConverter.cs" />
+    <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
@@ -204,10 +205,10 @@
     <Compile Include="Model\CloudItemType.cs" />
     <Compile Include="Model\CloudFoundryTarget.cs" />
     <Compile Include="Model\ErrorEventArgs.cs" />
-    <Compile Include="MyControl.xaml.cs">
-      <DependentUpon>MyControl.xaml</DependentUpon>
+    <Compile Include="CloudFoundryExplorer.xaml.cs">
+      <DependentUpon>CloudFoundryExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MyToolWindow.cs" />
+    <Compile Include="CloudFoundryExplorerToolWindow.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -249,6 +250,10 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Restart.png" />
+    <Resource Include="Resources\Stop.png" />
+    <Resource Include="Resources\Start.png" />
+    <Resource Include="Resources\Remove.png" />
     <Resource Include="Resources\SSLEnabled.png" />
     <Resource Include="Resources\SSLDisabled.png" />
     <Resource Include="Resources\StatusStarted.png" />
@@ -267,23 +272,47 @@
     <Resource Include="Resources\Route.png" />
     <Resource Include="Resources\Services.png" />
     <Resource Include="Resources\Apps.png" />
+    <Resource Include="Resources\Add.png" />
+    <Resource Include="Resources\Delete.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ListViewStyle.xaml">
+    <Page Include="Style\GridStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TreeViewStyle.xaml">
+    <Page Include="Style\Images.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\ContextMenuStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\ButtonStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\ToggleButtonStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\PropertyGridStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\TreeViewStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MyControl.xaml">
+    <Page Include="CloudFoundryExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Forms\" />
+  </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>

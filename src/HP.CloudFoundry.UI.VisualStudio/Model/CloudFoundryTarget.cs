@@ -49,16 +49,16 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
         public bool IgnoreSSLErrors
         {
-            get 
-            { 
-                return _ignoreSslErrors; 
+            get
+            {
+                return _ignoreSslErrors;
             }
-            set 
-            { 
-                _ignoreSslErrors = value; 
+            set
+            {
+                _ignoreSslErrors = value;
                 if (IgnoreSSLErrors)
                 {
-                   
+
                 }
             }
         }
@@ -106,11 +106,11 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             return result;
         }
 
-        public override ObservableCollection<CloudItemAction> Actions
+        protected override IEnumerable<CloudItemAction> MenuActions
         {
             get
             {
-                return new ObservableCollection<CloudItemAction>()
+                return new CloudItemAction[]
                 {
                     new CloudItemAction("Remove", Resources.StatusStopped, () => {})
                 };

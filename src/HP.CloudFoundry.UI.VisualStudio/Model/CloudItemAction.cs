@@ -36,7 +36,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                var bitmapImage = ImageConverter.ConvertBitmapToBitmapImage(_icon);
+                var bitmapImage = Converters.ImageConverter.ConvertBitmapToBitmapImage(_icon);
 
                 if (bitmapImage != null)
                 {

@@ -20,15 +20,23 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         private readonly AsyncObservableCollection<CloudItem> _children = new AsyncObservableCollection<CloudItem>();
         private System.Threading.CancellationToken cancellationToken;
 
+        protected bool HasRefresh
+        {
+            get
+            {
+                return _cloudItemType != CloudItemType.LoadingPlaceholder &&
+                    _cloudItemType != CloudItemType.App &&
+                    _cloudItemType != CloudItemType.Route &&
+                    _cloudItemType != CloudItemType.Service &&
+                    _cloudItemType != CloudItemType.Error;
+            }
+        }
+
         protected CloudItem(CloudItemType cloudItemType)
         {
             _cloudItemType = cloudItemType;
 
-            if (_cloudItemType != CloudItemType.LoadingPlaceholder && 
-                _cloudItemType != CloudItemType.App && 
-                _cloudItemType != CloudItemType.Route && 
-                _cloudItemType != CloudItemType.Service && 
-                _cloudItemType != CloudItemType.Error)
+            if (this.HasRefresh)
             {
                 _children.Add(new LoadingPlaceholder());
             }
@@ -115,7 +123,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return ImageConverter.ConvertBitmapToBitmapImage(IconBitmap);
+                return Converters.ImageConverter.ConvertBitmapToBitmapImage(IconBitmap);
             }
         }
 
@@ -142,9 +150,44 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         }
 
         [Browsable(false)]
-        public abstract ObservableCollection<CloudItemAction> Actions
+        protected abstract IEnumerable<CloudItemAction> MenuActions
         {
             get;
+        }
+
+        public ObservableCollection<CloudItemAction> Actions
+        {
+            get
+            {
+                ObservableCollection<CloudItemAction> result = new ObservableCollection<CloudItemAction>();
+
+                if (this.HasRefresh)
+                {
+                    result.Add(new CloudItemAction(
+                        "Refresh",
+                        Resources.Refresh,
+                        () => { this.RefreshChildren(); }));
+
+                    result.Add(new CloudItemAction("-", null, () => { }));
+                }
+
+                if (this.MenuActions != null)
+                {
+                    foreach (var action in this.MenuActions)
+                    {
+                        result.Add(action);
+                    }
+                }
+
+                if (result.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return result;
+                }
+            }
         }
     }
 }
