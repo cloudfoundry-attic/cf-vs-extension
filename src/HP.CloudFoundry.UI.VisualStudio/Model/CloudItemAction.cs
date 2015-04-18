@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
@@ -7,10 +8,12 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
     {
         private readonly string _text;
         private readonly Bitmap _icon;
-        private readonly Action _onClick;
+        private readonly Func<Task> _onClick;
+        private readonly CloudItem _cloudItem;
         
-        public CloudItemAction(string text, Bitmap icon, Action onClick)
+        public CloudItemAction(CloudItem cloudItem, string text, Bitmap icon, Func<Task> onClick)
         {
+            this._cloudItem = cloudItem;
             _text = text;
             _icon = icon;
             _onClick = onClick;
@@ -24,11 +27,19 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
-        public Action Click
+        public Func<Task> Click
         {
             get
             {
                 return _onClick;
+            }
+        }
+
+        public CloudItem CloudItem
+        {
+            get
+            {
+                return _cloudItem;
             }
         }
 

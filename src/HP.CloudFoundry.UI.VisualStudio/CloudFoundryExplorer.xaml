@@ -20,9 +20,11 @@
                 <ResourceDictionary Source="Style\ContextMenuStyle.xaml" />
                 <ResourceDictionary Source="Style\GridStyle.xaml" />
                 <ResourceDictionary Source="Style\PropertyGridStyle.xaml" />
+                <ResourceDictionary Source="Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <cf:SSLErrorsIgnorer x:Key="sslIgnorer" />
             <converters:IsNullConverter x:Key="IsNull"/>
+            <converters:VisiblityConverter x:Key="Visible" />
             
             <Style TargetType="MenuItem" x:Key="MenuItemEventStyle">
                 <EventSetter Event="Click" Handler="treeMenuItem_Click" />
@@ -57,7 +59,7 @@
                 <Image Source="{StaticResource RefreshImage}" />
             </Button>
 
-            <Button Name="AddTargetButton" Height="22" Width="22" Grid.Column="2">
+            <Button Name="AddTargetButton" Height="22" Width="22" Grid.Column="2" Click="AddTargetButton_Click">
                 <Image Source="{StaticResource AddImage}" />
             </Button>
         </Grid>
@@ -69,6 +71,8 @@
                     <StackPanel Orientation="Horizontal" Height="22">
                         <Image Width="16" Height="16" Margin="5,0,0,0" VerticalAlignment="Center" Source="{Binding Icon}" />
                         <TextBlock Text="{Binding Text}" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                        <Image Width="16" Height="16" Margin="5,0,0,0" VerticalAlignment="Center" Source="{StaticResource RefreshMediumImage}" 
+                               Visibility="{Binding ExecutingBackgroundAction, Converter={StaticResource Visible}}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

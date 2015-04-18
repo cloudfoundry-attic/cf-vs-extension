@@ -1,5 +1,8 @@
-﻿using HP.CloudFoundry.UI.VisualStudio.Model;
+﻿using HP.CloudFoundry.UI.VisualStudio.Forms;
+using HP.CloudFoundry.UI.VisualStudio.Model;
+using HP.CloudFoundry.UI.VisualStudio.TargetStore;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,52 +20,36 @@ namespace HP.CloudFoundry.UI.VisualStudio
             InitializeComponent();
 
             SSLErrorsIgnorer.Ignore = true;
-
-            ExplorerTree.Items.Add(new CloudFoundryTarget(
-                "Private Tenant",
-                new Uri("https://cloud.hopto.me"),
-                "admin",
-                "password1234!",
-                false));
-
-            ExplorerTree.Items.Add(new CloudFoundryTarget(
-              "Pelerinul",
-              new Uri("https://pelerinul.servebeer.com"),
-              "admin",
-              "password1234!",
-              false));
-
-            ExplorerTree.Items.Add(new CloudFoundryTarget(
-                "Bad Credentials",
-                new Uri("https://cloud.hopto.me"),
-                "admin",
-                "password1234",
-                false));
-
-            ExplorerTree.Items.Add(new CloudFoundryTarget(
-            "Hack For Europe",
-            new Uri("https://h4e.cf.helion-dev.com"),
-            "gert.drapers@hp.com",
-            "",
-            false));
-
-
-            ExplorerTree.Items.Add(new CloudFoundryTarget(
-            "Hack For Europe",
-            new Uri("https://gids.cf.helion-dev.com"),
-            "gert.drapers@hp.com",
-            "",
-            false));
+            ReloadTargets();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
         private void treeMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var cloudItemAction = ExplorerTree.SelectedItem as CloudItemAction;
+            var menuItem = sender as MenuItem;
+
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            var cloudItemAction = menuItem.Tag as CloudItemAction;
+
             if (cloudItemAction != null)
             {
-                Task clickTask = new Task(cloudItemAction.Click);
-                clickTask.Start();
+                cloudItemAction.Click.Invoke().ContinueWith((antecedent) =>
+                {
+                    if (antecedent.IsFaulted)
+                    {
+                        var errorMessages = new List<string>();
+                        ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
+                        MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
+                    }
+                    else
+                    {
+
+                    }
+                });
             }
         }
 
@@ -75,10 +62,42 @@ namespace HP.CloudFoundry.UI.VisualStudio
             }
         }
 
-        private void StackPanel_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        private void AddTargetButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(string.Format(System.Globalization.CultureInfo.CurrentUICulture, "We are inside {0}.button1_Click()", this.ToString()),
-                            "Cloud Foundry Explorer");
+            using (var loginForm = new LoginWizardForm())
+            {
+                var result = loginForm.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    var target = loginForm.CloudTarget;
+
+                    if (target != null)
+                    {
+                        CloudTargetManager.SaveTarget(target);
+                        ReloadTargets();
+                    }
+                }
+            }
+        }
+
+
+        private void ReloadTargets()
+        {
+            this.ExplorerTree.Items.Clear();
+
+            var targets = CloudTargetManager.GetTargets();
+
+            foreach (var target in targets)
+            {
+                ExplorerTree.Items.Add(new CloudFoundryTarget(
+                    target.DisplayName,
+                    target.TargetUrl,
+                    target.Email,
+                    target.Token,
+                    target.IgnoreSSLErrors
+                    ));
+            }
         }
     }
 }

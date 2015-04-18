@@ -14,17 +14,17 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
     {
         private Uri _targetUri;
         private string _username;
-        private string _password;
+        private string _token;
         private bool _ignoreSslErrors;
         private readonly string _name;
 
-        public CloudFoundryTarget(string name, Uri targetUri, string username, string password, bool ignoreSSLErrors)
+        public CloudFoundryTarget(string name, Uri targetUri, string username, string token, bool ignoreSSLErrors)
             : base(CloudItemType.Target)
         {
             _name = name;
             _targetUri = targetUri;
             _username = username;
-            _password = password;
+            _token = token;
             _ignoreSslErrors = ignoreSSLErrors;
         }
 
@@ -41,10 +41,10 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         }
 
         [Browsable(false)]
-        public string Password
+        public string Token
         {
-            get { return _password; }
-            set { _password = value; }
+            get { return _token; }
+            set { _token = value; }
         }
 
         public bool IgnoreSSLErrors
@@ -83,11 +83,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             CloudFoundryClient client = new CloudFoundryClient(this._targetUri, this.CancellationToken);
 
-            var authenticationContext = await client.Login(new CloudCredentials()
-            {
-                User = this._username,
-                Password = this._password
-            });
+            var authenticationContext = await client.Login(this._token);
 
             List<Organization> result = new List<Organization>();
 
@@ -112,7 +108,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction("Remove", Resources.StatusStopped, () => {})
+                    new CloudItemAction(this, "Remove", Resources.Remove, () => { return Task.Delay(0); })
                 };
             }
         }

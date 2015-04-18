@@ -49,7 +49,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction("Remove", Resources.StatusStopped, () => {})
+                    new CloudItemAction(this, "Delete", Resources.Delete, () => { return Task.Delay(0); })
                 };
             }
         }

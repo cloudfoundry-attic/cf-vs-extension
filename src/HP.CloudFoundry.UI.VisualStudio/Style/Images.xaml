@@ -6,5 +6,6 @@
     <BitmapImage x:Key="SSLEnabledImage" UriSource="../Resources/SSLEnabled.png" />
     <BitmapImage x:Key="SSLDisabledImage" UriSource="../Resources/SSLDisabled.png" />
     <BitmapImage x:Key="RefreshImage" UriSource="../Resources/Refresh.png" />
+    <BitmapImage x:Key="RefreshMediumImage" UriSource="../Resources/RefreshMedium.png" />
     <BitmapImage x:Key="AddImage" UriSource="../Resources/Add.png" />
 </ResourceDictionary>
