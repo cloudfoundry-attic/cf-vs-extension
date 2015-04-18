@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace HP.CloudFoundry.UI.VisualStudio.Model
+namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
 {
     [ComVisible(true)]
     public class AppPackage  
@@ -21,6 +21,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         private string _password;
         private string _server;
         private string _appname;
+        private string _organization;
         private string _space;
         private int _memory;
         private int _instances;
@@ -43,11 +44,14 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         [DisplayName("Password")]
         [Category("Cloud Foundry")]
         [DefaultValue("")]
+        [Browsable(false)]
         public string CFPassword { get { return _password; } set { _password = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
         public string CFServerUri { get { return _server; } set { _server = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
         public string CFAppName { get { return _appname; } set { _appname = value; SaveToFile(configFile); } }
+        [Category("Cloud Foundry")]
+        public string CFOrganization { get { return _organization; } set { _organization = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
         public string CFSpace { get { return _space; } set { _space = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
@@ -72,6 +76,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         [Category("Cloud Foundry")]
         public bool CFLocalBuild { get { return _localbuild; } set { _localbuild = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
+        [Browsable(false)]
         public string WebPublishMethod { get { return _webpublishmethod; } set { _webpublishmethod = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
         public string CFMSBuildConfiguration { get { return _configuration; } set { _configuration = value; SaveToFile(configFile); } }
@@ -103,6 +108,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
         public void LoadFromFile(string filePath)
         {
+            configFile = filePath;
             XmlDocument doc = new XmlDocument();
             doc.Load(filePath);
 
@@ -115,6 +121,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                     case "cfuser": { CFUser = node.InnerText; break; }
                     case "cfpassword": { CFPassword = node.InnerText; break; }
                     case "cfserveruri": { CFServerUri = node.InnerText; break; }
+                    case "cforganization": { CFOrganization = node.InnerText; break; }
                     case "cfspace": { CFSpace = node.InnerText; break; }
                     case "cfappname": { CFAppName = node.InnerText; break; }
                     case "cfmemory": { CFMemory = Convert.ToInt32(node.InnerText); break; }

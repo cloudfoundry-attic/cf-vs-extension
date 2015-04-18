@@ -24,7 +24,7 @@
             </ResourceDictionary.MergedDictionaries>
             <cf:SSLErrorsIgnorer x:Key="sslIgnorer" />
             <converters:IsNullConverter x:Key="IsNull"/>
-            <converters:VisiblityConverter x:Key="Visible" />
+            <converters:VisiblityConverter x:Key="Visible" Reversed="False"/>
             
             <Style TargetType="MenuItem" x:Key="MenuItemEventStyle">
                 <EventSetter Event="Click" Handler="treeMenuItem_Click" />

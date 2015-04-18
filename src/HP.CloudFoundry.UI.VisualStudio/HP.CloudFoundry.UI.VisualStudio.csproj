@@ -205,6 +205,9 @@
     <Compile Include="Converters\ImageConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
+    <Compile Include="Forms\EditDialog.xaml.cs">
+      <DependentUpon>EditDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ErrorFormater.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Forms\LoginWizardForm.cs">
@@ -215,7 +218,7 @@
     </Compile>
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
-    <Compile Include="Model\AppPackage.cs" />
+    <Compile Include="ProjectPush\AppPackage.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
     <Compile Include="Model\Service.cs" />
@@ -315,6 +318,10 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Forms\EditDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Style\GridStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

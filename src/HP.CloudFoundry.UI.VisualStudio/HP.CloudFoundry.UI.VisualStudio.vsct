@@ -69,9 +69,10 @@
 			<Parent guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="MyMenuGroup" />
 			<Icon guid="guidImages" id="bmpPic2" />
 			<CommandFlag>TextChanges</CommandFlag>
+			<CommandFlag>DynamicVisibility</CommandFlag>
 			<Strings>
 				<CommandName>cmdidButtonBuildAndPushProject</CommandName>
-				<ButtonText>Enable CF Publish</ButtonText>
+				<ButtonText>Publish to CF</ButtonText>
 			</Strings>
 		</Button>
 

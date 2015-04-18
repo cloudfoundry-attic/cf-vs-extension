@@ -11,9 +11,16 @@ namespace HP.CloudFoundry.UI.VisualStudio.Converters
 {
     public class VisiblityConverter : IValueConverter
     {
+        public bool Reversed { get; set; }
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value as bool? == true) ? Visibility.Visible : Visibility.Hidden;
+           if(value as bool? != Reversed) {
+               return Visibility.Visible;
+           }
+           else
+           {
+               return Visibility.Hidden;
+           }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
