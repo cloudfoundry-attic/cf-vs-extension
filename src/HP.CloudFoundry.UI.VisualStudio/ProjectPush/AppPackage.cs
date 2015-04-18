@@ -27,15 +27,13 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
         private int _instances;
         private string _stack;
         private string _routes;
-        private string _servicename;
-        private string _servicetype;
-        private string _serviceplan;
         private string _manifestpath;
         private string _deploytargetfile;
         private bool _localbuild;
         private string _webpublishmethod;
         private string _configuration;
         private string _platform;
+        private string _services;
 
         [DisplayName("User name")]
         [Category("Cloud Foundry")]
@@ -64,12 +62,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
         [Category("Cloud Foundry")]
         public string CFRoutes { get { return _routes; } set { _routes = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
-        public string CFServiceName { get { return _servicename; } set { _servicename = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFServicePlan { get { return _serviceplan; } set { _serviceplan = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFServiceType { get { return _servicetype; } set { _servicetype = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
+        public string CFServices { get { return _services; } set { _services = value; SaveToFile(configFile); } }
         public string CFConfigurationFile { get { return _manifestpath; } set { _manifestpath = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
         public string DeployTargetFile { get { return _deploytargetfile; } set { _deploytargetfile = value; SaveToFile(configFile); } }
@@ -91,7 +84,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
             }
             
 
-            configFile = Path.Combine(Path.GetDirectoryName(project.FullName),"Properties","PublishProfiles","cf-push.pubxml");
+            configFile = Path.Combine(Path.GetDirectoryName(project.FullName),"Properties","PublishProfiles","cf.pushxml");
             if (File.Exists(configFile))
             {
                 LoadFromFile(configFile);
@@ -129,9 +122,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
                     case "cfstack": { CFStack = node.InnerText; break; }
                     case "cfroutes": { CFRoutes = node.InnerText; break; }
                     case "cfconfigurationfile": { CFConfigurationFile = node.InnerText; break; }
-                    case "cfservicename": { CFServiceName = node.InnerText; break; }
-                    case "cfserviceplan": { CFServicePlan = node.InnerText; break; }
-                    case "cfservicetype": { CFServiceType = node.InnerText; break; }
+                    case "cfservices": { CFServices = node.InnerText; break; }
                     case "cflocalbuild": { CFLocalBuild = Convert.ToBoolean(node.InnerText); break; }
                     case "deploytargetfile": { DeployTargetFile = node.InnerText; break; }
                     case "webpublishmethod": { WebPublishMethod = node.InnerText; break; }

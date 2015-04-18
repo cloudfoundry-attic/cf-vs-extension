@@ -118,7 +118,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
 
         void docEvents_DocumentOpened(Document Document)
         {
-            if (Document.Name.Contains("cf-push.pubxml"))
+            if (Document.Name.Contains("cf.pushxml"))
             {
                 AppPackage packageFile = new AppPackage();
                 packageFile.LoadFromFile(Document.FullName);
@@ -202,7 +202,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
                     {
                         var startInfo = new ProcessStartInfo(msBuildPath)
                         {
-                            Arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=cf-push ""{0}""", projectPath),
+                            Arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=cf.pushxml ""{0}""", projectPath),
                             WorkingDirectory = System.IO.Path.GetDirectoryName(projectPath),
                             RedirectStandardOutput = true,
                             RedirectStandardError = true,
