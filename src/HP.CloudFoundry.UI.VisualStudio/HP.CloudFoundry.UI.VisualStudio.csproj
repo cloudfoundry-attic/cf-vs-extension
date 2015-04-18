@@ -187,7 +187,24 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageConverter.cs" />
+    <Compile Include="Controls\LoginUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\LoginUserControl.Designer.cs">
+      <DependentUpon>LoginUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\ImageConverter.cs" />
+    <Compile Include="Converters\VisibilityConverter.cs" />
+    <Compile Include="Converters\IsNullConverter.cs" />
+    <Compile Include="ErrorFormater.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Forms\LoginWizardForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LoginWizardForm.Designer.cs">
+      <DependentUpon>LoginWizardForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
@@ -204,10 +221,10 @@
     <Compile Include="Model\CloudItemType.cs" />
     <Compile Include="Model\CloudFoundryTarget.cs" />
     <Compile Include="Model\ErrorEventArgs.cs" />
-    <Compile Include="MyControl.xaml.cs">
-      <DependentUpon>MyControl.xaml</DependentUpon>
+    <Compile Include="CloudFoundryExplorer.xaml.cs">
+      <DependentUpon>CloudFoundryExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MyToolWindow.cs" />
+    <Compile Include="CloudFoundryExplorerToolWindow.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -219,8 +236,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="SSLErrorsIgnorer.cs" />
+    <Compile Include="TargetStore\CloudCredentialsEncryption.cs" />
+    <Compile Include="TargetStore\CloudTarget.cs" />
+    <Compile Include="TargetStore\CloudTargetManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\LoginUserControl.resx">
+      <DependentUpon>LoginUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LoginWizardForm.resx">
+      <DependentUpon>LoginWizardForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -249,6 +275,11 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\RefreshMedium.png" />
+    <Resource Include="Resources\Restart.png" />
+    <Resource Include="Resources\Stop.png" />
+    <Resource Include="Resources\Start.png" />
+    <Resource Include="Resources\Remove.png" />
     <Resource Include="Resources\SSLEnabled.png" />
     <Resource Include="Resources\SSLDisabled.png" />
     <Resource Include="Resources\StatusStarted.png" />
@@ -267,18 +298,42 @@
     <Resource Include="Resources\Route.png" />
     <Resource Include="Resources\Services.png" />
     <Resource Include="Resources\Apps.png" />
+    <Resource Include="Resources\Add.png" />
+    <Resource Include="Resources\Delete.png" />
+    <Resource Include="Resources\LogoBanner.png" />
+    <Resource Include="Resources\Browse.png" />
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ListViewStyle.xaml">
+    <Page Include="Style\GridStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="TreeViewStyle.xaml">
+    <Page Include="Style\Images.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\ContextMenuStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\ButtonStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\ToggleButtonStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\PropertyGridStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\TreeViewStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MyControl.xaml">
+    <Page Include="CloudFoundryExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

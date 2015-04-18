@@ -35,7 +35,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 });
         }
 
-        public override ObservableCollection<CloudItemAction> Actions
+        protected override IEnumerable<CloudItemAction> MenuActions
         {
             get { return null; }
         }

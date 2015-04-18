@@ -1,0 +1,111 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vsp="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
+                    xmlns:cf="clr-namespace:HP.CloudFoundry.UI.VisualStudio">
+
+
+    <!-- Separator -->
+    <Style TargetType="{x:Type Separator}" x:Key="SeparatorStyle">
+        <Setter Property="Height" Value="100" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Rectangle Height="{TemplateBinding Height}"
+                               Fill="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Outer menu items-->
+    <!--<Style TargetType="{x:Type MenuItem}">
+        <Setter Property="Background"
+                Value="Pink"></Setter>
+        <Setter Property="Foreground"
+                Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextActiveBrushKey}}"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted"
+                     Value="True">
+                <Setter Property="Background"
+                        Value="Yellow"></Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Foreground"
+                        Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextInactiveBrushKey}}"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>-->
+
+    <!-- Outer menu -->
+    <Style TargetType="{x:Type ContextMenu}">
+        <!--<Setter Property="OverridesDefaultStyle"
+                Value="True" />-->
+        <Setter Property="SnapsToDevicePixels"
+                Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextActiveBrushKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBackgroundGradientBrushKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBorderBrushKey}}" />
+        <Style.Resources>
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="Red"/>
+            </Style>
+        </Style.Resources>
+        <!--<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+
+                    --><!--Here is where you change the border thickness to zero on the menu
+                    <Border BorderThickness="1"
+                            x:Name="Border"
+                            Background="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBorderBrushKey}}">
+                        <StackPanel ClipToBounds="True"
+                                    Orientation="Vertical"
+                                    IsItemsHost="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="true">
+                            <Setter TargetName="Border"
+                                    Property="Background"
+                                    Value="Red" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>--><!--
+                </ControlTemplate>
+            </Setter.Value>--><!--
+        </Setter>-->
+    </Style>
+
+    <!--<Style TargetType="{x:Type MenuItem}">
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBackgroundGradientBrushKey}}"></Setter>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextActiveBrushKey}}"></Setter>
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuItemMouseOverBrushKey}}"></Setter>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextInactiveBrushKey}}"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    --><!--Here is where you change the border thickness to zero on the menu--><!--
+                    <Border BorderThickness="0" x:Name="Border"  >
+                        <StackPanel ClipToBounds="True" Orientation="Vertical" IsItemsHost="True"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="Border" Property="Background" Value="#5082a4" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
+</ResourceDictionary>

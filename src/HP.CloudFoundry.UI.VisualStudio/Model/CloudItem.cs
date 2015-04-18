@@ -9,26 +9,32 @@ using System.Windows.Media.Imaging;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
-    internal abstract class CloudItem
+    internal abstract class CloudItem : INotifyPropertyChanged
     {
         private readonly CloudItemType _cloudItemType = CloudItemType.Target;
         private volatile bool _isExpanded = false;
         private volatile bool _wasRefreshed = false;
 
-        public event EventHandler<ErrorEventArgs> RefreshChildrenError;
-        public event EventHandler<EventArgs> RefreshChildrenComplete;
         private readonly AsyncObservableCollection<CloudItem> _children = new AsyncObservableCollection<CloudItem>();
         private System.Threading.CancellationToken cancellationToken;
+
+        protected bool HasRefresh
+        {
+            get
+            {
+                return _cloudItemType != CloudItemType.LoadingPlaceholder &&
+                    _cloudItemType != CloudItemType.App &&
+                    _cloudItemType != CloudItemType.Route &&
+                    _cloudItemType != CloudItemType.Service &&
+                    _cloudItemType != CloudItemType.Error;
+            }
+        }
 
         protected CloudItem(CloudItemType cloudItemType)
         {
             _cloudItemType = cloudItemType;
 
-            if (_cloudItemType != CloudItemType.LoadingPlaceholder && 
-                _cloudItemType != CloudItemType.App && 
-                _cloudItemType != CloudItemType.Route && 
-                _cloudItemType != CloudItemType.Service && 
-                _cloudItemType != CloudItemType.Error)
+            if (this.HasRefresh)
             {
                 _children.Add(new LoadingPlaceholder());
             }
@@ -65,17 +71,18 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
                 if (_isExpanded && !_wasRefreshed)
                 {
-                    RefreshChildren();
+                    RefreshChildren().Start();
                 }
             }
         }
 
-        public void RefreshChildren()
+        public async Task RefreshChildren()
         {
+            this.ExecutingBackgroundAction = true;
             var populateChildrenTask = this.UpdateChildren();
             this.cancellationToken = new System.Threading.CancellationToken();
 
-            populateChildrenTask.ContinueWith((antecedent) =>
+            await populateChildrenTask.ContinueWith((antecedent) =>
                 {
                     if (antecedent.IsFaulted)
                     {
@@ -84,13 +91,6 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                         CloudError error = new CloudError(antecedent.Exception);
 
                         _children.Add(error);
-
-                        if (RefreshChildrenError != null)
-                        {
-                            RefreshChildrenError(this, new ErrorEventArgs(){
-                                Error = antecedent.Exception
-                            });
-                        }
                     }
                     else
                     {
@@ -102,11 +102,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                         }
 
                         _wasRefreshed = true;
-                        if (RefreshChildrenComplete != null)
-                        {
-                            RefreshChildrenComplete(this, new EventArgs());
-                        }
                     }
+
+                    this.ExecutingBackgroundAction = false;
                 });
         }
 
@@ -115,7 +113,21 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return ImageConverter.ConvertBitmapToBitmapImage(IconBitmap);
+                return Converters.ImageConverter.ConvertBitmapToBitmapImage(IconBitmap);
+            }
+        }
+
+        [Browsable(false)]
+        public bool ExecutingBackgroundAction
+        {
+            get
+            {
+                return this.executingBackgroundAction;
+            }
+            set
+            {
+                this.executingBackgroundAction = value;
+                NotifyPropertyChanged("ExecutingBackgroundAction");
             }
         }
 
@@ -142,9 +154,51 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         }
 
         [Browsable(false)]
-        public abstract ObservableCollection<CloudItemAction> Actions
+        protected abstract IEnumerable<CloudItemAction> MenuActions
         {
             get;
         }
+
+        public ObservableCollection<CloudItemAction> Actions
+        {
+            get
+            {
+                ObservableCollection<CloudItemAction> result = new ObservableCollection<CloudItemAction>();
+
+                if (this.HasRefresh)
+                {
+                    result.Add(new CloudItemAction(this, "Refresh", Resources.Refresh, RefreshChildren));
+                    result.Add(new CloudItemAction(this, "-", null, () => { return Task.Delay(0); }));
+                }
+
+                if (this.MenuActions != null)
+                {
+                    foreach (var action in this.MenuActions)
+                    {
+                        result.Add(action);
+                    }
+                }
+
+                if (result.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+        }
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private bool executingBackgroundAction;
     }
 }

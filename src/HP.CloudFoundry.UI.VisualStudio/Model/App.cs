@@ -3,6 +3,10 @@ using CloudFoundry.CloudController.V2.Client.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Globalization;
+using System.Diagnostics;
+using HP.CloudFoundry.UI.VisualStudio.Forms;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
@@ -53,16 +57,88 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             });
         }
 
-        public override ObservableCollection<CloudItemAction> Actions
+        protected override IEnumerable<CloudItemAction> MenuActions
         {
             get
             {
-                return new ObservableCollection<CloudItemAction>()
+                return new CloudItemAction[]
                 {
-                    new CloudItemAction("Remove", Resources.StatusStopped, () => {})
+                    new CloudItemAction(this, "Browse", Resources.Browse, Browse),
+                    new CloudItemAction(this, "Start", Resources.Start, Start),
+                    new CloudItemAction(this, "Restart", Resources.Restart, Restart),
+                    new CloudItemAction(this, "Stop", Resources.Stop, Stop),
+                    new CloudItemAction(this, "Delete", Resources.Delete, Delete)
                 };
             }
         }
+
+        private async Task Stop()
+        {
+            var updateAppRequest = new UpdateAppRequest() {
+                State = "STOPPED"
+            };
+
+            await this._client.Apps.UpdateApp(_app.EntityMetadata.Guid, updateAppRequest);
+        }
+
+        private async Task Start()
+        {
+            var updateAppRequest = new UpdateAppRequest()
+            {
+                State = "STARTED"
+            };
+
+            await this._client.Apps.UpdateApp(_app.EntityMetadata.Guid, updateAppRequest);
+        }
+
+        private async Task Browse()
+        {
+            var summary = await this._client.Apps.GetAppSummary(this._app.EntityMetadata.Guid);
+
+            if (summary.Routes == null)
+            {
+                return;
+            }
+
+            var route = summary.Routes.FirstOrDefault();
+
+            if (route == null)
+            {
+                return;
+            }
+
+            var host = route["host"];
+            var domain = route["domain"]["name"];
+
+
+            var url = string.Format(CultureInfo.InvariantCulture, "http://{0}.{1}", host, domain);
+
+            Process.Start(url);
+        }
+
+        private async Task Delete()
+        {
+            var answer = MessageBoxHelper.WarningQuestion(
+                string.Format(
+                CultureInfo.InvariantCulture,
+                "Are you sure you want to delete application '{0}'?",
+                this._app.Name
+                ));
+
+            if (answer == System.Windows.Forms.DialogResult.Yes)
+            {
+                await this._client.Apps.DeleteApp(this._app.EntityMetadata.Guid);
+            }
+        }
+
+        private async Task Restart()
+        {
+            await this.Stop().ContinueWith(async (antecedent) =>
+            {
+                await Start();
+            });
+        }
+
 
         public string Buildpack { get {return this._app.Buildpack;} /*private set;*/ }
         public string Command { get { return this._app.Command; } /*private set;*/ }

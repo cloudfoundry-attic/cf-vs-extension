@@ -1,0 +1,11 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vsp="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
+                    xmlns:cf="clr-namespace:HP.CloudFoundry.UI.VisualStudio">
+
+    <BitmapImage x:Key="SSLEnabledImage" UriSource="../Resources/SSLEnabled.png" />
+    <BitmapImage x:Key="SSLDisabledImage" UriSource="../Resources/SSLDisabled.png" />
+    <BitmapImage x:Key="RefreshImage" UriSource="../Resources/Refresh.png" />
+    <BitmapImage x:Key="RefreshMediumImage" UriSource="../Resources/RefreshMedium.png" />
+    <BitmapImage x:Key="AddImage" UriSource="../Resources/Add.png" />
+</ResourceDictionary>

@@ -16,27 +16,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             _exception = exception;
             _errorMessages = new List<string>();
-            FormatExceptionMessage(_exception, _errorMessages);
-        }
-
-        private static void FormatExceptionMessage(Exception ex, List<string> message)
-        {
-            if (ex is AggregateException)
-            {
-                foreach (Exception iex in (ex as AggregateException).Flatten().InnerExceptions)
-                {
-                    FormatExceptionMessage(iex, message);
-                }
-            }
-            else
-            {
-                message.Add(ex.Message);
-
-                if (ex.InnerException != null)
-                {
-                    FormatExceptionMessage(ex.InnerException, message);
-                }
-            }
+            ErrorFormatter.FormatExceptionMessage(_exception, _errorMessages);
         }
 
         public string FullError
@@ -71,7 +51,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             });
         }
 
-        public override ObservableCollection<CloudItemAction> Actions
+        protected override IEnumerable<CloudItemAction> MenuActions
         {
             get { return null; }
         }

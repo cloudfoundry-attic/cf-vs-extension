@@ -36,7 +36,7 @@ namespace HP.CloudFoundry.UI.VisualStudio_UnitTests.MyToolWindowTest
         public void MyToolWindowConstructorTest()
         {
 
-            MyToolWindow target = new MyToolWindow();
+            CloudFoundryExplorerToolWindow target = new CloudFoundryExplorerToolWindow();
             Assert.IsNotNull(target, "Failed to create an instance of MyToolWindow");
 
             MethodInfo method = target.GetType().GetMethod("get_Content", BindingFlags.Public | BindingFlags.Instance);
@@ -50,7 +50,7 @@ namespace HP.CloudFoundry.UI.VisualStudio_UnitTests.MyToolWindowTest
         [TestMethod()]
         public void WindowPropertyTest()
         {
-            MyToolWindow target = new MyToolWindow();
+            CloudFoundryExplorerToolWindow target = new CloudFoundryExplorerToolWindow();
             Assert.IsNotNull(target.Content, "Content property was null");
         }
 
