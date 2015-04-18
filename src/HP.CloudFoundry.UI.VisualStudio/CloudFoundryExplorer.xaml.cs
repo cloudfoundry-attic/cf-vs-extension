@@ -90,13 +90,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
 
             foreach (var target in targets)
             {
-                ExplorerTree.Items.Add(new CloudFoundryTarget(
-                    target.DisplayName,
-                    target.TargetUrl,
-                    target.Email,
-                    target.Token,
-                    target.IgnoreSSLErrors
-                    ));
+                ExplorerTree.Items.Add(new CloudFoundryTarget(target));
             }
         }
     }

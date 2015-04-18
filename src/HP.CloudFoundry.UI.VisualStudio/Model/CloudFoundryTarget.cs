@@ -1,6 +1,8 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
 using CloudFoundry.UAA;
+using HP.CloudFoundry.UI.VisualStudio.Forms;
+using HP.CloudFoundry.UI.VisualStudio.TargetStore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,54 +14,35 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
     class CloudFoundryTarget : CloudItem
     {
-        private Uri _targetUri;
-        private string _username;
-        private string _token;
-        private bool _ignoreSslErrors;
-        private readonly string _name;
+        private readonly CloudTarget target;
 
-        public CloudFoundryTarget(string name, Uri targetUri, string username, string token, bool ignoreSSLErrors)
+        public CloudFoundryTarget(CloudTarget target)
             : base(CloudItemType.Target)
         {
-            _name = name;
-            _targetUri = targetUri;
-            _username = username;
-            _token = token;
-            _ignoreSslErrors = ignoreSSLErrors;
+            this.target = target;
         }
 
         public Uri TargetUri
         {
-            get { return _targetUri; }
-            set { _targetUri = value; }
+            get { return this.target.TargetUrl; }
         }
 
         public string Username
         {
-            get { return _username; }
-            set { _username = value; }
+            get { return this.target.Email; }
         }
 
         [Browsable(false)]
         public string Token
         {
-            get { return _token; }
-            set { _token = value; }
+            get { return this.target.Token; }
         }
 
         public bool IgnoreSSLErrors
         {
             get
             {
-                return _ignoreSslErrors;
-            }
-            set
-            {
-                _ignoreSslErrors = value;
-                if (IgnoreSSLErrors)
-                {
-
-                }
+                return this.target.IgnoreSSLErrors;
             }
         }
 
@@ -67,7 +50,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", this._name, this._targetUri);
+                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", this.target.DisplayName, this.target.TargetUrl);
             }
         }
 
@@ -81,9 +64,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
-            CloudFoundryClient client = new CloudFoundryClient(this._targetUri, this.CancellationToken);
+            CloudFoundryClient client = new CloudFoundryClient(this.target.TargetUrl, this.CancellationToken);
 
-            var authenticationContext = await client.Login(this._token);
+            var authenticationContext = await client.Login(this.target.Token);
 
             List<Organization> result = new List<Organization>();
 
@@ -108,8 +91,23 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction(this, "Remove", Resources.Remove, () => { return Task.Delay(0); })
+                    new CloudItemAction(this, "Remove", Resources.Remove, Delete)
                 };
+            }
+        }
+
+        private async Task Delete()
+        {
+            var answer = MessageBoxHelper.WarningQuestion(
+                string.Format(
+                CultureInfo.InvariantCulture,
+                "Are you sure you want to delete target '{0}'?",
+                this.target.DisplayName
+                ));
+
+            if (answer == System.Windows.Forms.DialogResult.Yes)
+            {
+                await Task.Factory.StartNew(() => CloudTargetManager.RemoveTarget(this.target));
             }
         }
     }
