@@ -1,7 +1,11 @@
-﻿using HP.CloudFoundry.UI.VisualStudio.ProjectPush;
+﻿using CloudFoundry.CloudController.V2.Client;
+using CloudFoundry.UAA;
+using HP.CloudFoundry.UI.VisualStudio.Forms;
+using HP.CloudFoundry.UI.VisualStudio.ProjectPush;
 using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -49,7 +53,20 @@ namespace HP.CloudFoundry.UI.VisualStudio
 
         private void Verify_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {   
+                CloudFoundryClient client = new CloudFoundryClient(new Uri(ServerUri.Text), new System.Threading.CancellationToken());
+                CloudCredentials creds = new CloudCredentials();
+                creds.User = User.Text;
+                creds.Password = PasswordBox.Password;
+                string reftoken = client.Login(creds).Result.Token.RefreshToken;
 
+                MessageBoxHelper.DisplayInfo("Connection Successful!");
+            }
+            catch (Exception ex)
+            {
+                MessageBoxHelper.DisplayError("Unable to verify settings!", ex);
+            }
         }
     }
 }

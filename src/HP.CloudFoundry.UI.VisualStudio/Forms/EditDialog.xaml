@@ -5,12 +5,18 @@
         xmlns:src ="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Model"
         xmlns:converters="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Converters"
         Title="Cloud Foundry Publish Profile" Height="450" Width="450">
-    <Window.Resources>
-        <converters:VisiblityConverter x:Key="Visible" Reversed="True"/>
-    </Window.Resources>
-    
+    <ui:DialogWindow.Resources>
+        <ResourceDictionary>
+           <ResourceDictionary.MergedDictionaries>
+             <ResourceDictionary Source="..\Style\Images.xaml" />
+           </ResourceDictionary.MergedDictionaries>
+           <converters:VisiblityConverter x:Key="Visible" Reversed="True"/>
+        </ResourceDictionary>
+    </ui:DialogWindow.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -29,14 +35,15 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
 
         <Label Content="ServerUri" Grid.Row="0" Grid.Column="0"></Label>
-        <TextBox Text="{Binding Path= CFServerUri}" Grid.Row="0" Grid.Column="1"></TextBox>
-
+        <TextBox Name="ServerUri" Text="{Binding Path= CFServerUri}" Grid.Row="0" Grid.Column="1"></TextBox>
+      
         <Label Content="User" Grid.Row="1" Grid.Column="0"></Label>
-        <TextBox Text="{Binding Path= CFUser}" Grid.Row="1" Grid.Column="1"></TextBox>
-
+        <TextBox Name="User" Text="{Binding Path= CFUser}" Grid.Row="1" Grid.Column="1"></TextBox>
+     
         <Label Content="Password" Grid.Row="2" Grid.Column="0"></Label>
         <PasswordBox Name="PasswordBox" Grid.Row="2" Grid.Column="1"></PasswordBox>
        
@@ -61,14 +68,22 @@
 
         <Label Content="Routes" Grid.Row="9" Grid.Column="0"></Label>
         <TextBox Text="{Binding Path= CFRoutes}" Grid.Row="9" Grid.Column="1"></TextBox>
+        <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple routes can be specified by using semicolon between route definitions" Width="20" Height="20" Grid.Column="2" Grid.Row="9"></Image>
 
-        <Label Content="Deploy Target File" Grid.Row="10" Grid.Column="0"></Label>
-        <TextBox Text="{Binding Path= DeployTargetFile}" Grid.Row="10" Grid.Column="1"></TextBox>
 
-        <Label Content="Local Build" Grid.Row="11" Grid.Column="0"></Label>
-        <CheckBox IsChecked="{Binding Path=CFLocalBuild}" Name="LocalBuild" Grid.Row="11" Grid.Column="2" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Center"></CheckBox>
+        <Label Content="Services" Grid.Row="10" Grid.Column="0"></Label>
+        <TextBox Text="{Binding Path= CFServices}" Grid.Row="10" Grid.Column="1"></TextBox>
+        <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple services can be specified by usign semicolon between each service(name,type,plan) definition" Width="20" Height="20" Grid.Column="2" Grid.Row="10"></Image>
 
-        <StackPanel Grid.Row="12" Grid.Column="2" Visibility="{Binding Path=IsChecked, ElementName=LocalBuild, Converter={StaticResource Visible}}">
+        <Label Content="Deploy Target File" Grid.Row="11" Grid.Column="0"></Label>
+        <TextBox Text="{Binding Path= DeployTargetFile}" Grid.Row="11" Grid.Column="1"></TextBox>
+        
+        <Label Content="Local Build" Grid.Row="12" Grid.Column="0"></Label>
+        <CheckBox IsChecked="{Binding Path=CFLocalBuild}" Name="LocalBuild" Grid.Row="12" Grid.Column="1" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Center"></CheckBox>
+        <Image Source="{StaticResource StatusUnknown}" ToolTip="When set to false entire solution will be sent to CF" Width="20" Height="20" Grid.Column="2" Grid.Row="12"></Image>
+
+
+        <StackPanel Grid.Row="13" Grid.Column="1" Visibility="{Binding Path=IsChecked, ElementName=LocalBuild, Converter={StaticResource Visible}}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto" />
@@ -90,9 +105,9 @@
 
 
 
-        <Button Content="Cancel" Grid.Column="1" Grid.Row="13" Width="100" HorizontalAlignment="Left" Click="Cancel_Click"></Button>
-        <Button Content="Verify Settings" Grid.Column="2" Grid.Row="13" Width="100" HorizontalAlignment="Center" Click="Verify_Click"></Button>
-        <Button Content="Publish" Grid.Column="2" Grid.Row="13" Width="100" HorizontalAlignment="Right" Click="Save_Click"></Button>
+        <Button Content="Cancel" Grid.Column="1" Grid.Row="14" Width="100" HorizontalAlignment="Left" Click="Cancel_Click"></Button>
+        <Button Content="Verify Settings" Grid.Column="1" Grid.Row="14" Width="100" HorizontalAlignment="Center" Click="Verify_Click"></Button>
+        <Button Content="Publish" Grid.Column="1" Grid.Row="14" Width="100" HorizontalAlignment="Right" Click="Save_Click"></Button>
 
     </Grid>
 </ui:DialogWindow>

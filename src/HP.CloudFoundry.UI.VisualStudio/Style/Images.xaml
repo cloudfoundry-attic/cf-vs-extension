@@ -8,4 +8,5 @@
     <BitmapImage x:Key="RefreshImage" UriSource="../Resources/Refresh.png" />
     <BitmapImage x:Key="RefreshMediumImage" UriSource="../Resources/RefreshMedium.png" />
     <BitmapImage x:Key="AddImage" UriSource="../Resources/Add.png" />
+    <BitmapImage x:Key="StatusUnknown" UriSource="../Resources/StatusUnknown.png" />
 </ResourceDictionary>
