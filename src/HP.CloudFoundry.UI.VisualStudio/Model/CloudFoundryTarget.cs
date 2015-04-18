@@ -22,11 +22,14 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             this.target = target;
         }
 
+        [Description("URL of the target")]
+        [DisplayName("Target URL")]
         public Uri TargetUri
         {
             get { return this.target.TargetUrl; }
         }
 
+        [Description("Username of the Cloud Foundry User")]
         public string Username
         {
             get { return this.target.Email; }
@@ -38,6 +41,14 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             get { return this.target.Token; }
         }
 
+        [Description("API version of the target")]
+        public string Version
+        {
+            get { return this.target.Version; }
+        }
+
+        [Description("Indicates if the SSL errors are ignored for the Cloud Foundry Target")]
+        [DisplayName("Ignore SSL errors")]
         public bool IgnoreSSLErrors
         {
             get
@@ -72,11 +83,25 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
             PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
 
+
+            var users = await client.Users.ListAllUsers(new RequestOptions() { Query = string.Format(CultureInfo.InvariantCulture, "username:{0}", this.target.Email) });
+
+            Guid userId = new Guid();
+
+            GetUserSummaryResponse userSummary = null;
+
+            if (users.Properties.TotalResults > 0)
+            {
+                userId = users[0].EntityMetadata.Guid;
+
+                userSummary = await client.Users.GetUserSummary(userId);
+            }
+
             while (orgs != null && orgs.Properties.TotalResults != 0)
             {
                 foreach (var org in orgs)
                 {
-                    result.Add(new Organization(org, client));
+                    result.Add(new Organization(org, userSummary, client));
                 }
 
                 orgs = await orgs.GetNextPage();

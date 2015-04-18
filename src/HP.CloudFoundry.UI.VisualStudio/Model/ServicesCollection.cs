@@ -44,7 +44,22 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 foreach (var service in services)
                 {
-                    result.Add(new Service(service, _client));
+                    List<GetAppSummaryResponse> appsSummary = new List<GetAppSummaryResponse>();
+                    var serviceBindings = await this._client.ServiceInstances.ListAllServiceBindingsForServiceInstance(service.EntityMetadata.Guid);
+                    if (serviceBindings.Properties.TotalResults != 0)
+                    {
+                        foreach (var serviceBinding in serviceBindings)
+                        {
+                            appsSummary.Add(await _client.Apps.GetAppSummary(serviceBinding.AppGuid));
+                        }
+
+                    }
+                    var servicePlan = await _client.ServicePlans.RetrieveServicePlan(service.ServicePlanGuid);
+                    var systemService = await _client.Services.RetrieveService(servicePlan.ServiceGuid);
+
+                    result.Add(new Service(service, appsSummary, servicePlan, systemService, serviceBindings, _client));
+
+
                 }
 
                 services = await services.GetNextPage();

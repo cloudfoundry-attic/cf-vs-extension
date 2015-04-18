@@ -40,11 +40,15 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
             PagedResponseCollection<ListAllRoutesForSpaceResponse> routes = await _client.Spaces.ListAllRoutesForSpace(this._space.EntityMetadata.Guid);
 
+
             while (routes != null && routes.Properties.TotalResults != 0)
             {
                 foreach (var route in routes)
                 {
-                    result.Add(new Route(route, this._client));
+                    var routeApps = await _client.Routes.ListAllAppsForRoute(route.EntityMetadata.Guid);
+
+                    var domain = await _client.DomainsDeprecated.RetrieveDomainDeprecated(route.DomainGuid);
+                    result.Add(new Route(route, domain, routeApps, this._client));
                 }
 
                 routes = await routes.GetNextPage();

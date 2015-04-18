@@ -16,12 +16,13 @@ namespace HP.CloudFoundry.UI.VisualStudio.TargetStore
         private Guid targetId;
         private string description;
         private bool ignoreSSLErrors;
+        private string version;
 
         private CloudTarget()
         {
         }
 
-        public static CloudTarget CreateV2Target(string token, Uri targetUri, string description, string email, bool ignoreSSLErrors)
+        public static CloudTarget CreateV2Target(string token, Uri targetUri, string description, string email, bool ignoreSSLErrors, string version)
         {
             return new CloudTarget()
             {
@@ -30,11 +31,12 @@ namespace HP.CloudFoundry.UI.VisualStudio.TargetStore
                 targetUrl = targetUri,
                 description = description,
                 email = email,
-                ignoreSSLErrors = ignoreSSLErrors
+                ignoreSSLErrors = ignoreSSLErrors,
+                version = version
             };
         }
 
-        public static CloudTarget FromRegistryText(KeyValuePair<string,string[]>  target)
+        public static CloudTarget FromRegistryText(KeyValuePair<string, string[]> target)
         {
             string[] registryText = target.Value;
             if (registryText == null || registryText.Length < 1)
@@ -51,10 +53,12 @@ namespace HP.CloudFoundry.UI.VisualStudio.TargetStore
                 string token = registryText[2];
                 string description = registryText[3];
                 string email = registryText[4];
-                bool ignoreSSLErrors = Convert.ToBoolean(registryText[5]);
 
-                CloudTarget registryTarget = CloudTarget.CreateV2Target(token, targetUrl, description, email, ignoreSSLErrors);
-                
+                bool ignoreSSLErrors = Convert.ToBoolean(registryText[5]);
+                string version = registryText[6];
+
+                CloudTarget registryTarget = CloudTarget.CreateV2Target(token, targetUrl, description, email, ignoreSSLErrors, version);
+
                 registryTarget.TargetId = Guid.Parse(target.Key);
                 return registryTarget;
             }
@@ -73,7 +77,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.TargetStore
                 this.Token,
                 this.Description,
                 this.Email,
-                this.ignoreSSLErrors.ToString()
+                this.ignoreSSLErrors.ToString(),
+                this.version
             };
         }
 
@@ -90,6 +95,13 @@ namespace HP.CloudFoundry.UI.VisualStudio.TargetStore
             }
         }
 
+        public string Version
+        {
+            get
+            {
+                return version;
+            }
+        }
         public string Email
         {
             get { return email; }
