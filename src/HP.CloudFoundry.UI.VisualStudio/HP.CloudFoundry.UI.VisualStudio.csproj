@@ -62,7 +62,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.153-alpha\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Utilities.v12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\MSBuild\12.0\Bin\Microsoft.Build.Utilities.v12.0.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Data, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
@@ -82,6 +87,10 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.12.0" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.VisualStudio">
+      <HintPath>..\..\packages\NuGet.VisualStudio.2.8.5\lib\net40\NuGet.VisualStudio.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
@@ -196,6 +205,9 @@
     <Compile Include="Converters\ImageConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
+    <Compile Include="Forms\EditDialog.xaml.cs">
+      <DependentUpon>EditDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ErrorFormater.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Forms\LoginWizardForm.cs">
@@ -206,6 +218,7 @@
     </Compile>
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
+    <Compile Include="ProjectPush\AppPackage.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
     <Compile Include="Model\Service.cs" />
@@ -305,6 +318,10 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Forms\EditDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Style\GridStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
