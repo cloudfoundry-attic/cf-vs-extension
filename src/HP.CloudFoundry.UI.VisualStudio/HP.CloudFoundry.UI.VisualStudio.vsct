@@ -97,6 +97,9 @@
 		</CommandPlacement>
 	</CommandPlacements>
 
+	<KeyBindings>
+		<KeyBinding guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="cmdidCloudFoundryExplorer" editor="guidVSStd97" mod1="Control" mod2="Control" key1="K" key2="C"></KeyBinding>
+	</KeyBindings>
 
 
   <Symbols>
