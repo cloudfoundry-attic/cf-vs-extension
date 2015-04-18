@@ -1,5 +1,6 @@
 ﻿using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.CloudController.V2.Client.Data;
+using HP.CloudFoundry.UI.VisualStudio.Forms;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -49,8 +50,23 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction(this, "Delete", Resources.Delete, () => { return Task.Delay(0); })
+                    new CloudItemAction(this, "Delete", Resources.Delete, Delete)
                 };
+            }
+        }
+
+        private async Task Delete()
+        {
+            var answer = MessageBoxHelper.WarningQuestion(
+                string.Format(
+                CultureInfo.InvariantCulture,
+                "Are you sure you want to delete service '{0}'?",
+                this._service.Name
+                ));
+
+            if (answer == System.Windows.Forms.DialogResult.Yes)
+            {
+                await this._client.ServiceInstances.DeleteServiceInstance(this._service.EntityMetadata.Guid);
             }
         }
 
