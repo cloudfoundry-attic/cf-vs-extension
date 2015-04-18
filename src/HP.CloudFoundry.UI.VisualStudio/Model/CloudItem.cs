@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Microsoft.VisualStudio.Threading;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
@@ -71,7 +72,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
                 if (_isExpanded && !_wasRefreshed)
                 {
-                    RefreshChildren().Start();
+                    RefreshChildren().Forget();
+
                 }
             }
         }
@@ -159,6 +161,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             get;
         }
 
+        [Browsable(false)]
         public ObservableCollection<CloudItemAction> Actions
         {
             get

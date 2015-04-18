@@ -3,6 +3,7 @@ using CloudFoundry.CloudController.V2.Client.Data;
 using HP.CloudFoundry.UI.VisualStudio.Forms;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Threading.Tasks;
 
@@ -12,19 +13,30 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
     {
         private CloudFoundryClient _client;
         private readonly ListAllServiceInstancesForSpaceResponse _service;
+        private readonly ICollection<GetAppSummaryResponse> _appsSummary;
+        private readonly RetrieveServicePlanResponse _servicePlan;
+        private readonly RetrieveServiceResponse _systemService;
+        private readonly PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> _serviceBindings;
 
-        public Service(ListAllServiceInstancesForSpaceResponse service, CloudFoundryClient client)
+        public Service(ListAllServiceInstancesForSpaceResponse service, ICollection<GetAppSummaryResponse> appsSummary,
+            RetrieveServicePlanResponse servicePlan, RetrieveServiceResponse systemService,
+            PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> serviceBindings, CloudFoundryClient client)
             : base(CloudItemType.ServicesCollection)
         {
             _client = client;
             _service = service;
+            _appsSummary = appsSummary;
+            _servicePlan = servicePlan;
+            _systemService = systemService;
+            _serviceBindings = serviceBindings;
+
         }
 
         public override string Text
         {
             get
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", _service.Name, _service.Type);
+                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", _service.Name, _systemService.Label);
             }
         }
 
@@ -40,7 +52,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             return await Task<CloudItem[]>.Run(() =>
             {
-                return new CloudItem[] {};
+                return new CloudItem[] { };
             });
         }
 
@@ -55,6 +67,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+
         private async Task Delete()
         {
             var answer = MessageBoxHelper.WarningQuestion(
@@ -66,20 +79,94 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
             if (answer == System.Windows.Forms.DialogResult.Yes)
             {
+                foreach (var serviceBinding in _serviceBindings)
+                {
+                    await this._client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
+                }
+
                 await this._client.ServiceInstances.DeleteServiceInstance(this._service.EntityMetadata.Guid);
+
             }
         }
 
+
+        [Browsable(false)]
         public Dictionary<string, dynamic> Credentials { get { return _service.Credentials; } }
+
+        [Browsable(false)]
         public string DashboardUrl { get { return _service.DashboardUrl; } }
+
+        [Browsable(false)]
         public Metadata EntityMetadata { get { return _service.EntityMetadata; } }
+
+        [Browsable(false)]
         public string GatewayData { get { return _service.GatewayData.ToString(); } }
+
+        [Description("The name of the service.")]
         public string Name { get { return _service.Name; } }
+
+        [Browsable(false)]
         public string ServiceBindingsUrl { get { return _service.ServiceBindingsUrl; } }
+
+        [Browsable(false)]
         public string ServicePlanGuid { get { return _service.ServicePlanGuid.ToString(); } }
+
+        [Browsable(false)]
         public string ServicePlanUrl { get { return _service.ServicePlanUrl; } }
+
+        [Browsable(false)]
         public string SpaceGuid { get { return _service.SpaceGuid.ToString(); } }
+
+        [Browsable(false)]
         public string SpaceUrl { get { return _service.SpaceUrl; } }
-        public string Type { get { return _service.Type; } }        
+
+        [Browsable(false)]
+        public string Type { get { return _service.Type; } }
+
+        [DisplayName("Bound apps")]
+        [Description("Apps that have this service bound.")]
+        public string BoundApps
+        {
+            get
+            {
+                string boundApps = string.Empty;
+
+                foreach (var appSummary in _appsSummary)
+                {
+                    boundApps = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", appSummary.Name, boundApps);
+                }
+                return boundApps.Trim().TrimEnd(',');
+            }
+        }
+
+        [DisplayName("Creation date")]
+        [Description("Date when the service was created.")]
+        public string CreationDate
+        {
+            get
+            {
+                return this._service.EntityMetadata.CreatedAt;
+            }
+        }
+
+        [DisplayName("Service plan")]
+        [Description("The name of the plan.")]
+        public string ServicePlan
+        {
+            get
+            {
+                return this._servicePlan.Name;
+            }
+        }
+
+        [DisplayName("Service type")]
+        [Description("Type of the service instance.")]
+        public string ServiceType
+        {
+            get
+            {
+                return this._systemService.Label;
+            }
+        }
     }
 }

@@ -26,6 +26,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Forms
         private CloudTarget reloginTarget;
         private string refreshToken = string.Empty;
         private string targetUrl = string.Empty;
+        private string version = string.Empty;
 
         private LoginUserControl loginControl = null;
         private Label summaryInfoLabel;
@@ -47,8 +48,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.Forms
                             new Uri(this.targetUrl),
                             String.Format("{0} / {1}", this.targetUrl, loginControl.Email),
                             loginControl.Email,
-                            loginControl.IgnoreSSLErrors);
-            }          
+                            loginControl.IgnoreSSLErrors,
+                            this.version);
+            }
         }
 
         public void SetLoginUrl(Uri newLoginUrl)
@@ -85,7 +87,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Forms
             this.titleLabel.Text = "Target URL and credentials";
 
             this.previousButton.Enabled = false;
-            this.nextButton.Text = "&Next >"; 
+            this.nextButton.Text = "&Next >";
             this.nextButton.Enabled = true;
             this.cancelButton.Text = "Cancel";
 
@@ -171,6 +173,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Forms
                         creds.User = this.loginControl.Email;
                         creds.Password = this.loginControl.Password;
                         this.refreshToken = client.Login(creds).Result.Token.RefreshToken;
+                        this.version = client.Info.GetInfo().Result.ApiVersion;
 
                         PagedResponseCollection<ListAllStacksResponse> stacks = client.Stacks.ListAllStacks().Result;
                         if (stacks.Where(a => a.Name == "win2012r2").Any() == false)

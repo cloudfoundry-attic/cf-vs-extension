@@ -56,7 +56,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
         private void ExplorerTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             CloudItem item = e.NewValue as CloudItem;
-            if (item != null) 
+            if (item != null)
             {
                 PropertyGrid.SelectedObject = item;
             }

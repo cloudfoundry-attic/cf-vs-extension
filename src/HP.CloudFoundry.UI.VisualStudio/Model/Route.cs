@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using HP.CloudFoundry.UI.VisualStudio.Forms;
+using System.ComponentModel;
 
 namespace HP.CloudFoundry.UI.VisualStudio.Model
 {
@@ -12,12 +13,16 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
     {
         private CloudFoundryClient _client;
         private readonly ListAllRoutesForSpaceResponse _route;
+        private readonly RetrieveDomainDeprecatedResponse _domain;
+        private readonly PagedResponseCollection<ListAllAppsForRouteResponse> _routeApps;
 
-        public Route(ListAllRoutesForSpaceResponse route, CloudFoundryClient client)
+        public Route(ListAllRoutesForSpaceResponse route, RetrieveDomainDeprecatedResponse domain, PagedResponseCollection<ListAllAppsForRouteResponse> routeApps, CloudFoundryClient client)
             : base(CloudItemType.Route)
         {
             _client = client;
             _route = route;
+            _domain = domain;
+            _routeApps = routeApps;
         }
 
         public override string Text
@@ -40,7 +45,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             return await Task<CloudItem[]>.Run(() =>
             {
-                return new CloudItem[] {};
+                return new CloudItem[] { };
             });
         }
 
@@ -54,6 +59,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 };
             }
         }
+
 
         private async Task Delete()
         {
@@ -70,12 +76,45 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        [Browsable(false)]
         public string AppsUrl { get { return _route.AppsUrl; } }
+
+        [Browsable(false)]
         public string DomainGuid { get { return _route.DomainGuid.ToString(); } }
+
+        [Browsable(false)]
         public string DomainUrl { get { return _route.DomainUrl; } }
+
+        [Browsable(false)]
         public Metadata EntityMetadata { get { return _route.EntityMetadata; } }
+
+        [Browsable(false)]
         public string Host { get { return _route.Host; } }
+
+        [Browsable(false)]
         public string SpaceGuid { get { return _route.SpaceGuid.ToString(); } }
-        public string SpaceUrl { get { return _route.SpaceUrl; } }        
+
+        [Browsable(false)]
+        public string SpaceUrl { get { return _route.SpaceUrl; } }
+
+        [DisplayName("Domain")]
+        [Description("Domain of the route.")]
+        public string Domain { get { return _domain.Name; } }
+
+        [DisplayName("Bound applications")]
+        [Description("Applications that have the current route bound to.")]
+        public string Apps
+        {
+            get
+            {
+                var appNames = string.Empty;
+                foreach (var app in _routeApps)
+                {
+                    appNames = string.Format("{0}, {1}", app.Name, appNames);
+                }
+
+                return appNames.Trim().TrimEnd(',');
+            }
+        }
     }
 }
