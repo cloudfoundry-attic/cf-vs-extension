@@ -9,6 +9,7 @@
         <Setter Property="Background" Value="{DynamicResource {x:Static vsp:TreeViewColors.BackgroundBrushKey}}"/>
         <Setter Property="BorderThickness" Value="0" />
         <Style.Resources>
+            
             <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextActiveBrushKey}}"/>
             </Style>
@@ -23,6 +24,13 @@
             <Style TargetType="{x:Type xctk:PropertyItem}">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextActiveBrushKey}}" />
                 <Setter Property="Background" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarToolBarBorderBrushKey}}"/>
+                   
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextHoverBrushKey}}" />
+                        <Setter Property="Background" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarHoverBrushKey}}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
         </Style.Resources>
     </Style>

@@ -46,7 +46,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Forms
                 return CloudTarget.CreateV2Target(
                             this.refreshToken,
                             new Uri(this.targetUrl),
-                            String.Format("{0} / {1}", this.targetUrl, loginControl.Email),
+                            string.Empty,
                             loginControl.Email,
                             loginControl.IgnoreSSLErrors,
                             this.version);

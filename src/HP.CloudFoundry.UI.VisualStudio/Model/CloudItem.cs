@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -15,9 +16,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         private readonly CloudItemType _cloudItemType = CloudItemType.Target;
         private volatile bool _isExpanded = false;
         private volatile bool _wasRefreshed = false;
-
         private readonly AsyncObservableCollection<CloudItem> _children = new AsyncObservableCollection<CloudItem>();
         private System.Threading.CancellationToken cancellationToken;
+        private CloudItem parent = null;
 
         protected bool HasRefresh
         {
@@ -78,6 +79,20 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        private void AttachToParent(CloudItem parent)
+        {
+            this.parent = parent;
+        }
+
+        [Browsable(false)]
+        public CloudItem Parent
+        {
+            get
+            {
+                return parent;
+            }
+        }
+
         public async Task RefreshChildren()
         {
             this.ExecutingBackgroundAction = true;
@@ -101,6 +116,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                         foreach (var child in antecedent.Result)
                         {
                             _children.Add(child);
+                            child.AttachToParent(this);
                         }
 
                         _wasRefreshed = true;
@@ -167,11 +183,15 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             get
             {
                 ObservableCollection<CloudItemAction> result = new ObservableCollection<CloudItemAction>();
+                var menuAction = this.MenuActions;
 
                 if (this.HasRefresh)
                 {
                     result.Add(new CloudItemAction(this, "Refresh", Resources.Refresh, RefreshChildren));
-                    result.Add(new CloudItemAction(this, "-", null, () => { return Task.Delay(0); }));
+                    if (menuAction != null && menuAction.Count() > 0)
+                    {
+                        result.Add(new CloudItemAction(this, "-", null, () => { return Task.Delay(0); }));
+                    }
                 }
 
                 if (this.MenuActions != null)

@@ -62,7 +62,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction(this, "Delete", Resources.Delete, Delete)
+                    new CloudItemAction(this, "Delete", Resources.Delete, Delete, CloudItemActionContinuation.RefreshParent)
                 };
             }
         }
@@ -89,39 +89,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
-
-        [Browsable(false)]
-        public Dictionary<string, dynamic> Credentials { get { return _service.Credentials; } }
-
-        [Browsable(false)]
-        public string DashboardUrl { get { return _service.DashboardUrl; } }
-
-        [Browsable(false)]
-        public Metadata EntityMetadata { get { return _service.EntityMetadata; } }
-
-        [Browsable(false)]
-        public string GatewayData { get { return _service.GatewayData.ToString(); } }
-
         [Description("The name of the service.")]
         public string Name { get { return _service.Name; } }
-
-        [Browsable(false)]
-        public string ServiceBindingsUrl { get { return _service.ServiceBindingsUrl; } }
-
-        [Browsable(false)]
-        public string ServicePlanGuid { get { return _service.ServicePlanGuid.ToString(); } }
-
-        [Browsable(false)]
-        public string ServicePlanUrl { get { return _service.ServicePlanUrl; } }
-
-        [Browsable(false)]
-        public string SpaceGuid { get { return _service.SpaceGuid.ToString(); } }
-
-        [Browsable(false)]
-        public string SpaceUrl { get { return _service.SpaceUrl; } }
-
-        [Browsable(false)]
-        public string Type { get { return _service.Type; } }
 
         [DisplayName("Bound apps")]
         [Description("Apps that have this service bound.")]

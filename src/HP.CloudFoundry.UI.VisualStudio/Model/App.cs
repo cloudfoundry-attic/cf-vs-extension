@@ -14,9 +14,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
     class App : CloudItem
     {
         private CloudFoundryClient _client;
-        private readonly ListAllAppsForSpaceResponse _app;
+        private readonly GetAppSummaryResponse _app;
 
-        public App(ListAllAppsForSpaceResponse app, CloudFoundryClient client)
+        public App(GetAppSummaryResponse app, CloudFoundryClient client)
             : base(CloudItemType.App)
         {
             _client = client;
@@ -39,7 +39,14 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 switch (_app.State.ToUpperInvariant())
                 {
                     case "STARTED":
-                        return Resources.StatusStarted;
+                        if (_app.RunningInstances > 0)
+                        {
+                            return Resources.StatusRunning;
+                        }
+                        else
+                        {
+                            return Resources.StatusStarted;
+                        }
                     case "STOPPED":
                         return Resources.StatusStopped;
                     case "RUNNING":
@@ -65,10 +72,10 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 return new CloudItemAction[]
                 {
                     new CloudItemAction(this, "Browse", Resources.Browse, Browse),
-                    new CloudItemAction(this, "Start", Resources.Start, Start),
-                    new CloudItemAction(this, "Restart", Resources.Restart, Restart),
-                    new CloudItemAction(this, "Stop", Resources.Stop, Stop),
-                    new CloudItemAction(this, "Delete", Resources.Delete, Delete)
+                    new CloudItemAction(this, "Start", Resources.Start, Start, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Restart", Resources.Restart, Restart, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Stop", Resources.Stop, Stop, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Delete", Resources.Delete, Delete, CloudItemActionContinuation.RefreshParent)
                 };
             }
         }
@@ -80,7 +87,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 State = "STOPPED"
             };
 
-            await this._client.Apps.UpdateApp(_app.EntityMetadata.Guid, updateAppRequest);
+            await this._client.Apps.UpdateApp(_app.Guid, updateAppRequest);
         }
 
         private async Task Start()
@@ -90,19 +97,17 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 State = "STARTED"
             };
 
-            await this._client.Apps.UpdateApp(_app.EntityMetadata.Guid, updateAppRequest);
+            await this._client.Apps.UpdateApp(_app.Guid, updateAppRequest);
         }
 
         private async Task Browse()
         {
-            var summary = await this._client.Apps.GetAppSummary(this._app.EntityMetadata.Guid);
-
-            if (summary.Routes == null)
+            if (this._app.Routes == null)
             {
                 return;
             }
 
-            var route = summary.Routes.FirstOrDefault();
+            var route = _app.Routes.FirstOrDefault();
 
             if (route == null)
             {
@@ -110,12 +115,20 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
 
             var host = route["host"];
-            var domain = route["domain"]["name"];
+            var domain = route["domain"];
+            
+            if (domain == null)
+            {
+                return;
+            }
 
+            var domainName = domain["name"];
 
-            var url = string.Format(CultureInfo.InvariantCulture, "http://{0}.{1}", host, domain);
+            var url = string.Format(CultureInfo.InvariantCulture, "http://{0}.{1}", host, domainName);
 
-            Process.Start(url);
+            await Task.Run(() => { 
+                Process.Start(url);
+            });
         }
 
         private async Task Delete()
@@ -129,7 +142,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
             if (answer == System.Windows.Forms.DialogResult.Yes)
             {
-                await this._client.Apps.DeleteApp(this._app.EntityMetadata.Guid);
+                await this._client.Apps.DeleteApp(this._app.Guid);
             }
         }
 
@@ -141,49 +154,18 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             });
         }
 
-
         [Description("The buildpack of the application.")]
         public string Buildpack { get { return this._app.Buildpack; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string Command { get { return this._app.Command; } /*private set;*/ }
-
-        [Browsable(false)]
-        public bool Console { get { return this._app.Console; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string Debug { get { return this._app.Debug; } /*private set;*/ }
 
         [DisplayName("Detected buildpack")]
         [Description("The buildpack that was detected by the Cloud Constroller.")]
         public string DetectedBuildpack { get { return this._app.DetectedBuildpack; } /*private set;*/ }
 
-        [Browsable(false)]
-        public string DetectedStartCommand { get { return this._app.DetectedStartCommand; } /*private set;*/ }
-
-        [Browsable(false)]
-        public int? DiskQuota { get { return this._app.DiskQuota; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string DockerImage { get { return this._app.DockerImage; } /*private set;*/ }
-
-        [Browsable(false)]
-        public Metadata EntityMetadata { get { return this._app.EntityMetadata; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string EnvironmentJson { get { return this._app.EnvironmentJson.ToString(); } /*private set;*/ }
-
-        [Browsable(false)]
-        public string EventsUrl { get { return this._app.EventsUrl; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string HealthCheckTimeout { get { return this._app.HealthCheckTimeout; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string HealthCheckType { get { return this._app.HealthCheckType; } /*private set;*/ }
-
         [Description("Number of instances that the application has.")]
         public int? Instances { get { return this._app.Instances; } /*private set;*/ }
+
+        [Description("Number of running instances.")]
+        public int? RunningInstances { get { return this._app.RunningInstances; } /*private set;*/ }
 
         [DisplayName("Maximum memory")]
         [Description("Maximum memory of the application.")]
@@ -192,47 +174,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         [Description("The name of the application.")]
         public string Name { get { return this._app.Name; } /*private set;*/ }
 
-        [Browsable(false)]
-        public string PackageState { get { return this._app.PackageState; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string PackageUpdatedAt { get { return this._app.PackageUpdatedAt; } /*private set;*/ }
-
-        [Browsable(false)]
-        public bool Production { get { return this._app.Production; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string RoutesUrl { get { return this._app.RoutesUrl; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string ServiceBindingsUrl { get { return this._app.ServiceBindingsUrl; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string SpaceGuid { get { return this._app.SpaceGuid.ToString(); } /*private set;*/ }
-
-        [Browsable(false)]
-        public string SpaceUrl { get { return this._app.SpaceUrl; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string StackGuid { get { return this._app.StackGuid.ToString(); } /*private set;*/ }
-
-        [Browsable(false)]
-        public string StackUrl { get { return this._app.StackUrl; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string StagingFailedReason { get { return this._app.StagingFailedReason; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string StagingTaskId { get { return this._app.StagingTaskId; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string State { get { return this._app.State; } /*private set;*/ }
-
-        [Browsable(false)]
-        public string Version { get { return this._app.Version.ToString(); } /*private set;*/ }
-
-        [DisplayName("Creation date")]
-        [Description("Date when the application was created.")]
-        public string CreationDate { get { return this._app.EntityMetadata.CreatedAt; } }
+        [DisplayName("Last package update")]
+        [Description("Date when the application's package was last updated.")]
+        public string CreationDate { get { return this._app.PackageUpdatedAt; } }
     }
 }

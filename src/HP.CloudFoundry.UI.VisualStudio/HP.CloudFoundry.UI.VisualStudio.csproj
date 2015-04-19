@@ -219,6 +219,7 @@
     </Compile>
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
+    <Compile Include="Model\CloudItemActionContinuation.cs" />
     <Compile Include="ProjectPush\AppPackage.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
@@ -289,6 +290,7 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\SynchronizeSmall.png" />
     <Resource Include="Resources\RefreshMedium.png" />
     <Resource Include="Resources\Restart.png" />
     <Resource Include="Resources\Stop.png" />
@@ -320,6 +322,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Forms\EditDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Style\MenuItemStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -44,7 +44,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 foreach (var app in apps)
                 {
-                    result.Add(new App(app, this._client));
+                    var appSummary = await _client.Apps.GetAppSummary(app.EntityMetadata.Guid);
+                    result.Add(new App(appSummary, this._client));
                 }
 
                 apps = await apps.GetNextPage();

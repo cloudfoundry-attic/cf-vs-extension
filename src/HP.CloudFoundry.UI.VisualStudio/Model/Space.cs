@@ -59,50 +59,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
-        [Browsable(false)]
-        public string AppEventsUrl { get { return _space.AppEventsUrl; } }
-
-        [Browsable(false)]
-        public string AppsUrl { get { return _space.AppsUrl; } }
-
-        [Browsable(false)]
-        public string AuditorsUrl { get { return _space.AuditorsUrl; } }
-
-        [Browsable(false)]
-        public string DevelopersUrl { get { return _space.DevelopersUrl; } }
-
-        [Browsable(false)]
-        public string DomainsUrl { get { return _space.DomainsUrl; } }
-
-        [Browsable(false)]
-        public Metadata EntityMetadata { get { return _space.EntityMetadata; } }
-
-        [Browsable(false)]
-        public string EventsUrl { get { return _space.EventsUrl; } }
-
-        [Browsable(false)]
-        public string ManagersUrl { get { return _space.ManagersUrl; } }
-
         [Description("Name of the space.")]
         public string Name { get { return _space.Name; } }
-
-        [Browsable(false)]
-        public string OrganizationGuid { get { return _space.OrganizationGuid.ToString(); } }
-
-        [Browsable(false)]
-        public string OrganizationUrl { get { return _space.OrganizationUrl; } }
-
-        [Browsable(false)]
-        public string RoutesUrl { get { return _space.RoutesUrl; } }
-
-        [Browsable(false)]
-        public string SecurityGroupsUrl { get { return _space.SecurityGroupsUrl; } }
-
-        [Browsable(false)]
-        public string ServiceInstancesUrl { get { return _space.ServiceInstancesUrl; } }
-
-        [Browsable(false)]
-        public string SpaceQuotaDefinitionGuid { get { return _space.SpaceQuotaDefinitionGuid.ToString(); } }
 
         [DisplayName("Space roles")]
         [Description("The space roles for the current user.")]

@@ -1,21 +1,23 @@
 ﻿using HP.CloudFoundry.UI.VisualStudio.Forms;
 using HP.CloudFoundry.UI.VisualStudio.Model;
 using HP.CloudFoundry.UI.VisualStudio.TargetStore;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.VisualStudio.Threading;
 
 namespace HP.CloudFoundry.UI.VisualStudio
 {
     /// <summary>
     /// Interaction logic for MyControl.xaml
     /// </summary>
-    public partial class MyControl : UserControl
+    public partial class CloudFoundryExplorer : UserControl
     {
-        public MyControl()
+        public CloudFoundryExplorer()
         {
             InitializeComponent();
 
@@ -37,8 +39,12 @@ namespace HP.CloudFoundry.UI.VisualStudio
 
             if (cloudItemAction != null)
             {
-                cloudItemAction.Click.Invoke().ContinueWith((antecedent) =>
+                cloudItemAction.CloudItem.ExecutingBackgroundAction = true;
+
+                cloudItemAction.Click.Invoke().ContinueWith(async (antecedent) =>
                 {
+                    cloudItemAction.CloudItem.ExecutingBackgroundAction = false;
+
                     if (antecedent.IsFaulted)
                     {
                         var errorMessages = new List<string>();
@@ -47,7 +53,25 @@ namespace HP.CloudFoundry.UI.VisualStudio
                     }
                     else
                     {
-
+                        switch (cloudItemAction.Continuation)
+                        {
+                            case CloudItemActionContinuation.RefreshChildren:
+                                await cloudItemAction.CloudItem.RefreshChildren();
+                                break;
+                            case CloudItemActionContinuation.RefreshParent:
+                                if (cloudItemAction.CloudItem.ItemType == CloudItemType.Target)
+                                {
+                                    ThreadHelper.Generic.Invoke(() => this.ReloadTargets());
+                                }
+                                else
+                                {
+                                    await cloudItemAction.CloudItem.Parent.RefreshChildren();
+                                }
+                                break;
+                            case CloudItemActionContinuation.None:
+                            default:
+                                break;
+                        }
                     }
                 });
             }
@@ -91,6 +115,16 @@ namespace HP.CloudFoundry.UI.VisualStudio
             foreach (var target in targets)
             {
                 ExplorerTree.Items.Add(new CloudFoundryTarget(target));
+            }
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedItem = ExplorerTree.SelectedValue as CloudItem;
+
+            if (selectedItem != null)
+            {
+                selectedItem.RefreshChildren().Forget();
             }
         }
     }
