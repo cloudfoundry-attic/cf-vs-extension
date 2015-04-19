@@ -72,10 +72,10 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 return new CloudItemAction[]
                 {
                     new CloudItemAction(this, "Browse", Resources.Browse, Browse),
-                    new CloudItemAction(this, "Start", Resources.Start, Start),
-                    new CloudItemAction(this, "Restart", Resources.Restart, Restart),
-                    new CloudItemAction(this, "Stop", Resources.Stop, Stop),
-                    new CloudItemAction(this, "Delete", Resources.Delete, Delete)
+                    new CloudItemAction(this, "Start", Resources.Start, Start, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Restart", Resources.Restart, Restart, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Stop", Resources.Stop, Stop, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Delete", Resources.Delete, Delete, CloudItemActionContinuation.RefreshParent)
                 };
             }
         }
@@ -87,7 +87,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 State = "STOPPED"
             };
 
-            await this._client.Apps.UpdateApp(_app.EntityMetadata.Guid, updateAppRequest);
+            await this._client.Apps.UpdateApp(_app.Guid, updateAppRequest);
         }
 
         private async Task Start()
@@ -97,7 +97,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 State = "STARTED"
             };
 
-            await this._client.Apps.UpdateApp(_app.EntityMetadata.Guid, updateAppRequest);
+            await this._client.Apps.UpdateApp(_app.Guid, updateAppRequest);
         }
 
         private async Task Browse()
@@ -126,7 +126,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
             var url = string.Format(CultureInfo.InvariantCulture, "http://{0}.{1}", host, domainName);
 
-            Process.Start(url);
+            await Task.Run(() => { 
+                Process.Start(url);
+            });
         }
 
         private async Task Delete()
@@ -140,7 +142,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
             if (answer == System.Windows.Forms.DialogResult.Yes)
             {
-                await this._client.Apps.DeleteApp(this._app.EntityMetadata.Guid);
+                await this._client.Apps.DeleteApp(this._app.Guid);
             }
         }
 
@@ -172,8 +174,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         [Description("The name of the application.")]
         public string Name { get { return this._app.Name; } /*private set;*/ }
 
-        [DisplayName("Creation date")]
-        [Description("Date when the application was created.")]
-        public string CreationDate { get { return this._app.EntityMetadata.CreatedAt; } }
+        [DisplayName("Last package update")]
+        [Description("Date when the application's package was last updated.")]
+        public string CreationDate { get { return this._app.PackageUpdatedAt; } }
     }
 }

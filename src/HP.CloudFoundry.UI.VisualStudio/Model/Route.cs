@@ -55,7 +55,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction(this, "Delete", Resources.Delete, Delete)
+                    new CloudItemAction(this, "Delete", Resources.Delete, Delete, CloudItemActionContinuation.RefreshParent)
                 };
             }
         }
@@ -75,27 +75,6 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                 await this._client.Routes.DeleteRoute(this._route.EntityMetadata.Guid);
             }
         }
-
-        [Browsable(false)]
-        public string AppsUrl { get { return _route.AppsUrl; } }
-
-        [Browsable(false)]
-        public string DomainGuid { get { return _route.DomainGuid.ToString(); } }
-
-        [Browsable(false)]
-        public string DomainUrl { get { return _route.DomainUrl; } }
-
-        [Browsable(false)]
-        public Metadata EntityMetadata { get { return _route.EntityMetadata; } }
-
-        [Browsable(false)]
-        public string Host { get { return _route.Host; } }
-
-        [Browsable(false)]
-        public string SpaceGuid { get { return _route.SpaceGuid.ToString(); } }
-
-        [Browsable(false)]
-        public string SpaceUrl { get { return _route.SpaceUrl; } }
 
         [DisplayName("Domain")]
         [Description("Domain of the route.")]

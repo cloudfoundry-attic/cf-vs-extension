@@ -1,4 +1,4 @@
-<UserControl x:Class="HP.CloudFoundry.UI.VisualStudio.MyControl"
+<UserControl x:Class="HP.CloudFoundry.UI.VisualStudio.CloudFoundryExplorer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,6 +7,7 @@
              xmlns:cf="clr-namespace:HP.CloudFoundry.UI.VisualStudio"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Converters"
+             xmlns:controls="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
@@ -18,6 +19,7 @@
                 <ResourceDictionary Source="Style\ButtonStyle.xaml" />
                 <ResourceDictionary Source="Style\ToggleButtonStyle.xaml" />
                 <ResourceDictionary Source="Style\ContextMenuStyle.xaml" />
+                <ResourceDictionary Source="Style\MenuItemStyle.xaml" />
                 <ResourceDictionary Source="Style\GridStyle.xaml" />
                 <ResourceDictionary Source="Style\PropertyGridStyle.xaml" />
                 <ResourceDictionary Source="Style\Images.xaml" />
@@ -26,7 +28,7 @@
             <converters:IsNullConverter x:Key="IsNull"/>
             <converters:VisiblityConverter x:Key="Visible" Reversed="False"/>
             
-            <Style TargetType="MenuItem" x:Key="MenuItemEventStyle">
+            <Style TargetType="MenuItem" x:Key="MenuItemEventStyle" >
                 <EventSetter Event="Click" Handler="treeMenuItem_Click" />
             </Style>
         </ResourceDictionary>
@@ -41,38 +43,33 @@
         </Grid.RowDefinitions>
 
 
-        <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
+        <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
             <ToggleButton Name="ToggleIgnoreSSLErrors"
-                    Height="22" Width="22" Grid.Column="0"
+                    Height="22" Width="22"
                     IsChecked="{Binding Source={StaticResource sslIgnorer}, Path=Ignore}"
                     Style="{DynamicResource OnOffToggleImageStyle}">
             </ToggleButton>
 
-            <Button Name="RefreshButton" Height="22" Width="22" Grid.Column="1">
+            <Button Name="RefreshButton" Height="22" Width="22" Click="RefreshButton_Click">
                 <Image Source="{StaticResource RefreshImage}" />
             </Button>
 
-            <Button Name="AddTargetButton" Height="22" Width="22" Grid.Column="2" Click="AddTargetButton_Click">
+            <Button Name="AddTargetButton" Height="22" Width="22" Click="AddTargetButton_Click">
                 <Image Source="{StaticResource AddImage}" />
             </Button>
-        </Grid>
+        </StackPanel>
 
         <TreeView Grid.Row="1" Name="ExplorerTree" SelectedItemChanged="ExplorerTree_SelectedItemChanged"
               DataContext="{Binding SelectedValue, ElementName=ExplorerTree}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type model:CloudItem}" ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal" Height="22">
-                        <Image Width="16" Height="16" Margin="5,0,0,0" VerticalAlignment="Center" Source="{Binding Icon}" />
+                        <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="5,0,0,0">
+                            <Image Source="{Binding Icon}" />
+                            <Image Source="{StaticResource SynchronizeSmallImage}" 
+                                   Visibility="{Binding ExecutingBackgroundAction, Converter={StaticResource Visible}}" />
+                        </Grid>
                         <TextBlock Text="{Binding Text}" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                        <Image Width="16" Height="16" Margin="5,0,0,0" VerticalAlignment="Center" Source="{StaticResource RefreshMediumImage}" 
-                               Visibility="{Binding ExecutingBackgroundAction, Converter={StaticResource Visible}}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
@@ -89,7 +86,7 @@
                         <DataTrigger Binding="{Binding Actions, Converter={StaticResource IsNull}}" Value="False">
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
-                                    <ContextMenu ItemsSource="{Binding Actions}">
+                                    <ContextMenu ItemsSource="{Binding Actions}" Name="pelerinul">
                                         <ContextMenu.ItemContainerStyle>
                                             <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItemEventStyle}">
                                                 <Setter Property="Tag" Value="{Binding}"/>
@@ -101,7 +98,7 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate>
-                                                                    <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+                                                                    <Separator Style="{StaticResource SeparatorStyle}" />
                                                                 </ControlTemplate>
                                                             </Setter.Value>
                                                         </Setter>
@@ -124,17 +121,19 @@
           ShowsPreview="True" />
 
         <xctk:PropertyGrid Grid.Row="3"
-        x:Name="PropertyGrid"
-        Filter=""
-        IsCategorized="False"
-        IsReadOnly="True"
-        UpdateTextBoxSourceOnEnterKey="False"
-        ShowSummary="False"
-        ShowPreview="False"
-        ShowSearchBox="False"
-        ShowAdvancedOptions="False"
-        ShowSortOptions="False"
-        AutoGenerateProperties="True">
+                           ShowTitle="False"
+                           x:Name="PropertyGrid"
+                           Filter=""
+                           IsCategorized="False"
+                           IsReadOnly="True"
+                           UpdateTextBoxSourceOnEnterKey="False"
+                           ShowSummary="False"
+                           ShowPreview="False"
+                           ShowSearchBox="False"
+                           ShowAdvancedOptions="False"
+                           IsEnabled="False"       
+                           ShowSortOptions="False"
+                           AutoGenerateProperties="True">
         </xctk:PropertyGrid>
     </Grid>
 </UserControl>

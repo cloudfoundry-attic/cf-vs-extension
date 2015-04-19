@@ -61,7 +61,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         {
             get
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", this.target.DisplayName, this.target.TargetUrl);
+                return this.target.DisplayName;
             }
         }
 
@@ -116,7 +116,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction(this, "Remove", Resources.Remove, Delete)
+                    new CloudItemAction(this, "Remove", Resources.Remove, Delete, CloudItemActionContinuation.RefreshParent)
                 };
             }
         }

@@ -66,50 +66,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
-        [Browsable(false)]
-        public string AppEventsUrl { get { return _organization.AppEventsUrl; } }
-
-        [Browsable(false)]
-        public string AuditorsUrl { get { return _organization.AuditorsUrl; } }
-
-        [Browsable(false)]
-        public bool BillingEnabled { get { return _organization.BillingEnabled; } }
-
-        [Browsable(false)]
-        public string BillingManagersUrl { get { return _organization.BillingManagersUrl; } }
-
-        [Browsable(false)]
-        public string DomainsUrl { get { return _organization.DomainsUrl; } }
-
-        [Browsable(false)]
-        public Metadata EntityMetadata { get { return _organization.EntityMetadata; } }
-
-        [Browsable(false)]
-        public string ManagersUrl { get { return _organization.ManagersUrl; } }
-
         [Description("Name of the Organization")]
         public string Name { get { return _organization.Name; } }
-
-        [Browsable(false)]
-        public string PrivateDomainsUrl { get { return _organization.PrivateDomainsUrl; } }
-
-        [Browsable(false)]
-        public string QuotaDefinitionGuid { get { return _organization.QuotaDefinitionGuid.ToString(); } }
-
-        [Browsable(false)]
-        public string QuotaDefinitionUrl { get { return _organization.QuotaDefinitionUrl; } }
-
-        [Browsable(false)]
-        public string SpaceQuotaDefinitionsUrl { get { return _organization.SpaceQuotaDefinitionsUrl; } }
-
-        [Browsable(false)]
-        public string SpacesUrl { get { return _organization.SpacesUrl; } }
-
-        [Browsable(false)]
-        public string Status { get { return _organization.Status; } }
-
-        [Browsable(false)]
-        public string UsersUrl { get { return _organization.UsersUrl; } }
 
         [DisplayName("Creation date")]
         [Description("Date when the organization was created.")]

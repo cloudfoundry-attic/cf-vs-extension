@@ -10,10 +10,17 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         private readonly Bitmap _icon;
         private readonly Func<Task> _onClick;
         private readonly CloudItem _cloudItem;
-        
+        private CloudItemActionContinuation continuation;
+
         public CloudItemAction(CloudItem cloudItem, string text, Bitmap icon, Func<Task> onClick)
+            : this(cloudItem, text, icon, onClick, CloudItemActionContinuation.None)
+        {
+        }
+
+        public CloudItemAction(CloudItem cloudItem, string text, Bitmap icon, Func<Task> onClick, CloudItemActionContinuation continuation)
         {
             this._cloudItem = cloudItem;
+            this.continuation = continuation;
             _text = text;
             _icon = icon;
             _onClick = onClick;
@@ -24,6 +31,14 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             get
             {
                 return _text;
+            }
+        }
+
+        public CloudItemActionContinuation Continuation
+        {
+            get
+            {
+                return this.continuation;
             }
         }
 

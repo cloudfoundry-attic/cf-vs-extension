@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -83,6 +84,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             this.parent = parent;
         }
 
+        [Browsable(false)]
         public CloudItem Parent
         {
             get
@@ -181,11 +183,15 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             get
             {
                 ObservableCollection<CloudItemAction> result = new ObservableCollection<CloudItemAction>();
+                var menuAction = this.MenuActions;
 
                 if (this.HasRefresh)
                 {
                     result.Add(new CloudItemAction(this, "Refresh", Resources.Refresh, RefreshChildren));
-                    result.Add(new CloudItemAction(this, "-", null, () => { return Task.Delay(0); }));
+                    if (menuAction != null && menuAction.Count() > 0)
+                    {
+                        result.Add(new CloudItemAction(this, "-", null, () => { return Task.Delay(0); }));
+                    }
                 }
 
                 if (this.MenuActions != null)
