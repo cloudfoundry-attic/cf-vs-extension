@@ -15,9 +15,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
         private readonly CloudItemType _cloudItemType = CloudItemType.Target;
         private volatile bool _isExpanded = false;
         private volatile bool _wasRefreshed = false;
-
         private readonly AsyncObservableCollection<CloudItem> _children = new AsyncObservableCollection<CloudItem>();
         private System.Threading.CancellationToken cancellationToken;
+        private CloudItem parent = null;
 
         protected bool HasRefresh
         {
@@ -78,6 +78,19 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
             }
         }
 
+        private void AttachToParent(CloudItem parent)
+        {
+            this.parent = parent;
+        }
+
+        public CloudItem Parent
+        {
+            get
+            {
+                return parent;
+            }
+        }
+
         public async Task RefreshChildren()
         {
             this.ExecutingBackgroundAction = true;
@@ -101,6 +114,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
                         foreach (var child in antecedent.Result)
                         {
                             _children.Add(child);
+                            child.AttachToParent(this);
                         }
 
                         _wasRefreshed = true;

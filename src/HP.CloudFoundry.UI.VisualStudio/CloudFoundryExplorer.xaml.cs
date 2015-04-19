@@ -1,6 +1,7 @@
 ﻿using HP.CloudFoundry.UI.VisualStudio.Forms;
 using HP.CloudFoundry.UI.VisualStudio.Model;
 using HP.CloudFoundry.UI.VisualStudio.TargetStore;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -47,7 +48,40 @@ namespace HP.CloudFoundry.UI.VisualStudio
                     }
                     else
                     {
+                        if (cloudItemAction.CloudItem.ItemType == CloudItemType.Target)
+                        {
 
+                        }
+                        else
+                        {
+
+                        }
+                            case CloudItemType.Target:
+                                ThreadHelper.Generic.Invoke(() => this.ReloadTargets());
+                                break;
+                            case CloudItemType.Organization:
+                                break;
+                            case CloudItemType.Space:
+                                break;
+                            case CloudItemType.AppsCollection:
+                                break;
+                            case CloudItemType.ServicesCollection:
+                                break;
+                            case CloudItemType.RoutesCollection:
+                                break;
+                            case CloudItemType.App:
+                                break;
+                            case CloudItemType.Service:
+                                break;
+                            case CloudItemType.Route:
+                                break;
+                            case CloudItemType.LoadingPlaceholder:
+                                break;
+                            case CloudItemType.Error:
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 });
             }
