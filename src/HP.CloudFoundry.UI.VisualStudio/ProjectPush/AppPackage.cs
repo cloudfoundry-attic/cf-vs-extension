@@ -89,6 +89,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
                 {
                     CFAppName = project.Name;
                 }
+                
             }
         }
 
