@@ -26,11 +26,15 @@ namespace HP.CloudFoundry.UI.VisualStudio
     /// </summary>
     public partial class EditDialog : DialogWindow
     {
-        public EditDialog(AppPackage package)
+        public EditDialog(AppPackage package, bool AllowPublish = true)
         {
             InitializeComponent();
             this.DataContext = package;
             PasswordBox.Password = package.CFPassword;
+            if (AllowPublish == false)
+            {
+                Publish.Visibility = System.Windows.Visibility.Hidden;
+            }
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
