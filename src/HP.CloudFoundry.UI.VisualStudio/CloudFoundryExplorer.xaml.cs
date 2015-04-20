@@ -86,6 +86,16 @@ namespace HP.CloudFoundry.UI.VisualStudio
             }
         }
 
+        private void ExplorerTree_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            TreeViewItem item = sender as TreeViewItem;
+            if(item != null)
+            {
+                item.IsSelected = true;
+                e.Handled = true;
+            }
+        }
+
         private void AddTargetButton_Click(object sender, RoutedEventArgs e)
         {
             using (var loginForm = new LoginWizardForm())
