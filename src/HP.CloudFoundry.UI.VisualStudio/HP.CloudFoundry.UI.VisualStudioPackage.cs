@@ -123,7 +123,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
                 AppPackage packageFile = new AppPackage();
                 packageFile.LoadFromFile(Document.FullName);
 
-                var dialog = new EditDialog(packageFile);
+                var dialog = new EditDialog(packageFile, false);
                 dialog.ShowDialog();
                 Document.Close();
             }

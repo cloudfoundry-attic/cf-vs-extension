@@ -68,19 +68,19 @@
 
         <Label Content="Routes" Grid.Row="9" Grid.Column="0"></Label>
         <TextBox Text="{Binding Path= CFRoutes}" Grid.Row="9" Grid.Column="1"></TextBox>
-        <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple routes can be specified by using semicolon between route definitions" Width="20" Height="20" Grid.Column="2" Grid.Row="9"></Image>
+        <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple routes can be specified by using semicolon between route definitions" Width="16" Height="16" Grid.Column="2" Grid.Row="9"></Image>
 
 
         <Label Content="Services" Grid.Row="10" Grid.Column="0"></Label>
         <TextBox Text="{Binding Path= CFServices}" Grid.Row="10" Grid.Column="1"></TextBox>
-        <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple services can be specified by usign semicolon between each service(name,type,plan) definition" Width="20" Height="20" Grid.Column="2" Grid.Row="10"></Image>
+        <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple services can be specified by usign semicolon between each service(name,type,plan) definition" Width="16" Height="16" Grid.Column="2" Grid.Row="10"></Image>
 
         <Label Content="Deploy Target File" Grid.Row="11" Grid.Column="0"></Label>
         <TextBox Text="{Binding Path= DeployTargetFile}" Grid.Row="11" Grid.Column="1"></TextBox>
         
         <Label Content="Local Build" Grid.Row="12" Grid.Column="0"></Label>
         <CheckBox IsChecked="{Binding Path=CFLocalBuild}" Name="LocalBuild" Grid.Row="12" Grid.Column="1" Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Center"></CheckBox>
-        <Image Source="{StaticResource StatusUnknown}" ToolTip="When set to false entire solution will be sent to CF" Width="20" Height="20" Grid.Column="2" Grid.Row="12"></Image>
+        <Image Source="{StaticResource StatusUnknown}" ToolTip="When set to false entire solution will be sent to CF" Width="16" Height="16" Grid.Column="2" Grid.Row="12"></Image>
 
 
         <StackPanel Grid.Row="13" Grid.Column="1" Visibility="{Binding Path=IsChecked, ElementName=LocalBuild, Converter={StaticResource Visible}}">
@@ -107,7 +107,7 @@
 
         <Button Content="Cancel" Grid.Column="1" Grid.Row="14" Width="100" HorizontalAlignment="Left" Click="Cancel_Click"></Button>
         <Button Content="Verify Settings" Grid.Column="1" Grid.Row="14" Width="100" HorizontalAlignment="Center" Click="Verify_Click"></Button>
-        <Button Content="Publish" Grid.Column="1" Grid.Row="14" Width="100" HorizontalAlignment="Right" Click="Save_Click"></Button>
+        <Button Content="Publish" Name="Publish" Grid.Column="1" Grid.Row="14" Width="100" HorizontalAlignment="Right" Click="Save_Click"></Button>
 
     </Grid>
 </ui:DialogWindow>
