@@ -125,7 +125,15 @@ namespace HP.CloudFoundry.UI.VisualStudio
 
                 var dialog = new EditDialog(packageFile, false);
                 dialog.ShowDialog();
-                Document.Close();
+
+                try
+                {
+                    Document.Close();
+                }
+                catch (Exception ex)
+                {
+                    Debug.Write(string.Format(CultureInfo.InvariantCulture, "Exception on document close {0}", ex.Message));
+                }
             }
         }
 
@@ -195,14 +203,25 @@ namespace HP.CloudFoundry.UI.VisualStudio
                 if (currentProject != null)
                 {
                     string msBuildPath = Microsoft.Build.Utilities.ToolLocationHelper.GetPathToBuildToolsFile("msbuild.exe", "12.0");
-                    //string msBuildPath = System.IO.Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(), "msbuild.exe");
                     string projectPath = currentProject.FullName;
+                    string solutionPath= Path.GetDirectoryName(dte.Solution.FullName);
+                    string projectName = currentProject.Name;
+                    bool localBuild = projectPackage.CFLocalBuild;
 
                     await System.Threading.Tasks.Task.Factory.StartNew(() =>
                     {
+                        string arguments = string.Empty;
+
+                        if (localBuild == true)
+                        {
+                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=push.cf.pubxml ""{0}""", projectPath);
+                        } else {
+                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=push.cf.pubxml /p:PUBLISH_WEBSITE={2} /p:CFAppPath=""{1}"" ""{0}""", projectPath, solutionPath, projectName);
+                        }
+
                         var startInfo = new ProcessStartInfo(msBuildPath)
                         {
-                            Arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=push.cf.pubxml ""{0}""", projectPath),
+                            Arguments = arguments,
                             WorkingDirectory = System.IO.Path.GetDirectoryName(projectPath),
                             RedirectStandardOutput = true,
                             RedirectStandardError = true,
