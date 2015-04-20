@@ -75,6 +75,7 @@
             </TreeView.ItemTemplate>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource TreeViewItemStyle}">
+                    <EventSetter Event="MouseRightButtonDown" Handler="ExplorerTree_MouseRightButtonDown" />                        
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Actions, Converter={StaticResource IsNull}}" Value="True">
                             <Setter Property="ContextMenu">
