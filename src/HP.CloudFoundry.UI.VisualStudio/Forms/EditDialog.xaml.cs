@@ -45,12 +45,25 @@ namespace HP.CloudFoundry.UI.VisualStudio
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
+            SavePassword();
+
             this.DialogResult = false;
             this.Close();
         }
 
+        private void SavePassword()
+        {
+            AppPackage package = this.DataContext as AppPackage;
+            if (package != null)
+            {
+                package.CFPassword = PasswordBox.Password;
+            }
+        }
+
         private void Save_Click(object sender, RoutedEventArgs e)
         {
+            SavePassword();
+
             this.DialogResult = true;
             this.Close();
         }
@@ -66,6 +79,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
                 string reftoken = client.Login(creds).Result.Token.RefreshToken;
 
                 MessageBoxHelper.DisplayInfo("Connection Successful!");
+                SavePassword();
             }
             catch (Exception ex)
             {

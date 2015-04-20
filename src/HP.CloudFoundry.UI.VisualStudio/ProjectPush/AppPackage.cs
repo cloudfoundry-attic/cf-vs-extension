@@ -42,7 +42,6 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
         [DisplayName("Password")]
         [Category("Cloud Foundry")]
         [DefaultValue("")]
-        [Browsable(false)]
         public string CFPassword { get { return _password; } set { _password = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
         public string CFServerUri { get { return _server; } set { _server = value; SaveToFile(configFile); } }
@@ -69,7 +68,6 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
         [Category("Cloud Foundry")]
         public bool CFLocalBuild { get { return _localbuild; } set { _localbuild = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
-        [Browsable(false)]
         public string WebPublishMethod { get { return _webpublishmethod; } set { _webpublishmethod = value; SaveToFile(configFile); } }
         [Category("Cloud Foundry")]
         public string CFMSBuildConfiguration { get { return _configuration; } set { _configuration = value; SaveToFile(configFile); } }
@@ -87,13 +85,9 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
             if (File.Exists(configFile))
             {
                 LoadFromFile(configFile);
-                if (CFAppName == "test")
+                if (CFAppName == string.Empty)
                 {
                     CFAppName = project.Name;
-                }
-                if (CFConfigurationFile == "C:\\test\\manifest.yaml")
-                {
-                    CFConfigurationFile = Path.Combine(Path.GetDirectoryName(project.FullName), "manifest.yaml");
                 }
             }
         }
