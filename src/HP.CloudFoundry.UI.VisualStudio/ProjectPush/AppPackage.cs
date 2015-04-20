@@ -82,9 +82,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
             {
                 throw new ArgumentNullException("project");
             }
-            
 
-            configFile = Path.Combine(Path.GetDirectoryName(project.FullName),"Properties","PublishProfiles","cf.pushxml");
+            configFile = Path.Combine(Path.GetDirectoryName(project.FullName),"Properties","PublishProfiles","push.cf.pubxml");
             if (File.Exists(configFile))
             {
                 LoadFromFile(configFile);
