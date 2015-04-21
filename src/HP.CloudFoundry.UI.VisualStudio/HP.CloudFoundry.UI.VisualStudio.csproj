@@ -250,6 +250,7 @@
     <Compile Include="HP.CloudFoundry.UI.VisualStudioPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
+    <Compile Include="RunningDocTableEvents.cs" />
     <Compile Include="SSLErrorsIgnorer.cs" />
     <Compile Include="TargetStore\CloudCredentialsEncryption.cs" />
     <Compile Include="TargetStore\CloudTarget.cs" />
