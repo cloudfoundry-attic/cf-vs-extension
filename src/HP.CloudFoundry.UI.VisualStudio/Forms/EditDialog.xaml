@@ -50,11 +50,11 @@
         <TextBox Text="{Binding Path= CFAppName}" Grid.Row="3" Grid.Column="1"></TextBox>
 
         <Label Content="Memory" Grid.Row="4" Grid.Column="0"></Label>
-        <TextBox Text="{Binding Path= CFMemory}" PreviewTextInput="NumberValidationTextBox" Grid.Row="4" Grid.Column="1"></TextBox>
+        <TextBox Text="{Binding Path= CFAppMemory}" PreviewTextInput="NumberValidationTextBox" Grid.Row="4" Grid.Column="1"></TextBox>
 
 
         <Label Content="Instances" Grid.Row="5" Grid.Column="0"></Label>
-        <TextBox Text="{Binding Path= CFInstancesNumber}" PreviewTextInput="NumberValidationTextBox" Grid.Row="5" Grid.Column="1"></TextBox>
+        <TextBox Text="{Binding Path= CFAppInstances}" PreviewTextInput="NumberValidationTextBox" Grid.Row="5" Grid.Column="1"></TextBox>
 
         <Label Content="Organization Name" Grid.Row="6" Grid.Column="0"></Label>
         <TextBox Text="{Binding Path= CFOrganization}" Grid.Row="6" Grid.Column="1"></TextBox>
