@@ -43,10 +43,13 @@ namespace HP.CloudFoundry.UI.VisualStudio
     public sealed class HP_CloudFoundry_UI_VisualStudioPackage : Package
     {
         private const string packageId = "cf-msbuild-tasks";
-      
+
         List<int> dynamicExtenderProviderCookies = new List<int>();
         ObjectExtenders extensionManager;
-        DocumentEvents docEvents;
+
+        DTE dte;
+        internal readonly Lazy<RunningDocumentTable> rdt;
+        internal readonly Lazy<Microsoft.VisualStudio.OLE.Interop.IServiceProvider> sp;
 
         /// <summary>
         /// Default constructor of the package.
@@ -57,6 +60,11 @@ namespace HP.CloudFoundry.UI.VisualStudio
         /// </summary>
         public HP_CloudFoundry_UI_VisualStudioPackage()
         {
+            dte = (DTE)HP_CloudFoundry_UI_VisualStudioPackage.GetGlobalService(typeof(DTE));
+
+            sp = new Lazy<Microsoft.VisualStudio.OLE.Interop.IServiceProvider>(() => Package.GetGlobalService(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider)) as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
+            rdt = new Lazy<RunningDocumentTable>(() => new RunningDocumentTable(new ServiceProvider(sp.Value)));
+
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
         }
 
@@ -79,7 +87,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
             Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
 
-      
+
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
         #region Package Members
@@ -90,50 +98,25 @@ namespace HP.CloudFoundry.UI.VisualStudio
         /// </summary>
         protected override void Initialize()
         {
-            Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
-            DTE dte = (DTE)HP_CloudFoundry_UI_VisualStudioPackage.GetGlobalService(typeof(DTE));
-
-            docEvents = dte.Events.DocumentEvents;
-
-            docEvents.DocumentOpened += docEvents_DocumentOpened;
+            rdt.Value.Advise(new RunningDocTableEvents(this));
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if ( null != mcs )
+            if (null != mcs)
             {
                 // Create the command for the tool window
                 CommandID toolwndCommandID = new CommandID(GuidList.guidHP_CloudFoundry_UI_VisualStudioCmdSet, (int)PkgCmdIDList.cmdidCloudFoundryExplorer);
                 MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
-                mcs.AddCommand( menuToolWin );
+                mcs.AddCommand(menuToolWin);
 
                 // Create the command for button ButtonBuildAndPushProject
                 CommandID commandId = new CommandID(GuidList.guidHP_CloudFoundry_UI_VisualStudioCmdSet, (int)PkgCmdIDList.cmdidButtonPublishProject);
                 OleMenuCommand menuItem = new OleMenuCommand(ButtonBuildAndPushProjectExecuteHandler, ButtonBuildAndPushProjectChangeHandler, menuItem_BeforeQueryStatus, commandId);
 
                 mcs.AddCommand(menuItem);
-            }
-        }
-
-        void docEvents_DocumentOpened(Document Document)
-        {
-            if (Document.Name.Contains("cf.pubxml"))
-            {
-                AppPackage packageFile = new AppPackage();
-                packageFile.LoadFromFile(Document.FullName);
-
-                var dialog = new EditDialog(packageFile, false);
-                dialog.ShowDialog();
-
-                try
-                {
-                    Document.Close();
-                }
-                catch (Exception ex)
-                {
-                    Debug.Write(string.Format(CultureInfo.InvariantCulture, "Exception on document close {0}", ex.Message));
-                }
             }
         }
 
@@ -204,7 +187,7 @@ namespace HP.CloudFoundry.UI.VisualStudio
                 {
                     string msBuildPath = Microsoft.Build.Utilities.ToolLocationHelper.GetPathToBuildToolsFile("msbuild.exe", "12.0");
                     string projectPath = currentProject.FullName;
-                    string solutionPath= Path.GetDirectoryName(dte.Solution.FullName);
+                    string solutionPath = Path.GetDirectoryName(dte.Solution.FullName);
                     string projectName = currentProject.Name;
                     bool localBuild = projectPackage.CFLocalBuild;
 
@@ -215,7 +198,9 @@ namespace HP.CloudFoundry.UI.VisualStudio
                         if (localBuild == true)
                         {
                             arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=push.cf.pubxml ""{0}""", projectPath);
-                        } else {
+                        }
+                        else
+                        {
                             arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=push.cf.pubxml /p:PUBLISH_WEBSITE={2} /p:CFAppPath=""{1}"" ""{0}""", projectPath, solutionPath, projectName);
                         }
 
@@ -260,6 +245,6 @@ namespace HP.CloudFoundry.UI.VisualStudio
 
         #endregion
 
-      
+
     }
 }
