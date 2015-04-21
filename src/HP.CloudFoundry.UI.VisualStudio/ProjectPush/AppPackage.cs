@@ -111,8 +111,8 @@ namespace HP.CloudFoundry.UI.VisualStudio.ProjectPush
                     case "cforganization": { CFOrganization = node.InnerText; break; }
                     case "cfspace": { CFSpace = node.InnerText; break; }
                     case "cfappname": { CFAppName = node.InnerText; break; }
-                    case "cfmemory": { CFMemory = Convert.ToInt32(node.InnerText); break; }
-                    case "cfinstancesnumber": { CFInstancesNumber = Convert.ToInt32(node.InnerText); break; }
+                    case "cfappmemory": { CFMemory = Convert.ToInt32(node.InnerText); break; }
+                    case "cfappinstances": { CFInstancesNumber = Convert.ToInt32(node.InnerText); break; }
                     case "cfstack": { CFStack = node.InnerText; break; }
                     case "cfroutes": { CFRoutes = node.InnerText; break; }
                     case "cfconfigurationfile": { CFConfigurationFile = node.InnerText; break; }
