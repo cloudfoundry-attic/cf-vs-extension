@@ -1,0 +1,35 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vsp="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
+                    xmlns:cf="clr-namespace:CloudFoundry.VisualStudio">
+
+    <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextActiveBrushKey}}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border Background="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBackgroundGradientBrushKey}}" 
+                            BorderBrush="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBorderBrushKey}}" BorderThickness="1">
+                        <StackPanel ClipToBounds="True" Orientation="Vertical" IsItemsHost="True" Margin="3,3,3,3" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Separator -->
+    <Style TargetType="{x:Type Separator}" x:Key="SeparatorStyle" BasedOn="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Rectangle Height="{TemplateBinding Height}"
+                               Fill="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
