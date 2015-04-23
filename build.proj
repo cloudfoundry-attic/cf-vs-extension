@@ -70,7 +70,7 @@
   <!-- Target for running unit tests -->
   <Target Name="UnitTest">
     <ItemGroup>
-      <TestDlls Include=".\src\HP.CloudFoundry.UI.VisualStudio.UnitTests\bin\$(Configuration)\HP.CloudFoundry.UI.VisualStudio.UnitTests.dll"/>
+      <TestDlls Include=".\src\CloudFoundry.VisualStudio.UnitTests\bin\$(Configuration)\CloudFoundry.VisualStudio.UnitTests.dll"/>
     </ItemGroup>
 
     <Exec Command="$(VSTestCommand) %(TestDlls.Identity) /inIsolation /settings:CodeCoverage.runsettings /logger:trx"  ConsoleToMSBuild="true">
@@ -108,7 +108,7 @@
     <Message Text="Version: $(version)" />
 
     <ItemGroup>
-      <AssemblyInfoFiles Include="$(LibraryRoot)\src\HP.CloudFoundry.UI.VisualStudio\Properties\AssemblyInfo.cs"/>
+      <AssemblyInfoFiles Include="$(LibraryRoot)\src\CloudFoundry.VisualStudio\Properties\AssemblyInfo.cs"/>
     </ItemGroup>
 
     <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
