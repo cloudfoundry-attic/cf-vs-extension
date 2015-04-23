@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -17,62 +18,62 @@ namespace CloudFoundry.VisualStudio.ProjectPush
     {
         private string configFile = string.Empty;
 
-        private string _username;
-        private string _password;
-        private string _server;
-        private string _appname;
-        private string _organization;
-        private string _space;
-        private int _memory;
-        private int _instances;
-        private string _stack;
-        private string _routes;
-        private string _manifestpath;
-        private string _deploytargetfile;
-        private bool _localbuild;
-        private string _webpublishmethod;
-        private string _configuration;
-        private string _platform;
-        private string _services;
+        private string _username = string.Empty;
+        private string _password = string.Empty;
+        private string _server = string.Empty;
+        private string _appname = string.Empty;
+        private string _organization = string.Empty;
+        private string _space = string.Empty;
+        private int _memory = 512;
+        private int _instances = 1;
+        private string _stack = string.Empty;
+        private string _routes = string.Empty;
+        private string _manifestpath = string.Empty;
+        private string _deploytargetfile = string.Empty;
+        private bool _localbuild = true;
+        private string _webpublishmethod = string.Empty;
+        private string _configuration = string.Empty;
+        private string _platform = string.Empty;
+        private string _services = string.Empty;
+        private string _refreshToken = string.Empty;
+        private bool _savedPassword = true;
 
-        [DisplayName("User name")]
-        [Category("Cloud Foundry")]
-        [DefaultValue("")]
-        public string CFUser { get { return _username; } set { _username = value; SaveToFile(configFile); } }
-        [DisplayName("Password")]
-        [Category("Cloud Foundry")]
-        [DefaultValue("")]
-        public string CFPassword { get { return _password; } set { _password = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFServerUri { get { return _server; } set { _server = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFAppName { get { return _appname; } set { _appname = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFOrganization { get { return _organization; } set { _organization = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFSpace { get { return _space; } set { _space = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public int CFMemory { get { return _memory; } set { _memory = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public int CFInstancesNumber { get { return _instances; } set { _instances = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFStack { get { return _stack; } set { _stack = value; SaveToFile(configFile); } }
-        [DisplayName("Route")]
-        [Category("Cloud Foundry")]
-        public string CFRoutes { get { return _routes; } set { _routes = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFServices { get { return _services; } set { _services = value; SaveToFile(configFile); } }
-        public string CFConfigurationFile { get { return _manifestpath; } set { _manifestpath = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string DeployTargetFile { get { return _deploytargetfile; } set { _deploytargetfile = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public bool CFLocalBuild { get { return _localbuild; } set { _localbuild = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string WebPublishMethod { get { return _webpublishmethod; } set { _webpublishmethod = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFMSBuildConfiguration { get { return _configuration; } set { _configuration = value; SaveToFile(configFile); } }
-        [Category("Cloud Foundry")]
-        public string CFMSBuildPlatform { get { return _platform; } set { _platform = value; SaveToFile(configFile); } }
+        public string CFUser { get { return _username; } set { _username = value; } }
+        
+        public string CFPassword { get { return _password; } set { _password = value; } }
+
+        public bool CFSavedPassword { get { return _savedPassword; } set { _savedPassword = value; } }
+        
+        public string CFRefreshToken { get { return _refreshToken; } set { _refreshToken = value; } }
+        
+        public string CFServerUri { get { return _server; } set { _server = value; } }
+        
+        public string CFAppName { get { return _appname; } set { _appname = value; } }
+        
+        public string CFOrganization { get { return _organization; } set { _organization = value; } }
+        
+        public string CFSpace { get { return _space; } set { _space = value; } }
+        
+        public int CFMemory { get { return _memory; } set { _memory = value; } }
+        
+        public int CFInstancesNumber { get { return _instances; } set { _instances = value; } }
+        
+        public string CFStack { get { return _stack; } set { _stack = value; } }
+        
+        public string CFRoutes { get { return _routes; } set { _routes = value; } }
+        
+        public string CFServices { get { return _services; } set { _services = value; } }
+        public string CFConfigurationFile { get { return _manifestpath; } set { _manifestpath = value; } }
+        
+        public string DeployTargetFile { get { return _deploytargetfile; } set { _deploytargetfile = value; } }
+        
+        public bool CFLocalBuild { get { return _localbuild; } set { _localbuild = value; } }
+        
+        public string WebPublishMethod { get { return _webpublishmethod; } set { _webpublishmethod = value; } }
+        
+        public string CFMSBuildConfiguration { get { return _configuration; } set { _configuration = value; } }
+        
+        public string CFMSBuildPlatform { get { return _platform; } set { _platform = value; } }
 
         public void Initialize(Project project)
         {
@@ -81,7 +82,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 throw new ArgumentNullException("project");
             }
 
-            configFile = Path.Combine(Path.GetDirectoryName(project.FullName),"Properties","PublishProfiles","push.cf.pubxml");
+            configFile = Path.Combine(Path.GetDirectoryName(project.FullName),"Properties","PublishProfiles",string.Format(CultureInfo.InvariantCulture, "push{0}",CloudFoundry_VisualStudioPackage.extension));
             if (File.Exists(configFile))
             {
                 LoadFromFile(configFile);
@@ -107,12 +108,14 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 {
                     case "cfuser": { CFUser = node.InnerText; break; }
                     case "cfpassword": { CFPassword = node.InnerText; break; }
+                    case "cfrefreshtoken": { CFRefreshToken = node.InnerText; break; }
+                    case "cfsavedpassword": { if(node.InnerText == string.Empty) { CFSavedPassword = false; } else { CFSavedPassword = Convert.ToBoolean(node.InnerText); } break; }
                     case "cfserveruri": { CFServerUri = node.InnerText; break; }
                     case "cforganization": { CFOrganization = node.InnerText; break; }
                     case "cfspace": { CFSpace = node.InnerText; break; }
                     case "cfappname": { CFAppName = node.InnerText; break; }
-                    case "cfappmemory": { CFMemory = Convert.ToInt32(node.InnerText); break; }
-                    case "cfappinstances": { CFInstancesNumber = Convert.ToInt32(node.InnerText); break; }
+                    case "cfmemory": { CFMemory = Convert.ToInt32(node.InnerText); break; }
+                    case "cfinstancesnumber": { CFInstancesNumber = Convert.ToInt32(node.InnerText); break; }
                     case "cfstack": { CFStack = node.InnerText; break; }
                     case "cfroutes": { CFRoutes = node.InnerText; break; }
                     case "cfconfigurationfile": { CFConfigurationFile = node.InnerText; break; }
@@ -153,6 +156,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
 
             File.WriteAllText(filePath, content);
+        }
+
+        internal void Save()
+        {
+            SaveToFile(configFile);
         }
     }
 }

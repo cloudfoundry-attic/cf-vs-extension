@@ -6,7 +6,7 @@
     <Description>Cloud Foundry Extensions for Visual Studio</Description>
     <License>LICENSE.txt</License>
     <Icon>Resources\Cloud_32xLG.ico</Icon>
-    <PreviewImage>Resources\Logo-WordsOnly.png</PreviewImage>
+    <PreviewImage>Resources\LogoWordsOnly.png</PreviewImage>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />

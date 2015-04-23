@@ -49,13 +49,15 @@ namespace CloudFoundry.VisualStudio
             RunningDocumentInfo runningDocumentInfo = package.rdt.Value.GetDocumentInfo(docCookie);
             string documentPath = runningDocumentInfo.Moniker;
 
-            if (fFirstShow == 1 && documentPath.Contains("cf.pubxml"))
+            if (fFirstShow == 1 && documentPath.Contains(CloudFoundry_VisualStudioPackage.extension))
             {
                 AppPackage packageFile = new AppPackage();
                 packageFile.LoadFromFile(documentPath);
 
-                var dialog = new EditDialog(packageFile, false);
+                var dialog = new EditDialog(packageFile, null, false);
                 dialog.ShowDialog();
+
+
             }
 
             return VSConstants.S_OK;
