@@ -39,8 +39,8 @@ namespace CloudFoundry.VisualStudio
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(CloudFoundryExplorerToolWindow))]
-    [Guid(GuidList.guidHP_CloudFoundry_UI_VisualStudioPkgString)]
-    public sealed class HP_CloudFoundry_UI_VisualStudioPackage : Package
+    [Guid(GuidList.guidCloudFoundry_VisualStudioPkgString)]
+    public sealed class CloudFoundry_VisualStudioPackage : Package
     {
         private const string packageId = "cf-msbuild-tasks";
 
@@ -58,9 +58,9 @@ namespace CloudFoundry.VisualStudio
         /// not sited yet inside Visual Studio environment. The place to do all the other 
         /// initialization is the Initialize method.
         /// </summary>
-        public HP_CloudFoundry_UI_VisualStudioPackage()
+        public CloudFoundry_VisualStudioPackage()
         {
-            dte = (DTE)HP_CloudFoundry_UI_VisualStudioPackage.GetGlobalService(typeof(DTE));
+            dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
 
             sp = new Lazy<Microsoft.VisualStudio.OLE.Interop.IServiceProvider>(() => Package.GetGlobalService(typeof(Microsoft.VisualStudio.OLE.Interop.IServiceProvider)) as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
             rdt = new Lazy<RunningDocumentTable>(() => new RunningDocumentTable(new ServiceProvider(sp.Value)));
@@ -108,12 +108,12 @@ namespace CloudFoundry.VisualStudio
             if (null != mcs)
             {
                 // Create the command for the tool window
-                CommandID toolwndCommandID = new CommandID(GuidList.guidHP_CloudFoundry_UI_VisualStudioCmdSet, (int)PkgCmdIDList.cmdidCloudFoundryExplorer);
+                CommandID toolwndCommandID = new CommandID(GuidList.guidCloudFoundry_VisualStudioCmdSet, (int)PkgCmdIDList.cmdidCloudFoundryExplorer);
                 MenuCommand menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandID);
                 mcs.AddCommand(menuToolWin);
 
                 // Create the command for button ButtonBuildAndPushProject
-                CommandID commandId = new CommandID(GuidList.guidHP_CloudFoundry_UI_VisualStudioCmdSet, (int)PkgCmdIDList.cmdidButtonPublishProject);
+                CommandID commandId = new CommandID(GuidList.guidCloudFoundry_VisualStudioCmdSet, (int)PkgCmdIDList.cmdidButtonPublishProject);
                 OleMenuCommand menuItem = new OleMenuCommand(ButtonBuildAndPushProjectExecuteHandler, ButtonBuildAndPushProjectChangeHandler, menuItem_BeforeQueryStatus, commandId);
 
                 mcs.AddCommand(menuItem);
@@ -127,9 +127,9 @@ namespace CloudFoundry.VisualStudio
             if (commandInfo != null)
             {
 
-                DTE dte = (DTE)HP_CloudFoundry_UI_VisualStudioPackage.GetGlobalService(typeof(DTE));
+                DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
 
-                var componentModel = (IComponentModel)HP_CloudFoundry_UI_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
+                var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
 
                 IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
                 IVsPackageInstaller installer = componentModel.GetService<IVsPackageInstaller>();
@@ -159,7 +159,7 @@ namespace CloudFoundry.VisualStudio
 
         private async void ButtonBuildAndPushProjectExecuteHandler(object sender, EventArgs e)
         {
-            DTE dte = (DTE)HP_CloudFoundry_UI_VisualStudioPackage.GetGlobalService(typeof(DTE));
+            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
             Project currentProject = GetSelectedProject(dte);
 
             AppPackage projectPackage = new AppPackage();

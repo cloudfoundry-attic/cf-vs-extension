@@ -229,7 +229,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="HP.CloudFoundry.UI.VisualStudioPackage.cs" />
+    <Compile Include="CloudFoundry.VisualStudioPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
@@ -269,7 +269,7 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="HP.CloudFoundry.UI.VisualStudio.vsct">
+    <VSCTCompile Include="CloudFoundry.VisualStudio.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>

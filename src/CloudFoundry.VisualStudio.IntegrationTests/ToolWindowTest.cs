@@ -42,7 +42,7 @@ namespace CloudFoundry.VisualStudio_IntegrationTests
         {
             UIThreadInvoker.Invoke((ThreadInvoker)delegate()
             {
-                CommandID toolWindowCmd = new CommandID(CloudFoundry.VisualStudio.GuidList.guidHP_CloudFoundry_UI_VisualStudioCmdSet, (int)CloudFoundry.VisualStudio.PkgCmdIDList.cmdidCloudFoundryExplorer);
+                CommandID toolWindowCmd = new CommandID(CloudFoundry.VisualStudio.GuidList.guidCloudFoundry_VisualStudioCmdSet, (int)CloudFoundry.VisualStudio.PkgCmdIDList.cmdidCloudFoundryExplorer);
 
                 TestUtils testUtils = new TestUtils();
                 testUtils.ExecuteCommand(toolWindowCmd);

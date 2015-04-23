@@ -26,13 +26,13 @@ namespace CloudFoundry.VisualStudio_UnitTests
         [TestMethod()]
         public void CreateInstance()
         {
-            HP_CloudFoundry_UI_VisualStudioPackage package = new HP_CloudFoundry_UI_VisualStudioPackage();
+            CloudFoundry_VisualStudioPackage package = new CloudFoundry_VisualStudioPackage();
         }
 
         [TestMethod()]
         public void IsIVsPackage()
         {
-            HP_CloudFoundry_UI_VisualStudioPackage package = new HP_CloudFoundry_UI_VisualStudioPackage();
+            CloudFoundry_VisualStudioPackage package = new CloudFoundry_VisualStudioPackage();
             Assert.IsNotNull(package as IVsPackage, "The object does not implement IVsPackage");
         }
 
@@ -40,7 +40,7 @@ namespace CloudFoundry.VisualStudio_UnitTests
         public void SetSite()
         {
             // Create the package
-            IVsPackage package = new HP_CloudFoundry_UI_VisualStudioPackage() as IVsPackage;
+            IVsPackage package = new CloudFoundry_VisualStudioPackage() as IVsPackage;
             Assert.IsNotNull(package, "The object does not implement IVsPackage");
 
             // Create a basic service provider

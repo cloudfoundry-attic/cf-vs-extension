@@ -12,9 +12,9 @@ namespace CloudFoundry.VisualStudio
 {
     internal class RunningDocTableEvents : IVsRunningDocTableEvents3
     {
-        private HP_CloudFoundry_UI_VisualStudioPackage package;
+        private CloudFoundry_VisualStudioPackage package;
 
-        public RunningDocTableEvents(HP_CloudFoundry_UI_VisualStudioPackage package)
+        public RunningDocTableEvents(CloudFoundry_VisualStudioPackage package)
         {
             this.package = package;
         }

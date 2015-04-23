@@ -28,7 +28,7 @@ namespace CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest
         [TestMethod()]
         public void ValidateToolWindowShown()
         {
-            IVsPackage package = new HP_CloudFoundry_UI_VisualStudioPackage() as IVsPackage;
+            IVsPackage package = new CloudFoundry_VisualStudioPackage() as IVsPackage;
 
             // Create a basic service provider
             OleServiceProvider serviceProvider = OleServiceProvider.CreateOleServiceProviderWithBasicServices();
@@ -40,7 +40,7 @@ namespace CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest
             // Site the package
             Assert.AreEqual(0, package.SetSite(serviceProvider), "SetSite did not return S_OK");
 
-            MethodInfo method = typeof(HP_CloudFoundry_UI_VisualStudioPackage).GetMethod("ShowToolWindow", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = typeof(CloudFoundry_VisualStudioPackage).GetMethod("ShowToolWindow", BindingFlags.NonPublic | BindingFlags.Instance);
 
             object result = method.Invoke(package, new object[] { null, null });
         }
@@ -49,7 +49,7 @@ namespace CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest
         [ExpectedException(typeof(InvalidOperationException), "Did not throw expected exception when windowframe object was null")]
         public void ShowToolwindowNegativeTest()
         {
-            IVsPackage package = new HP_CloudFoundry_UI_VisualStudioPackage() as IVsPackage;
+            IVsPackage package = new CloudFoundry_VisualStudioPackage() as IVsPackage;
 
             // Create a basic service provider
             OleServiceProvider serviceProvider = OleServiceProvider.CreateOleServiceProviderWithBasicServices();
@@ -61,7 +61,7 @@ namespace CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest
             // Site the package
             Assert.AreEqual(0, package.SetSite(serviceProvider), "SetSite did not return S_OK");
 
-            MethodInfo method = typeof(HP_CloudFoundry_UI_VisualStudioPackage).GetMethod("ShowToolWindow", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = typeof(CloudFoundry_VisualStudioPackage).GetMethod("ShowToolWindow", BindingFlags.NonPublic | BindingFlags.Instance);
 
             //Invoke thows TargetInvocationException, but we want it's inner Exception thrown by ShowToolWindow, InvalidOperationException.
             try
