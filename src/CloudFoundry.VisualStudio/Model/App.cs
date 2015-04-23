@@ -116,7 +116,7 @@ namespace CloudFoundry.VisualStudio.Model
 
             var host = route["host"];
             var domain = route["domain"];
-            
+
             if (domain == null)
             {
                 return;
@@ -126,7 +126,8 @@ namespace CloudFoundry.VisualStudio.Model
 
             var url = string.Format(CultureInfo.InvariantCulture, "http://{0}.{1}", host, domainName);
 
-            await Task.Run(() => { 
+            await Task.Run(() =>
+            {
                 Process.Start(url);
             });
         }
@@ -136,12 +137,19 @@ namespace CloudFoundry.VisualStudio.Model
             var answer = MessageBoxHelper.WarningQuestion(
                 string.Format(
                 CultureInfo.InvariantCulture,
-                "Are you sure you want to delete application '{0}'?",
+                "Are you sure you want to delete application '{0}'? By deleting this application, all it's service bindings will be deleted.",
                 this._app.Name
                 ));
 
             if (answer == System.Windows.Forms.DialogResult.Yes)
             {
+                var serviceBindings = await _client.Apps.ListAllServiceBindingsForApp(this._app.Guid);
+
+                foreach (var serviceBinding in serviceBindings)
+                {
+                    await this._client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
+                }
+
                 await this._client.Apps.DeleteApp(this._app.Guid);
             }
         }
