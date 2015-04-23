@@ -23,7 +23,7 @@
 
   <!--The Commands section is where we the commands, menus and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidHP_CloudFoundry_UI_VisualStudioPkg">
+  <Commands package="guidCloudFoundry_VisualStudioPkg">
     <!-- Inside this section we have different sub-sections: one for the menus, another  
     for the menu groups, one for the buttons (the actual commands), one for the combos 
     and the last one for the bitmaps used. Each element is identified by a command id that  
@@ -39,7 +39,7 @@
          must be a menu. -->
     <Groups>
 
-		<Group guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="MyMenuGroup" priority="0x0600">
+		<Group guid="guidCloudFoundry_VisualStudioCmdSet" id="MyMenuGroup" priority="0x0600">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
 		</Group>
 
@@ -58,15 +58,15 @@
           If you do not want an image next to your command, remove the Icon node /> -->
 
 
-      <Button guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="cmdidCloudFoundryExplorer" priority="0x0100" type="Button">
+      <Button guid="guidCloudFoundry_VisualStudioCmdSet" id="cmdidCloudFoundryExplorer" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="pngPic1" />
         <Strings>
           <ButtonText>Cloud Foundry Explorer</ButtonText>
         </Strings>
       </Button>
-		<Button guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="cmdidButtonPublishProject" priority="0x0100" type="Button">
-			<Parent guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="MyMenuGroup" />
+		<Button guid="guidCloudFoundry_VisualStudioCmdSet" id="cmdidButtonPublishProject" priority="0x0100" type="Button">
+			<Parent guid="guidCloudFoundry_VisualStudioCmdSet" id="MyMenuGroup" />
 			<Icon guid="guidImages" id="pngPic1" />
 			<CommandFlag>TextChanges</CommandFlag>
 			<CommandFlag>DynamicVisibility</CommandFlag>
@@ -92,22 +92,22 @@
 	 
   </Commands>
 	<CommandPlacements>
-		<CommandPlacement guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="cmdidButtonPublishProject" priority="0x0100">
+		<CommandPlacement guid="guidCloudFoundry_VisualStudioCmdSet" id="cmdidButtonPublishProject" priority="0x0100">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
 		</CommandPlacement>
 	</CommandPlacements>
 
 	<KeyBindings>
-		<KeyBinding guid="guidHP_CloudFoundry_UI_VisualStudioCmdSet" id="cmdidCloudFoundryExplorer" editor="guidVSStd97" mod1="Control" mod2="Shift" key1="K" key2="C"></KeyBinding>
+		<KeyBinding guid="guidCloudFoundry_VisualStudioCmdSet" id="cmdidCloudFoundryExplorer" editor="guidVSStd97" mod1="Control" mod2="Shift" key1="K" key2="C"></KeyBinding>
 	</KeyBindings>
 
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidHP_CloudFoundry_UI_VisualStudioPkg" value="{0e96d39c-9e00-4758-ad87-aeb5a9bf8f7c}" />
+    <GuidSymbol name="guidCloudFoundry_VisualStudioPkg" value="{0e96d39c-9e00-4758-ad87-aeb5a9bf8f7c}" />
     
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidHP_CloudFoundry_UI_VisualStudioCmdSet" value="{0771f788-56bf-431d-ac6f-ae8057b022a0}">
+    <GuidSymbol name="guidCloudFoundry_VisualStudioCmdSet" value="{0771f788-56bf-431d-ac6f-ae8057b022a0}">
 
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidCloudFoundryExplorer" value="0x0101" />
