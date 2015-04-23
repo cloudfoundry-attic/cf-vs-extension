@@ -4,6 +4,7 @@
     <Identity Id="0e96d39c-9e00-4758-ad87-aeb5a9bf8f7c" Version="1.0" Language="en-US" Publisher="Hewlett-Packard Development Company, L.P." />
     <DisplayName>Cloud Foundry Extensions for Visual Studio</DisplayName>
     <Description>Cloud Foundry Extensions for Visual Studio</Description>
+    <License>LICENSE.txt</License>
     <Icon>Resources\Cloud_32xLG.ico</Icon>
     <PreviewImage>Resources\Logo-WordsOnly.png</PreviewImage>
   </Metadata>

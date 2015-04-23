@@ -303,6 +303,10 @@
     <Resource Include="Resources\Apps.png" />
     <Resource Include="Resources\Add.png" />
     <Resource Include="Resources\Delete.png" />
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
