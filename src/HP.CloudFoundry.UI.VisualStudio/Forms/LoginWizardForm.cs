@@ -175,12 +175,14 @@ namespace HP.CloudFoundry.UI.VisualStudio.Forms
                         this.refreshToken = client.Login(creds).Result.Token.RefreshToken;
                         this.version = client.Info.GetInfo().Result.ApiVersion;
 
+                        /*
                         PagedResponseCollection<ListAllStacksResponse> stacks = client.Stacks.ListAllStacks().Result;
                         if (stacks.Where(a => a.Name == "win2012r2").Any() == false)
                         {
                             SetControlsForLoginError("Selected target does not contain a win2012r2 stack. \r\nPlease select a compatible target.");
                             return;
                         }
+                        */
 
                         if (reloginTarget != null)
                         {

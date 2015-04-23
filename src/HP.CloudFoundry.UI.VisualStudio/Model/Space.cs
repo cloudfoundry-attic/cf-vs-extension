@@ -64,7 +64,7 @@ namespace HP.CloudFoundry.UI.VisualStudio.Model
 
         [DisplayName("Space roles")]
         [Description("The space roles for the current user.")]
-        public string SpareRoles
+        public string SpaceRoles
         {
             get
             {

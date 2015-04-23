@@ -2,8 +2,10 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="0e96d39c-9e00-4758-ad87-aeb5a9bf8f7c" Version="1.0" Language="en-US" Publisher="Hewlett-Packard Development Company, L.P." />
-    <DisplayName>HP.CloudFoundry.UI.VisualStudio</DisplayName>
+    <DisplayName>Cloud Foundry Extensions for Visual Studio</DisplayName>
     <Description>Cloud Foundry Extensions for Visual Studio</Description>
+    <Icon>Resources\Cloud_32xLG.ico</Icon>
+    <PreviewImage>Resources\Logo-WordsOnly.png</PreviewImage>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />

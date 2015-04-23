@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:model="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Model"
              xmlns:cf="clr-namespace:HP.CloudFoundry.UI.VisualStudio"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:converters="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Converters"
              xmlns:controls="clr-namespace:HP.CloudFoundry.UI.VisualStudio.Controls"
              mc:Ignorable="d"
@@ -15,13 +14,13 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Style/ListViewStyle.xaml" />
                 <ResourceDictionary Source="Style\TreeViewStyle.xaml" />
                 <ResourceDictionary Source="Style\ButtonStyle.xaml" />
                 <ResourceDictionary Source="Style\ToggleButtonStyle.xaml" />
                 <ResourceDictionary Source="Style\ContextMenuStyle.xaml" />
                 <ResourceDictionary Source="Style\MenuItemStyle.xaml" />
                 <ResourceDictionary Source="Style\GridStyle.xaml" />
-                <ResourceDictionary Source="Style\PropertyGridStyle.xaml" />
                 <ResourceDictionary Source="Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <cf:SSLErrorsIgnorer x:Key="sslIgnorer" />
@@ -121,20 +120,29 @@
           VerticalAlignment="Center"
           ShowsPreview="True" />
 
-        <xctk:PropertyGrid Grid.Row="3"
-                           ShowTitle="False"
-                           x:Name="PropertyGrid"
-                           Filter=""
-                           IsCategorized="False"
-                           IsReadOnly="True"
-                           UpdateTextBoxSourceOnEnterKey="False"
-                           ShowSummary="False"
-                           ShowPreview="False"
-                           ShowSearchBox="False"
-                           ShowAdvancedOptions="False"
-                           IsEnabled="False"       
-                           ShowSortOptions="False"
-                           AutoGenerateProperties="True">
-        </xctk:PropertyGrid>
+        <ListView Name="ListView" Grid.Row="3">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="120" DisplayMemberBinding="{Binding Key}" x:Name="c1">
+                        <GridViewColumnHeader Click="OnSortClick" Tag="Name" Content="Name" />
+                    </GridViewColumn>
+                    <GridViewColumn Header="Value" Width="{Binding ElementName=helperField, Path=ActualWidth}" DisplayMemberBinding="{Binding Value}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!--Hidden helper Grid for resizing -->
+        <Grid Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <!--Width is bound to width of the first GridViewColumn -->
+                <ColumnDefinition Width="{Binding ElementName=c1, Path=ActualWidth}"/>
+                <!--Width is set to "Fill"-->
+                <ColumnDefinition Width="*"/>
+                <!--Correction Width-->
+                <ColumnDefinition Width="0"/>
+            </Grid.ColumnDefinitions>
+            <!--This is the hidden helper Field which is used to bind to, using the "Fill" column of the helper grid-->
+            <Grid Grid.Column="1" x:Name="helperField"/>
+        </Grid>
     </Grid>
 </UserControl>
