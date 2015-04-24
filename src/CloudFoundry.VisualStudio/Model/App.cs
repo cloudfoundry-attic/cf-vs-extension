@@ -71,7 +71,7 @@ namespace CloudFoundry.VisualStudio.Model
             {
                 return new CloudItemAction[]
                 {
-                    new CloudItemAction(this, "Browse", Resources.Browse, Browse),
+                    new CloudItemAction(this, "View in Browser", Resources.Browse, Browse),
                     new CloudItemAction(this, "Start", Resources.Start, Start, CloudItemActionContinuation.RefreshParent),
                     new CloudItemAction(this, "Restart", Resources.Restart, Restart, CloudItemActionContinuation.RefreshParent),
                     new CloudItemAction(this, "Stop", Resources.Stop, Stop, CloudItemActionContinuation.RefreshParent),
