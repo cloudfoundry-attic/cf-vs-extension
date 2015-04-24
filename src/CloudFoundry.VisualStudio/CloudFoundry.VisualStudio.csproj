@@ -96,6 +96,9 @@
     <Reference Include="protobuf-net">
       <HintPath>..\..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
+    <Reference Include="Simple.CredentialManager">
+      <HintPath>..\..\packages\Simple.CredentialManager.1.0.0\lib\net40\Simple.CredentialManager.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -109,6 +112,7 @@
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.28\lib\net45\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="PresentationCore" />
@@ -234,9 +238,9 @@
     <Compile Include="PkgCmdID.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
     <Compile Include="SSLErrorsIgnorer.cs" />
-    <Compile Include="TargetStore\CloudCredentialsEncryption.cs" />
     <Compile Include="TargetStore\CloudTarget.cs" />
     <Compile Include="TargetStore\CloudTargetManager.cs" />
+    <Compile Include="TargetStore\CloudCredentialsManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\LoginUserControl.resx">

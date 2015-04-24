@@ -11,7 +11,7 @@ namespace CloudFoundry.VisualStudio.TargetStore
         private static readonly string[] V2ApiTags = new string[] { "APIv2" };
 
         private string email;
-        private string token;
+        private string password;
         private Uri targetUrl;
         private Guid targetId;
         private string description;
@@ -22,12 +22,12 @@ namespace CloudFoundry.VisualStudio.TargetStore
         {
         }
 
-        public static CloudTarget CreateV2Target(string token, Uri targetUri, string description, string email, bool ignoreSSLErrors, string version)
+        public static CloudTarget CreateV2Target(string password, Uri targetUri, string description, string email, bool ignoreSSLErrors, string version)
         {
             return new CloudTarget()
             {
                 targetId = Guid.NewGuid(),
-                token = token,
+                password = password,
                 targetUrl = targetUri,
                 description = description,
                 email = email,
@@ -74,7 +74,7 @@ namespace CloudFoundry.VisualStudio.TargetStore
             return new string[] {
                 CloudTarget.V2ApiTags[0], 
                 this.TargetUrl.OriginalString,
-                this.Token,
+                this.Password,
                 this.Description,
                 this.Email,
                 this.ignoreSSLErrors.ToString(),
@@ -87,11 +87,11 @@ namespace CloudFoundry.VisualStudio.TargetStore
             return this.DisplayName;
         }
 
-        public string Token
+        public string Password
         {
             get
             {
-                return token;
+                return password;
             }
         }
 

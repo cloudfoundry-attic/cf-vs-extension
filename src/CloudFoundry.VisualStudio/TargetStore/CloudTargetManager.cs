@@ -9,9 +9,6 @@ namespace CloudFoundry.VisualStudio.TargetStore
 {
     public static class CloudTargetManager
     {
-        private const string hpApi = "isHPApi";
-        private const string notHPApi = "notHPApi";
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static CloudTarget[] GetTargets()
         {

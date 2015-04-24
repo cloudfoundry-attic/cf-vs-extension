@@ -35,12 +35,6 @@ namespace CloudFoundry.VisualStudio.Model
             get { return this.target.Email; }
         }
 
-        [Browsable(false)]
-        public string Token
-        {
-            get { return this.target.Token; }
-        }
-
         [Description("API version of the target")]
         public string Version
         {
@@ -77,7 +71,11 @@ namespace CloudFoundry.VisualStudio.Model
         {
             CloudFoundryClient client = new CloudFoundryClient(this.target.TargetUrl, this.CancellationToken);
 
-            var authenticationContext = await client.Login(this.target.Token);
+            var authenticationContext = await client.Login(new CloudCredentials()
+            {
+                User = this.target.Email, 
+                Password = this.target.Password
+            });
 
             List<Organization> result = new List<Organization>();
 
