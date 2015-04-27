@@ -9,6 +9,11 @@ namespace CloudFoundry.VisualStudio.TargetStore
 {
     public static class CloudTargetManager
     {
+        private const string CompanyKey = "CloudFoundry";
+        private const string ProductKey = "VisualStudio";
+        private const string TargetsKey = "Targets";
+
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static CloudTarget[] GetTargets()
         {
@@ -37,8 +42,10 @@ namespace CloudFoundry.VisualStudio.TargetStore
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error("Error while loading targets: {0}", ex);
-                    RemoveTarget(targetId);
+                    Logger.Warning(
+                        string.Format(CultureInfo.InvariantCulture,
+                        "Error while loading target: {0}. It will be ignored. Details: {1}", 
+                        ex.ToString()));
                 }
             }
 
@@ -76,40 +83,48 @@ namespace CloudFoundry.VisualStudio.TargetStore
             RemoveValueFromCloudTargets(targetId.ToString());
         }
 
-        private static RegistryKey SetupHPKey()
+        private static RegistryKey SetupTargetsKey()
         {
             RegistryKey softwareKey = Registry.CurrentUser.OpenSubKey("Software", true);
-            RegistryKey hpSubKey = softwareKey.OpenSubKey("HP", true);
-            if (hpSubKey == null)
+            RegistryKey companySubKey = softwareKey.OpenSubKey(CompanyKey, true);
+            if (companySubKey == null)
             {
-                softwareKey.CreateSubKey("HP");
-                hpSubKey = softwareKey.OpenSubKey("HP", true);
+                softwareKey.CreateSubKey(CompanyKey);
+                companySubKey = softwareKey.OpenSubKey(CompanyKey, true);
             }
 
-            RegistryKey hpCloudTargetsSubKey = hpSubKey.OpenSubKey("CloudTargets", true);
-            if (hpCloudTargetsSubKey == null)
+            RegistryKey productSubKey = companySubKey.OpenSubKey(ProductKey, true);
+            if (productSubKey == null)
             {
-                hpSubKey.CreateSubKey("CloudTargets");
-                hpCloudTargetsSubKey = hpSubKey.OpenSubKey("CloudTargets", true);
+                companySubKey.CreateSubKey(ProductKey);
+                productSubKey = companySubKey.OpenSubKey(ProductKey, true);
             }
-            return hpCloudTargetsSubKey;
+
+            RegistryKey targetsSubKey = productSubKey.OpenSubKey(TargetsKey, true);
+            if (targetsSubKey == null)
+            {
+                productSubKey.CreateSubKey(TargetsKey);
+                targetsSubKey = productSubKey.OpenSubKey(TargetsKey, true);
+            }
+
+            return targetsSubKey;
         }
 
         private static void AddValueToCloudTargets(string valueName, string[] value)
         {
-            RegistryKey cloudTargets = SetupHPKey();
+            RegistryKey cloudTargets = SetupTargetsKey();
             cloudTargets.SetValue(valueName, value, RegistryValueKind.MultiString);
         }
 
         private static void RemoveValueFromCloudTargets(string valueName)
         {
-            RegistryKey cloudTargets = SetupHPKey();
+            RegistryKey cloudTargets = SetupTargetsKey();
             cloudTargets.DeleteValue(valueName);
         }
 
         private static Dictionary<string, string[]> GetValuesFromCloudTargets()
         {
-            RegistryKey cloudTargets = SetupHPKey();
+            RegistryKey cloudTargets = SetupTargetsKey();
             string[] allValues = cloudTargets.GetValueNames();
             Dictionary<string, string[]> result = new Dictionary<string, string[]>(allValues.Length);
             foreach (string value in allValues)

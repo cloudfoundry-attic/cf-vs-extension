@@ -10,28 +10,29 @@ namespace CloudFoundry.VisualStudio.TargetStore
 {
     class CloudCredentialsManager
     {
-        static class CloudCredentials
+        private static string GetTargetString(Uri targetUri, string username)
         {
-            private static string GetTargetString(Uri targetUri, string username)
-            {
-                UriBuilder uriBuilder = new UriBuilder(targetUri);
-                uriBuilder.UserName = HttpUtility.UrlEncode(username);
-                return uriBuilder.Uri.AbsoluteUri;
-            }
+            UriBuilder uriBuilder = new UriBuilder(targetUri);
+            uriBuilder.UserName = HttpUtility.UrlEncode(username);
+            return uriBuilder.Uri.AbsoluteUri;
+        }
 
-            public static void Save(Uri targetUri, string username, string password)
+        public static void Save(Uri targetUri, string username, string password)
+        {
+            using (Credential creds = new Credential())
             {
-                Credential creds = new Credential();
                 creds.Target = GetTargetString(targetUri, username);
                 creds.Username = username;
                 creds.Password = password;
                 creds.PersistenceType = PersistenceType.LocalComputer;
                 creds.Save();
             }
+        }
 
-            public static void Delete(Uri targetUri, string username)
+        public static void Delete(Uri targetUri, string username)
+        {
+            using (Credential creds = new Credential())
             {
-                Credential creds = new Credential();
                 creds.Target = GetTargetString(targetUri, username);
                 creds.PersistenceType = PersistenceType.LocalComputer;
 
@@ -40,10 +41,12 @@ namespace CloudFoundry.VisualStudio.TargetStore
                     creds.Delete();
                 }
             }
+        }
 
-            public static string GetPassword(Uri targetUri, string username)
+        public static string GetPassword(Uri targetUri, string username)
+        {
+            using (Credential creds = new Credential())
             {
-                Credential creds = new Credential();
                 creds.Target = GetTargetString(targetUri, username);
                 creds.PersistenceType = PersistenceType.LocalComputer;
 
@@ -54,7 +57,7 @@ namespace CloudFoundry.VisualStudio.TargetStore
                 }
                 else
                 {
-                    return string.Empty;
+                    return null;
                 }
             }
         }

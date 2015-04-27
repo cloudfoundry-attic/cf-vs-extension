@@ -71,10 +71,12 @@ namespace CloudFoundry.VisualStudio.Model
         {
             CloudFoundryClient client = new CloudFoundryClient(this.target.TargetUrl, this.CancellationToken);
 
+            string password = CloudCredentialsManager.GetPassword(this.target.TargetUrl, this.target.Email);
+
             var authenticationContext = await client.Login(new CloudCredentials()
             {
                 User = this.target.Email, 
-                Password = this.target.Password
+                Password = password
             });
 
             List<Organization> result = new List<Organization>();

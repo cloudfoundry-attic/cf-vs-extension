@@ -8,10 +8,22 @@ namespace CloudFoundry.VisualStudio.TargetStore
 {
     public class CloudTarget
     {
-        private static readonly string[] V2ApiTags = new string[] { "APIv2" };
+        private enum CloudTargetPart
+        {
+            TypeTag = 0,
+            TargetUrl = 1,
+            Description = 2,
+            Email = 3,
+            IgnoreSSLErrors = 4,
+            Version = 5
+        }
+
+        private const int CloudTargetPartsCount = 6;
+        
+        // Increase the * part in v2-* any time there's a breaking change
+        private static readonly string[] V2ApiTags = new string[] { "v2-1" };
 
         private string email;
-        private string password;
         private Uri targetUrl;
         private Guid targetId;
         private string description;
@@ -22,12 +34,11 @@ namespace CloudFoundry.VisualStudio.TargetStore
         {
         }
 
-        public static CloudTarget CreateV2Target(string password, Uri targetUri, string description, string email, bool ignoreSSLErrors, string version)
+        public static CloudTarget CreateV2Target(Uri targetUri, string description, string email, bool ignoreSSLErrors, string version)
         {
             return new CloudTarget()
             {
                 targetId = Guid.NewGuid(),
-                password = password,
                 targetUrl = targetUri,
                 description = description,
                 email = email,
@@ -44,20 +55,18 @@ namespace CloudFoundry.VisualStudio.TargetStore
                 throw new ArgumentException("Invalid registry setting.", "registryText");
             }
 
-            string apiTypeTag = registryText[0];
+            string apiTypeTag = registryText[(int)CloudTargetPart.TypeTag];
 
             if (CloudTarget.V2ApiTags.Contains(apiTypeTag))
             {
 
-                Uri targetUrl = new Uri(registryText[1]);
-                string token = registryText[2];
-                string description = registryText[3];
-                string email = registryText[4];
+                Uri targetUrl = new Uri(registryText[(int)CloudTargetPart.TargetUrl]);
+                string description = registryText[(int)CloudTargetPart.Description];
+                string email = registryText[(int)CloudTargetPart.Email];
+                bool ignoreSSLErrors = Convert.ToBoolean((int)CloudTargetPart.IgnoreSSLErrors);
+                string version = registryText[(int)CloudTargetPart.Version];
 
-                bool ignoreSSLErrors = Convert.ToBoolean(registryText[5]);
-                string version = registryText[6];
-
-                CloudTarget registryTarget = CloudTarget.CreateV2Target(token, targetUrl, description, email, ignoreSSLErrors, version);
+                CloudTarget registryTarget = CloudTarget.CreateV2Target(targetUrl, description, email, ignoreSSLErrors, version);
 
                 registryTarget.TargetId = Guid.Parse(target.Key);
                 return registryTarget;
@@ -70,29 +79,20 @@ namespace CloudFoundry.VisualStudio.TargetStore
 
         public string[] ToRegistryText()
         {
+            string[] result = new string[CloudTargetPartsCount];
+            result[(int)CloudTargetPart.TypeTag] = CloudTarget.V2ApiTags[0];
+            result[(int)CloudTargetPart.TargetUrl] = this.TargetUrl.OriginalString;
+            result[(int)CloudTargetPart.Description] = this.Description;
+            result[(int)CloudTargetPart.Email] = this.Email;
+            result[(int)CloudTargetPart.IgnoreSSLErrors] = this.ignoreSSLErrors.ToString();
+            result[(int)CloudTargetPart.Version] = this.version;
 
-            return new string[] {
-                CloudTarget.V2ApiTags[0], 
-                this.TargetUrl.OriginalString,
-                this.Password,
-                this.Description,
-                this.Email,
-                this.ignoreSSLErrors.ToString(),
-                this.version
-            };
+            return result;
         }
 
         public override string ToString()
         {
             return this.DisplayName;
-        }
-
-        public string Password
-        {
-            get
-            {
-                return password;
-            }
         }
 
         public string Version
