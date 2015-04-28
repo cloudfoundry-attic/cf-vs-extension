@@ -56,7 +56,6 @@ namespace CloudFoundry.VisualStudio
 
 
         List<int> dynamicExtenderProviderCookies = new List<int>();
-        ObjectExtenders extensionManager;
 
         DTE dte;
         internal readonly Lazy<RunningDocumentTable> rdt;
@@ -113,8 +112,6 @@ namespace CloudFoundry.VisualStudio
             base.Initialize();
 
             base.RegisterEditorFactory(new PublishXmlEditorFactory());
-
-            rdt.Value.Advise(new RunningDocTableEvents(this));
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;

@@ -69,13 +69,13 @@ namespace CloudFoundry.VisualStudio.Model
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
-            CloudFoundryClient client = new CloudFoundryClient(this.target.TargetUrl, this.CancellationToken);
+            CloudFoundryClient client = new CloudFoundryClient(this.target.TargetUrl, this.CancellationToken, null, this.target.IgnoreSSLErrors);
 
             string password = CloudCredentialsManager.GetPassword(this.target.TargetUrl, this.target.Email);
 
             var authenticationContext = await client.Login(new CloudCredentials()
             {
-                User = this.target.Email, 
+                User = this.target.Email,
                 Password = password
             });
 
