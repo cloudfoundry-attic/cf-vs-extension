@@ -37,6 +37,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private string _services = string.Empty;
         private string _refreshToken = string.Empty;
         private bool _savedPassword = true;
+        private bool _skipSSLValidation = true;
 
         public string CFUser { get { return _username; } set { _username = value; } }
         
@@ -75,6 +76,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         
         public string CFMSBuildPlatform { get { return _platform; } set { _platform = value; } }
 
+        public bool CFSkipSSLValidation { get { return _skipSSLValidation; } set { _skipSSLValidation = value; } }
+        
         public void Initialize(Project project)
         {
             if (project == null)
@@ -110,6 +113,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     case "cfpassword": { CFPassword = node.InnerText; break; }
                     case "cfrefreshtoken": { CFRefreshToken = node.InnerText; break; }
                     case "cfsavedpassword": { if(node.InnerText == string.Empty) { CFSavedPassword = false; } else { CFSavedPassword = Convert.ToBoolean(node.InnerText); } break; }
+                    case "cfskipsslvalidation": { if (node.InnerText == string.Empty) { CFSkipSSLValidation = false; } else { CFSkipSSLValidation = Convert.ToBoolean(node.InnerText); } break; }
                     case "cfserveruri": { CFServerUri = node.InnerText; break; }
                     case "cforganization": { CFOrganization = node.InnerText; break; }
                     case "cfspace": { CFSpace = node.InnerText; break; }
@@ -162,5 +166,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             SaveToFile(configFile);
         }
+
     }
 }
