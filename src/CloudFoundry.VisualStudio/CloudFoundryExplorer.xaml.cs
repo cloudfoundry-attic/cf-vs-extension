@@ -113,6 +113,7 @@ namespace CloudFoundry.VisualStudio
                     if (target != null)
                     {
                         CloudTargetManager.SaveTarget(target);
+                        CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Password);
                         ReloadTargets();
                     }
                 }

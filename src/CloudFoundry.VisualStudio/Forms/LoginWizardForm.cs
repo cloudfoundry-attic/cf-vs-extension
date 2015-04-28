@@ -44,12 +44,19 @@ namespace CloudFoundry.VisualStudio.Forms
             get
             {
                 return CloudTarget.CreateV2Target(
-                            this.refreshToken,
                             new Uri(this.targetUrl),
                             string.Empty,
                             loginControl.Email,
                             loginControl.IgnoreSSLErrors,
                             this.version);
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return this.loginControl.Password;
             }
         }
 
@@ -174,15 +181,6 @@ namespace CloudFoundry.VisualStudio.Forms
                         creds.Password = this.loginControl.Password;
                         this.refreshToken = client.Login(creds).Result.Token.RefreshToken;
                         this.version = client.Info.GetInfo().Result.ApiVersion;
-
-                        /*
-                        PagedResponseCollection<ListAllStacksResponse> stacks = client.Stacks.ListAllStacks().Result;
-                        if (stacks.Where(a => a.Name == "win2012r2").Any() == false)
-                        {
-                            SetControlsForLoginError("Selected target does not contain a win2012r2 stack. \r\nPlease select a compatible target.");
-                            return;
-                        }
-                        */
 
                         if (reloginTarget != null)
                         {
