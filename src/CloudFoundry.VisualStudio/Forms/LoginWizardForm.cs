@@ -174,7 +174,7 @@ namespace CloudFoundry.VisualStudio.Forms
                         Logger.Info("Starting login process...");
                         targetUrl = this.loginControl.TargetUrl;
                         CancellationTokenSource cts = new CancellationTokenSource();
-                        client = new CloudFoundryClient(new Uri(this.loginControl.TargetUrl), cts.Token);
+                        client = new CloudFoundryClient(new Uri(this.loginControl.TargetUrl), cts.Token, null, loginControl.IgnoreSSLErrors);
 
                         CloudCredentials creds = new CloudCredentials();
                         creds.User = this.loginControl.Email;
