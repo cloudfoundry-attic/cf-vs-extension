@@ -52,6 +52,9 @@ namespace CloudFoundry.VisualStudio
     {
         private const string packageId = "cf-msbuild-tasks";
 
+        public const string extension = ".cf.pubxml";
+
+
         List<int> dynamicExtenderProviderCookies = new List<int>();
         ObjectExtenders extensionManager;
 
@@ -175,7 +178,7 @@ namespace CloudFoundry.VisualStudio
             AppPackage projectPackage = new AppPackage();
             projectPackage.Initialize(currentProject);
 
-            var dialog = new EditDialog(projectPackage);
+            var dialog = new EditDialog(projectPackage, currentProject);
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 
             if (dialog.ShowDialog().Value == false)
@@ -199,6 +202,7 @@ namespace CloudFoundry.VisualStudio
                     string projectPath = currentProject.FullName;
                     string solutionPath = Path.GetDirectoryName(dte.Solution.FullName);
                     string projectName = currentProject.Name;
+                    string profileName = dialog.PublishProfile;
                     bool localBuild = projectPackage.CFLocalBuild;
 
                     await System.Threading.Tasks.Task.Factory.StartNew(() =>
@@ -207,11 +211,11 @@ namespace CloudFoundry.VisualStudio
 
                         if (localBuild == true)
                         {
-                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=push.cf.pubxml ""{0}""", projectPath);
+                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile={1}{2} ""{0}""", projectPath, profileName, extension);
                         }
                         else
                         {
-                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=push.cf.pubxml /p:PUBLISH_WEBSITE={2} /p:CFAppPath=""{1}"" ""{0}""", projectPath, solutionPath, projectName);
+                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile={3}{4} /p:PUBLISH_WEBSITE={2} /p:CFAppPath=""{1}"" ""{0}""", projectPath, solutionPath, projectName, profileName, extension);
                         }
 
                         var startInfo = new ProcessStartInfo(msBuildPath)
@@ -252,7 +256,6 @@ namespace CloudFoundry.VisualStudio
             }
             return null;
         }
-
         #endregion
 
 
