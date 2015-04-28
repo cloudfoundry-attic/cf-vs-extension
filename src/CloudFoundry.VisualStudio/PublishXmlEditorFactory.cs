@@ -23,7 +23,7 @@ namespace CloudFoundry.VisualStudio
             AppPackage packageFile = new AppPackage();
             packageFile.LoadFromFile(pszMkDocument);
 
-            var dialog = new EditDialog(packageFile, false);
+            var dialog = new EditDialog(packageFile, null, false);
             dialog.ShowDialog();
 
             ppunkDocData = IntPtr.Zero;

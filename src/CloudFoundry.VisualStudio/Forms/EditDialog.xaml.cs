@@ -285,6 +285,7 @@ namespace CloudFoundry.VisualStudio
                         {
                             package.CFServerUri = target.TargetUrl.ToString();
                             package.CFUser = target.Email;
+                            package.CFSkipSSLValidation = target.IgnoreSSLErrors;
                           
                             CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Password);
 
@@ -316,7 +317,7 @@ namespace CloudFoundry.VisualStudio
 
             if (package != null)
             {
-                client = new CloudFoundryClient(new Uri(package.CFServerUri), new System.Threading.CancellationToken());
+                client = new CloudFoundryClient(new Uri(package.CFServerUri), new System.Threading.CancellationToken(), null, package.CFSkipSSLValidation);
 
                 if (package.CFRefreshToken != string.Empty)
                 {
