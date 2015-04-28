@@ -9,7 +9,7 @@ Visual Studio Extension
 Node types:
 
 - `CloudFoundryTarget`
- - actions: refresh, remove    
+ - actions: refresh, remove
  - details: version, url, username, ignore ssl errors
 - `Organization`
  - actions: refresh
@@ -83,6 +83,9 @@ Special node types
 
 ![Publish Flow](./publish-to-cloudfoundry.png)
 
+###Authentication in the profile editor
+
+![Authentication Flow](./authentication-in-profile-editor.png)
 
 ###Enabling a project to be published
 
