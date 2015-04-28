@@ -30,7 +30,7 @@ namespace CloudFoundry.VisualStudio
                 }
                 else
                 {
-                    ServicePointManager.ServerCertificateValidationCallback += SSLErrorsIgnorer.InternalCallback;
+                    ServicePointManager.ServerCertificateValidationCallback = null;
                 }
             }
         }

@@ -24,8 +24,6 @@ namespace CloudFoundry.VisualStudio
         public CloudFoundryExplorer()
         {
             InitializeComponent();
-
-            SSLErrorsIgnorer.Ignore = true;
             ReloadTargets();
         }
 

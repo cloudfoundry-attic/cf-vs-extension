@@ -23,7 +23,6 @@
                 <ResourceDictionary Source="Style\GridStyle.xaml" />
                 <ResourceDictionary Source="Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <cf:SSLErrorsIgnorer x:Key="sslIgnorer" />
             <converters:IsNullConverter x:Key="IsNull"/>
             <converters:VisiblityConverter x:Key="Visible" Reversed="False"/>
             
@@ -43,12 +42,6 @@
 
 
         <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
-            <ToggleButton Name="ToggleIgnoreSSLErrors"
-                    Height="22" Width="22"
-                    IsChecked="{Binding Source={StaticResource sslIgnorer}, Path=Ignore}"
-                    Style="{DynamicResource OnOffToggleImageStyle}">
-            </ToggleButton>
-
             <Button Name="RefreshButton" Height="22" Width="22" Click="RefreshButton_Click">
                 <Image Source="{StaticResource RefreshImage}" />
             </Button>
