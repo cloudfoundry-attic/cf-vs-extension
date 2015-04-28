@@ -40,6 +40,14 @@ namespace CloudFoundry.VisualStudio
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(CloudFoundryExplorerToolWindow))]
     [Guid(GuidList.guidCloudFoundry_VisualStudioPkgString)]
+
+    [ProvideEditorFactory(typeof(PublishXmlEditorFactory), 101)]
+    [ProvideEditorExtension(typeof(PublishXmlEditorFactory), ".pubxml", 100)]
+    // Our Editor supports Find and Replace therefore we need to declare support for LOGVIEWID_TextView.
+    // This attribute declares that your EditorPane class implements IVsCodeWindow interface
+    // used to navigate to find results from a "Find in Files" type of operation.
+    [ProvideEditorLogicalView(typeof(PublishXmlEditorFactory), VSConstants.LOGVIEWID.TextView_string)]
+
     public sealed class CloudFoundry_VisualStudioPackage : Package
     {
         private const string packageId = "cf-msbuild-tasks";
@@ -100,6 +108,8 @@ namespace CloudFoundry.VisualStudio
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
+
+            base.RegisterEditorFactory(new PublishXmlEditorFactory());
 
             rdt.Value.Advise(new RunningDocTableEvents(this));
 
