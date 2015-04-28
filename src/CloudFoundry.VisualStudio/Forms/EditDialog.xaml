@@ -4,7 +4,7 @@
         xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
         xmlns:src ="clr-namespace:CloudFoundry.VisualStudio.Model"
         xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
-        Title="Cloud Foundry Publish Profile" Height="550" Width="600">
+        Title="Cloud Foundry Publish Profile" Height="550" Width="600" WindowStartupLocation="CenterScreen">
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
            <ResourceDictionary.MergedDictionaries>
