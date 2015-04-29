@@ -4,13 +4,13 @@
         xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
         xmlns:src ="clr-namespace:CloudFoundry.VisualStudio.Model"
         xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
-        Title="Cloud Foundry Publish Profile" Height="550" Width="600" WindowStartupLocation="CenterScreen">
+        Title="Cloud Foundry Publish Profile" Height="625" Width="450" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
-           <ResourceDictionary.MergedDictionaries>
-             <ResourceDictionary Source="..\Style\Images.xaml" />
-           </ResourceDictionary.MergedDictionaries>
-           <converters:VisiblityConverter x:Key="Visible" Reversed="True"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:VisiblityConverter x:Key="Visible" Reversed="True"/>
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
 
@@ -20,89 +20,114 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="70"/>
-        </Grid.ColumnDefinitions>
-        <Label Content="Application Deployment Information" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="5,10,5,5"></Label>
-
-        <Label Content="Target" Grid.Row="1" Grid.Column="0" Margin="5"></Label>
-        <Image Width="16" Height="16" x:Name="StatusIcon" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" Margin="5"></Image>
-        <TextBox Name="TargetInfo" Grid.Row="1" Grid.Column="1" Margin="5"  Height="21" Text="{Binding Path=CFServerUri}"></TextBox>
-        <Button Content="Edit.." Grid.Row="1" Grid.Column="2" Margin="5" Width="60" Height="21" Click="ChangeTarget_Click" x:Name="EditButton" ></Button>
-
-        <Label Content="Organization" Grid.Row="2" Grid.Column="0" Margin="5"></Label>
-        <ComboBox Name="OrgCombo" Text="{Binding Path=CFOrganization}" Grid.Row="2"   Height="21" Grid.Column="1" Margin="5" SelectionChanged="OrgCombo_SelectionChanged"></ComboBox>
-
-        <Label Content="Space" Grid.Row="3" Grid.Column="0" Margin="5"></Label>
-        <ComboBox Name="SpacesCombo" Text="{Binding Path=CFSpace}" Grid.Row="3"  Height="21" Grid.Column="1" Margin="5" SelectionChanged="SpacesCombo_SelectionChanged"></ComboBox>
-
-        <Label Content="Stack" Grid.Row="4" Grid.Column="0" Margin="5"></Label>
-        <ComboBox Name="StacksCombo" Text="{Binding Path=CFStack}" Grid.Row="4"  Height="21" Grid.Column="1" Margin="5"></ComboBox>
-
-
-        <Label Content="Routes" Grid.Row="5" Grid.Column="0" Margin="5"></Label>
-        <TextBox x:Name="HostName" Grid.Row="5" Width="180" HorizontalAlignment="Left"  Height="21" VerticalAlignment="Center" Grid.Column="1" Margin="5"></TextBox>
-        <TextBlock IsHitTestVisible="False" Text="Host Name" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5" Width="auto" Foreground="DarkGray">
-            <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Text, ElementName=HostName}" Value="">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
-        <ComboBox Name="DomainsCombo" Grid.Row="5" Grid.Column="1" Margin="5" Width="180" Height="21"  HorizontalAlignment="Right"></ComboBox>
-
-        <Label Content="Application Name" Grid.Row="6" Grid.Column="0" Margin="5"></Label>
-        <TextBox Text="{Binding Path= CFAppName}" x:Name="AppName"  Grid.Row="6" Grid.Column="1" Margin="5" Height="21"></TextBox>
-
-        <Label Content="Memory" Grid.Row="7" Grid.Column="0" Margin="5"></Label>
-        <TextBox Text="{Binding Path= CFMemory}" PreviewTextInput="NumberValidationTextBox" x:Name="AppMemory"  Grid.Row="7" Height="21" Grid.Column="1" Margin="5"></TextBox>
-        <TextBlock IsHitTestVisible="False" Text="MB" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,5,10,5" Foreground="Black">
-        </TextBlock>
-
-
-        <Label Content="Instances" Grid.Row="8" Grid.Column="0" Margin="5"></Label>
-        <TextBox Text="{Binding Path= CFInstancesNumber}" PreviewTextInput="NumberValidationTextBox" x:Name="AppInstances"  Grid.Row="8" Height="21" Grid.Column="1" Margin="5"></TextBox>
-
-        <Label Content="Services" Grid.Row="9" Grid.Column="0" Margin="5"></Label>
-        <TextBox Text="{Binding Path= CFServices}" Grid.Row="9" Grid.Column="1" Margin="5" Height="21" x:Name="Services" ></TextBox>
-        <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple services can be specified by using semicolon between each service(name,type,plan) definition" HorizontalAlignment="Left" Width="16" Height="16" Grid.Column="2" Grid.Row="9" Margin="5"></Image>
-  
-        <Label Content="Local Build" Grid.Row="10" Grid.Column="0" Margin="5"></Label>
-        <CheckBox IsChecked="{Binding Path=CFLocalBuild}" Name="LocalBuild" Grid.Row="10" Grid.Column="1"  Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"></CheckBox>
-        <Image Source="{StaticResource StatusUnknown}" ToolTip="When set to false entire solution will be sent to CF" Width="16" Height="16" Grid.Column="2" Grid.Row="10" Margin="5" HorizontalAlignment="Left"></Image>
-
-
-        <StackPanel Grid.Row="11" Grid.Column="1" Visibility="{Binding Path=IsChecked, ElementName=LocalBuild, Converter={StaticResource Visible}}" Margin="0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="0" Margin="-2,-2,-2,0" Grid.Row="0">
+            <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Cloud Foundry publish profile:" TextBlock.FontWeight="Bold" Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0" Margin="2.5"></Label>
+                <Label Content="Path" Grid.Row="1" Grid.Column="0" Margin="2.5"></Label>
+                <TextBox x:Name="ProfilePath" Grid.Row="1" Height="21" VerticalAlignment="Center" Grid.Column="1" Margin="3,5,44,5" IsReadOnly="True"></TextBox>
+                <Button Content="..." x:Name="LoadButton" Grid.Column="1" Grid.Row="1" Width="29" HorizontalAlignment="Right" Click="Load_Click"  Margin="0,5,10,6"/>
+                <Button Content="Save As..." x:Name="SaveAs" Grid.Column="1" Grid.Row="2" Width="100" HorizontalAlignment="Right" Click="SaveAs_Click"  Margin="20, 2.5, 45, 10"/>
+                <Button Content="Save" x:Name="Save" Grid.Column="1" Grid.Row="2" Width="100" HorizontalAlignment="Right" Margin="20, 2.5, 150, 10" Click="Save_Click" />
 
-                <Label Content="CF MSBuild Configuration" Grid.Row="0" Grid.Column="0"></Label>
-                <TextBox Text="{Binding Path= CFMSBuildConfiguration}" Grid.Row="0" Grid.Column="1" Height="21" x:Name="Configuration"></TextBox>
-                <TextBlock IsHitTestVisible="False" Text="Default" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5" Foreground="DarkGray">
+            </Grid>
+        </Border>
+        <GroupBox Header="Cloud Foundry target information" Grid.Row="1" Margin="10,5,10,5">
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="25"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Target URL" Grid.Row="0" Grid.Column="0" Margin="2.5" ></Label>
+                <Image Width="16" Height="16" x:Name="StatusIcon" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"></Image>
+                <TextBox Name="TargetInfo" Grid.Row="0" Grid.Column="1" Height="21" Margin="2.5" Text="{Binding Path=CFServerUri}"></TextBox>
+
+                <Label Content="Organization" Grid.Row="1" Grid.Column="0" Margin="2.5"></Label>
+                <ComboBox Name="OrgCombo" Text="{Binding Path=CFOrganization}" Grid.Row="1"   Height="21" Grid.Column="1" SelectionChanged="OrgCombo_SelectionChanged"></ComboBox>
+
+                <Label Content="Space" Grid.Row="2" Grid.Column="0"></Label>
+                <ComboBox Name="SpacesCombo" Text="{Binding Path=CFSpace}" Grid.Row="2"  Height="21" Grid.Column="1" SelectionChanged="SpacesCombo_SelectionChanged"></ComboBox>
+                <Button Content="Edit.." Grid.Row="3" Grid.Column="0" Width="100" Margin="2.5" Height="21" Grid.ColumnSpan="2" Click="ChangeTarget_Click" x:Name="EditButton" HorizontalAlignment="Left" ></Button>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="2" Header="Application information" Margin="10,5,10,5">
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="25"/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Name" Grid.Row="0" Grid.Column="0" Margin="2.5"></Label>
+                <TextBox Text="{Binding Path= CFAppName}" x:Name="AppName" Grid.ColumnSpan="2"  Grid.Row="0" Grid.Column="1" Margin="2.5" Height="21"></TextBox>
+                <Label Content="Stack" Grid.Row="1" Grid.Column="0" Margin="2.5"></Label>
+                <ComboBox Name="StacksCombo" Text="{Binding Path=CFStack}" Grid.Row="1"  Height="21" Grid.Column="1" Margin="2.5"></ComboBox>
+                <Label Content="Routes" Grid.Row="2" Grid.Column="0" Margin="2.5"></Label>
+                <TextBox x:Name="HostName" Grid.Row="2" Height="21" VerticalAlignment="Center" Grid.Column="1" Margin="2.5"></TextBox>
+                <TextBlock IsHitTestVisible="False" Text="Host Name" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8" Width="auto" Foreground="DarkGray">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=HostName}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <ComboBox Name="DomainsCombo" Grid.Row="2" Grid.Column="2" Margin="2.5" Height="21" ></ComboBox>
+
+                <Label Content="Memory" Grid.Row="3" Grid.Column="0" Margin="2.5"></Label>
+                <TextBox Text="{Binding Path= CFMemory}" PreviewTextInput="NumberValidationTextBox" x:Name="AppMemory"  Grid.Row="3" Height="21" Grid.Column="1" Margin="2.5"></TextBox>
+                <TextBlock IsHitTestVisible="False" Text="MB" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" Foreground="Black" RenderTransformOrigin="0.579,0.492">
+                </TextBlock>
+
+
+                <Label Content="Instances" Grid.Row="4" Grid.Column="0" Margin="2.5"></Label>
+                <TextBox Text="{Binding Path= CFInstancesNumber}" PreviewTextInput="NumberValidationTextBox" x:Name="AppInstances"  Grid.Row="4" Height="21" Grid.Column="1" Margin="2.5"></TextBox>
+
+                <Label Content="Services" Grid.Row="5" Grid.Column="0" Margin="2.5"></Label>
+                <TextBox Text="{Binding Path= CFServices}" Grid.Row="5" Grid.Column="1" Margin="2.5" Height="21" Grid.ColumnSpan="2" x:Name="Services" ></TextBox>
+                <Image Source="{StaticResource StatusUnknown}" ToolTip="Multiple services can be specified by using semicolon between each service(name,type,plan) definition" HorizontalAlignment="Left" Width="16" Height="16" Grid.Column="3" Grid.Row="5" Margin="2.5"></Image>
+
+                <Label Content="Local Build" Grid.Row="6" Grid.Column="0" Margin="2.5"></Label>
+                <CheckBox Click="LocalBuild_Click" IsChecked="{Binding Path=CFLocalBuild}" Name="LocalBuild" Grid.Row="6" Grid.Column="1"  Visibility="Visible" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2.5"></CheckBox>
+                <Image Source="{StaticResource StatusUnknown}" ToolTip="When set to false entire solution will be sent to CF" Width="16" Height="16" Grid.Column="3" Grid.Row="6" Margin="2.5" HorizontalAlignment="Left"></Image>
+
+                <Label Content="Configuration" Grid.Row="7" Margin="2.5" Grid.Column="0"></Label>
+                <TextBox Text="{Binding Path= CFMSBuildConfiguration}" Grid.Row="7" Margin="2.5" Grid.Column="1" Height="21" x:Name="Configuration"></TextBox>
+                <TextBlock IsHitTestVisible="False" Text="Default" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8" Foreground="DarkGray">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -116,9 +141,9 @@
                 </TextBlock>
 
 
-                <Label Content="CF MSBuild Platform" Grid.Row="1" Grid.Column="0"></Label>
-                <TextBox Text="{Binding Path= CFMSBuildPlatform}" Grid.Row="1" Grid.Column="1" x:Name="Platform" Height="21"></TextBox>
-                <TextBlock IsHitTestVisible="False" Text="Default" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5" Foreground="DarkGray">
+                <Label Content="Platform" Margin="2.5" Grid.Row="8" Grid.Column="0"></Label>
+                <TextBox Text="{Binding Path= CFMSBuildPlatform}" Grid.Row="8" Grid.Column="1" Margin="2.5" x:Name="Platform" Height="21"></TextBox>
+                <TextBlock IsHitTestVisible="False" Text="Default" Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8" Foreground="DarkGray">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -130,17 +155,20 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-
-
             </Grid>
-        </StackPanel>
-
-
-
-        <Button Content="Save As..." x:Name="SaveAs" Grid.Column="0" Grid.Row="12" Width="100" HorizontalAlignment="Right" Click="SaveAs_Click"  Margin="5"></Button>
-        <Button Content="Load Profile" x:Name="LoadButton" Grid.Column="1" Grid.Row="12" Width="100" HorizontalAlignment="Left" Click="Load_Click"  Margin="5"></Button>
-        <Button Content="Publish" Name="Publish" Grid.Column="1" Grid.Row="12" Width="100" HorizontalAlignment="Right"  Click="Publish_Click" Margin="5"></Button>
-        
+        </GroupBox>
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="Publish" Name="Publish" Grid.Column="1" Width="100" HorizontalAlignment="Left"  Click="Publish_Click" Margin="5,0,2.5,10"/>
+            <Button Content="Cancel" Name="Cancel" Grid.Column="2" Width="100" HorizontalAlignment="Left" Click="Cancel_Click"  Margin="2.5,0,10,10"/>
+        </Grid>
 
     </Grid>
 </ui:DialogWindow>
