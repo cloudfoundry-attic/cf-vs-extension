@@ -16,6 +16,7 @@ using NuGet.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using CloudFoundry.VisualStudio.Model;
 using CloudFoundry.VisualStudio.ProjectPush;
+using CloudFoundry.VisualStudio.Forms;
 
 namespace CloudFoundry.VisualStudio
 {
@@ -173,7 +174,16 @@ namespace CloudFoundry.VisualStudio
             Project currentProject = GetSelectedProject(dte);
 
             AppPackage projectPackage = new AppPackage();
-            projectPackage.Initialize(currentProject);
+
+            try
+            {
+                projectPackage.Initialize(currentProject);
+            }
+            catch (Exception ex)
+            {
+                MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Cannot load default profile. File is corrupt."));
+                Logger.Error("Error loading default profile", ex);
+            }
 
             var dialog = new EditDialog(projectPackage, currentProject);
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;

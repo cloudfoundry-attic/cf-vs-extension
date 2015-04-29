@@ -34,32 +34,28 @@ namespace CloudFoundry.VisualStudio
         public string PublishProfile { get; set; }
         private CloudFoundryClient client;
         private Project currentProj;
-        public EditDialog(AppPackage package, Project currentProject, bool AllowPublish = true)
+        public EditDialog(AppPackage package, Project currentProject)
         {
             InitializeComponent();
-            
+
             this.currentProj = currentProject;
-            
+
             this.PublishProfile = "push";
             this.DataContext = package;
-            if (AllowPublish == false)
-            {
-                Publish.Visibility = System.Windows.Visibility.Hidden;
-            }
             Init(package);
         }
 
         private async void Init(AppPackage package)
         {
             if (package.CFServerUri != string.Empty)
-            {   
+            {
                 this.IsEnabled = false;
                 await InitClient(package);
                 await Load(package).ContinueWith((antecedent) =>
                 {
                     if (antecedent.IsFaulted)
                     {
-                        var errorMessages=new List<string>();
+                        var errorMessages = new List<string>();
                         ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
                         MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
                     }
@@ -94,7 +90,7 @@ namespace CloudFoundry.VisualStudio
                 default: break;
             }
 
-            return  Converters.ImageConverter.ConvertBitmapToBitmapImage(bmp);
+            return Converters.ImageConverter.ConvertBitmapToBitmapImage(bmp);
         }
         private void GetRoutes(AppPackage package)
         {
@@ -121,7 +117,7 @@ namespace CloudFoundry.VisualStudio
 
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
-            SaveContext();
+
             System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog();
             if (currentProj != null)
             {
@@ -130,28 +126,35 @@ namespace CloudFoundry.VisualStudio
             saveDialog.Filter = string.Format(CultureInfo.InvariantCulture, "CF Publish file | *{0}", CloudFoundry_VisualStudioPackage.extension);
             if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                AppPackage package = this.DataContext as AppPackage;
-                if (package != null)
-                {
-                    package.SaveToFile(saveDialog.FileName);
-                    if (currentProj != null)
-                    {
-                        currentProj.ProjectItems.AddFromFile(saveDialog.FileName);
-                    }
-                }
+                SaveCurrentToFile(saveDialog.FileName);
+                this.ProfilePath.Text = saveDialog.FileName;
+
             }
 
-            this.DialogResult = false;
-            this.Close();
+
+        }
+
+        private void SaveCurrentToFile(string filepath)
+        {
+            SaveContext();
+            AppPackage package = this.DataContext as AppPackage;
+            if (package != null)
+            {
+                package.SaveToFile(filepath);
+                if (currentProj != null)
+                {
+                    currentProj.ProjectItems.AddFromFile(filepath);
+                }
+            }
         }
 
         private void SaveContext()
         {
-         AppPackage package = this.DataContext as AppPackage;
-         if (package != null)
-         {
-             package.CFRoutes = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", HostName.Text, DomainsCombo.Text);
-         }
+            AppPackage package = this.DataContext as AppPackage;
+            if (package != null)
+            {
+                package.CFRoutes = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", HostName.Text, DomainsCombo.Text);
+            }
         }
 
         private void Publish_Click(object sender, RoutedEventArgs e)
@@ -169,7 +172,6 @@ namespace CloudFoundry.VisualStudio
         private void Load_Click(object sender, RoutedEventArgs e)
         {
             this.IsEnabled = false;
-            this.DataContext = null;
             System.Windows.Forms.OpenFileDialog dialogOpen = new System.Windows.Forms.OpenFileDialog();
             if (currentProj != null)
             {
@@ -179,8 +181,20 @@ namespace CloudFoundry.VisualStudio
 
             if (dialogOpen.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                this.DataContext = null;
                 AppPackage package = new AppPackage();
-                package.LoadFromFile(dialogOpen.FileName);
+                try
+                {
+                    package.LoadFromFile(dialogOpen.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "Cannot load {0}. File is corrupt.", dialogOpen.FileName));
+                    Logger.Error("Error loading profile file", ex);
+                    this.IsEnabled = true;
+                    return;
+                }
+
                 this.PublishProfile = System.IO.Path.GetFileName(dialogOpen.FileName).Replace(CloudFoundry_VisualStudioPackage.extension, "");
                 if (package != null)
                 {
@@ -189,7 +203,7 @@ namespace CloudFoundry.VisualStudio
             }
             else
             {
-                this.IsEnabled = true; 
+                this.IsEnabled = true;
             }
         }
 
@@ -201,6 +215,14 @@ namespace CloudFoundry.VisualStudio
 
             Dispatcher.Invoke(() =>
             {
+                this.ProfilePath.Text = package.ConfigFile;
+                this.LocalBuild.IsChecked = package.CFLocalBuild;
+                LocalBuild_Click(LocalBuild, null);
+                if (package.CFLocalBuild)
+                {
+                    this.Platform.Text = package.CFMSBuildPlatform;
+                    this.Configuration.Text = package.CFMSBuildConfiguration;
+                }
 
                 OrgCombo.DisplayMemberPath = "Name";
                 OrgCombo.ItemsSource = orgs;
@@ -213,11 +235,11 @@ namespace CloudFoundry.VisualStudio
 
             string selectedOrg = string.Empty;
             string selectedSpace = string.Empty;
-            
+
             if (package.CFOrganization != string.Empty)
             {
                 selectedOrg = orgs.Where(o => o.Name == package.CFOrganization).FirstOrDefault().EntityMetadata.Guid;
-                
+
                 var spaces = await client.Organizations.ListAllSpacesForOrganization(new Guid(selectedOrg));
 
                 if (package.CFSpace != string.Empty)
@@ -286,14 +308,14 @@ namespace CloudFoundry.VisualStudio
                             package.CFServerUri = target.TargetUrl.ToString();
                             package.CFUser = target.Email;
                             package.CFSkipSSLValidation = target.IgnoreSSLErrors;
-                          
+
                             CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Password);
 
                             Dispatcher.Invoke(() =>
                             {
                                 TargetInfo.Text = package.CFServerUri;
                             });
-                            
+
                             await InitClient(package);
                         }
                     }
@@ -325,12 +347,13 @@ namespace CloudFoundry.VisualStudio
                     {
                         await client.Login(package.CFRefreshToken).ConfigureAwait(false);
                         imageType = "refresh";
-                        message= "You are using a specific token to login";
+                        message = "You are using a specific token to login";
                     }
                     catch (Exception ex)
                     {
                         imageType = "error";
-                        message= "Could not login using the token in your profile. " + ex.Message;
+                        message = string.Format(CultureInfo.InvariantCulture, "Could not login using the token in your profile. {0}", ex.Message);
+                        Logger.Warning(message);
                         SetStatusInfo(imageType, message);
                         return;
                     }
@@ -395,12 +418,12 @@ namespace CloudFoundry.VisualStudio
                         catch (Exception ex)
                         {
                             imageType = "error";
-                            message =  string.Format(CultureInfo.InvariantCulture, "{0}. Your password is saved in clear text in the profile!",ex.Message);
+                            message = string.Format(CultureInfo.InvariantCulture, "{0}. Your password is saved in clear text in the profile!", ex.Message);
                             SetStatusInfo(imageType, message);
                             return;
                         }
                         imageType = "warning";
-                        message =  "Target login was successful, but you password is saved in clear text in profile!";
+                        message = "Target login was successful, but you password is saved in clear text in profile!";
                     }
                 }
             }
@@ -457,6 +480,56 @@ namespace CloudFoundry.VisualStudio
                     DomainsCombo.SelectedValuePath = "EntityMetadata.Guid";
                 });
             }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(this.ProfilePath.Text))
+            {
+                var messagebox = MessageBoxHelper.WarningQuestion("Are you sure you want to exit? Your unsaved the changes will be lost.");
+                if (messagebox == System.Windows.Forms.DialogResult.No)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                AppPackage package = new AppPackage();
+                package.LoadFromFile(this.ProfilePath.Text);
+                if (!package.IsEqualTo(this.DataContext as AppPackage))
+                {
+                    var messagebox = MessageBoxHelper.WarningQuestion("Are you sure you want to exit? Your unsaved the changes will be lost.");
+                    if (messagebox == System.Windows.Forms.DialogResult.No)
+                    {
+                        return;
+                    }
+                }
+            }
+            this.Close();
+        }
+
+
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(this.ProfilePath.Text))
+            {
+                SaveAs_Click(sender, e);
+                return;
+            }
+
+            SaveCurrentToFile(this.ProfilePath.Text);
+            MessageBoxHelper.DisplayInfo("Target successfully saved.");
+
+
+
+        }
+
+        private void LocalBuild_Click(object sender, RoutedEventArgs e)
+        {
+            var checkBox = sender as CheckBox;
+            this.Configuration.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
+            this.Platform.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
         }
 
     }
