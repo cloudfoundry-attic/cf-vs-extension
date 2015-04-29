@@ -168,6 +168,7 @@
             this.labelError.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelError.AutoSize = true;
             this.labelError.Location = new System.Drawing.Point(29, 240);
+            this.labelError.MaximumSize = new System.Drawing.Size(460, 0);
             this.labelError.Name = "labelError";
             this.labelError.Size = new System.Drawing.Size(0, 13);
             this.labelError.TabIndex = 52;
