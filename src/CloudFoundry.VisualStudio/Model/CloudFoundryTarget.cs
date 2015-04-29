@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.IdentityModel.Tokens;
 using System.Threading.Tasks;
 
 namespace CloudFoundry.VisualStudio.Model
@@ -83,19 +84,10 @@ namespace CloudFoundry.VisualStudio.Model
 
             PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
 
+            JwtSecurityToken token = new JwtSecurityToken(authenticationContext.Token.AccessToken);
+            Guid userId = new Guid(token.Subject);
 
-            var users = await client.Users.ListAllUsers(new RequestOptions() { Query = string.Format(CultureInfo.InvariantCulture, "username:{0}", this.target.Email) });
-
-            Guid userId = new Guid();
-
-            GetUserSummaryResponse userSummary = null;
-
-            if (users.Properties.TotalResults > 0)
-            {
-                userId = users[0].EntityMetadata.Guid;
-
-                userSummary = await client.Users.GetUserSummary(userId);
-            }
+            GetUserSummaryResponse userSummary = await client.Users.GetUserSummary(userId);
 
             while (orgs != null && orgs.Properties.TotalResults != 0)
             {
