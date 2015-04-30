@@ -110,14 +110,14 @@
                 <ComboBox Name="DomainsCombo" Grid.Row="2" Grid.Column="2" Margin="2.5" Height="21" ></ComboBox>
 
                 <Label Content="Memory" Grid.Row="3" Grid.Column="0" Margin="2.5"></Label>
-                <TextBox Text="{Binding Path= CFMemory}" PreviewTextInput="NumberValidationTextBox" x:Name="AppMemory" 
+                <TextBox Text="{Binding Path= CFAppMemory}" PreviewTextInput="NumberValidationTextBox" x:Name="AppMemory" 
                          Grid.Row="3" Height="21" Grid.Column="1" Margin="2.5"></TextBox>
                 <TextBlock IsHitTestVisible="False" Text="MB" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" Foreground="Black" RenderTransformOrigin="0.579,0.492">
                 </TextBlock>
 
 
                 <Label Content="Instances" Grid.Row="4" Grid.Column="0" Margin="2.5"></Label>
-                <TextBox Text="{Binding Path= CFInstancesNumber}" PreviewTextInput="NumberValidationTextBox" 
+                <TextBox Text="{Binding Path= CFAppInstances}" PreviewTextInput="NumberValidationTextBox" 
                          x:Name="AppInstances"  Grid.Row="4" Height="21" Grid.Column="1" Margin="2.5"></TextBox>
 
                 <Label Content="Services" Grid.Row="5" Grid.Column="0" Margin="2.5"></Label>

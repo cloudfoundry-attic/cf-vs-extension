@@ -59,9 +59,9 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         public string CFSpace { get { return _space; } set { _space = value; } }
 
-        public int CFMemory { get { return _memory; } set { _memory = value; } }
+        public int CFAppMemory { get { return _memory; } set { _memory = value; } }
 
-        public int CFInstancesNumber { get { return _instances; } set { _instances = value; } }
+        public int CFAppInstances { get { return _instances; } set { _instances = value; } }
 
         public string CFStack { get { return _stack; } set { _stack = value; } }
 
@@ -125,8 +125,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     case "cforganization": { CFOrganization = node.InnerText; break; }
                     case "cfspace": { CFSpace = node.InnerText; break; }
                     case "cfappname": { CFAppName = node.InnerText; break; }
-                    case "cfmemory": { CFMemory = Convert.ToInt32(node.InnerText); break; }
-                    case "cfinstancesnumber": { CFInstancesNumber = Convert.ToInt32(node.InnerText); break; }
+                    case "cfappmemory": { CFAppMemory = Convert.ToInt32(node.InnerText); break; }
+                    case "cfappinstances": { CFAppInstances = Convert.ToInt32(node.InnerText); break; }
                     case "cfstack": { CFStack = node.InnerText; break; }
                     case "cfroutes": { CFRoutes = node.InnerText; break; }
                     case "cfconfigurationfile": { CFConfigurationFile = node.InnerText; break; }
