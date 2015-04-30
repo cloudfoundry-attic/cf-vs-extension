@@ -57,7 +57,7 @@
 
                 <Label Content="Target URL" Grid.Row="0" Grid.Column="0" Margin="2.5" ></Label>
                 <Image Width="16" Height="16" x:Name="StatusIcon" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"></Image>
-                <TextBox Name="TargetInfo" Grid.Row="0" Grid.Column="1" Height="21" Margin="2.5" Text="{Binding Path=CFServerUri}"></TextBox>
+                <TextBox Name="TargetInfo" IsReadOnly="True" Grid.Row="0" Grid.Column="1" Height="21" Margin="2.5" Text="{Binding Path=CFServerUri}"></TextBox>
 
                 <Label Content="Organization" Grid.Row="1" Grid.Column="0" Margin="2.5"></Label>
                 <ComboBox Name="OrgCombo" Text="{Binding Path=CFOrganization}" Grid.Row="1"   Height="21" Grid.Column="1" SelectionChanged="OrgCombo_SelectionChanged"></ComboBox>
