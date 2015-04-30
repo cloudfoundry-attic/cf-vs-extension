@@ -8,6 +8,7 @@ using EnvDTE;
 using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -186,9 +187,15 @@ namespace CloudFoundry.VisualStudio
             if (package != null)
             {
                 package.Save();
+                Push(package);
+                this.Close();
             }
-            this.DialogResult = true;
-            this.Close();
+            else
+            {
+                MessageBoxHelper.DisplayWarning("Nothing to push, please check settings and try again");
+            }
+
+
         }
 
         private void Load_Click(object sender, RoutedEventArgs e)
@@ -223,7 +230,7 @@ namespace CloudFoundry.VisualStudio
                 {
                     OrgCombo.ItemsSource = null;
                     SpacesCombo.ItemsSource = null;
-                    DomainsCombo.ItemsSource=null;
+                    DomainsCombo.ItemsSource = null;
                     Init(package);
                 }
             }
@@ -565,5 +572,83 @@ namespace CloudFoundry.VisualStudio
             this.Platforms.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
         }
 
+        private async void Push(AppPackage package)
+        {
+            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
+
+            var window = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+            var output = (OutputWindow)window.Object;
+            OutputWindowPane pane = output.OutputWindowPanes.Add("Publish");
+
+            dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Activate();
+
+            if (currentProj != null)
+            {
+                string msBuildPath = Microsoft.Build.Utilities.ToolLocationHelper.GetPathToBuildToolsFile("msbuild.exe", "12.0");
+                string projectPath = currentProj.FullName;
+                string solutionPath = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+                string projectName = currentProj.Name;
+                string profileName = this.PublishProfile;
+                bool localBuild = package.CFLocalBuild;
+
+                await System.Threading.Tasks.Task.Factory.StartNew(() =>
+                {
+                    string arguments = string.Empty;
+
+                    if (localBuild == true)
+                    {
+                        arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=""{0}"" ""{1}""",
+                            package.ConfigFile, projectPath);
+                    }
+                    else
+                    {
+                        arguments = string.Format(CultureInfo.InvariantCulture,
+                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" /p:PUBLISH_WEBSITE={1} /p:CFAppPath=""{2}"" ""{3}""", package.ConfigFile,
+                            projectName, solutionPath, projectPath);
+                    }
+
+                    var startInfo = new ProcessStartInfo(msBuildPath)
+                    {
+                        Arguments = arguments,
+                        WorkingDirectory = System.IO.Path.GetDirectoryName(projectPath),
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
+                    pane.OutputString("> msbuild " + startInfo.Arguments);
+
+
+                    using (var process = System.Diagnostics.Process.Start(startInfo))
+                    {
+                        process.OutputDataReceived += (s, e) =>
+                        {
+                            lock (pane)
+                            {
+                                pane.OutputString(string.Format(CultureInfo.InvariantCulture, "{0}{1}", e.Data, Environment.NewLine));
+                            }
+                        };
+
+                        process.ErrorDataReceived += (s, e) =>
+                        {
+                            lock (pane)
+                            {
+                                if (!string.IsNullOrWhiteSpace(e.Data))
+                                {
+                                    pane.OutputString(string.Format(CultureInfo.InvariantCulture, "ERROR: {0},{1}", e.Data, Environment.NewLine));
+                                }
+                            }
+                        };
+
+                        process.BeginErrorReadLine();
+                        process.BeginOutputReadLine();
+
+                        process.WaitForExit();
+                    }
+
+                });
+            }
+        }
     }
 }
