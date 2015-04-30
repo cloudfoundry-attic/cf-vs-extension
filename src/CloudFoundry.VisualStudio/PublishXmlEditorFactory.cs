@@ -46,8 +46,11 @@ namespace CloudFoundry.VisualStudio
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
             }
 
+            object objProj;
+            pvHier.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out objProj);
+            var project = objProj as EnvDTE.Project;
 
-            var dialog = new EditDialog(packageFile, null);
+            var dialog = new EditDialog(packageFile, project);
             dialog.ShowDialog();
 
 

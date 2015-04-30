@@ -42,7 +42,27 @@ namespace CloudFoundry.VisualStudio
 
             this.PublishProfile = "push";
             this.DataContext = package;
+            LoadProjectConfigurationsAndPlatforms();
             Init(package);
+        }
+
+        private void LoadProjectConfigurationsAndPlatforms()
+        {
+            if (this.currentProj != null && this.currentProj.ConfigurationManager != null)
+            {
+                var configurations = this.currentProj.ConfigurationManager.ConfigurationRowNames as Array;
+                var platforms = this.currentProj.ConfigurationManager.SupportedPlatforms as Array;
+
+                if (configurations != null)
+                {
+                    this.Configurations.ItemsSource = configurations;
+                }
+
+                if (platforms != null)
+                {
+                    this.Platforms.ItemsSource = platforms;
+                }
+            }
         }
 
         private async void Init(AppPackage package)
@@ -220,8 +240,8 @@ namespace CloudFoundry.VisualStudio
                 LocalBuild_Click(LocalBuild, null);
                 if (package.CFLocalBuild)
                 {
-                    this.Platform.Text = package.CFMSBuildPlatform;
-                    this.Configuration.Text = package.CFMSBuildConfiguration;
+                    this.Platforms.Text = package.CFMSBuildPlatform;
+                    this.Configurations.Text = package.CFMSBuildConfiguration;
                 }
 
                 OrgCombo.DisplayMemberPath = "Name";
@@ -423,7 +443,7 @@ namespace CloudFoundry.VisualStudio
                             return;
                         }
                         imageType = "warning";
-                        message = "Target login was successful, but you password is saved in clear text in profile!";
+                        message = "Target login was successful, but your password is saved in clear text in profile!";
                     }
                 }
             }
@@ -528,8 +548,8 @@ namespace CloudFoundry.VisualStudio
         private void LocalBuild_Click(object sender, RoutedEventArgs e)
         {
             var checkBox = sender as CheckBox;
-            this.Configuration.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
-            this.Platform.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
+            this.Configurations.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
+            this.Platforms.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
         }
 
     }
