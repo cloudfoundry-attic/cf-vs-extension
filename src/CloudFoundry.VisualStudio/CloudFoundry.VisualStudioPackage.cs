@@ -168,7 +168,7 @@ namespace CloudFoundry.VisualStudio
         {
         }
 
-        private async void ButtonBuildAndPushProjectExecuteHandler(object sender, EventArgs e)
+        private void ButtonBuildAndPushProjectExecuteHandler(object sender, EventArgs e)
         {
             DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
             Project currentProject = GetSelectedProject(dte);
@@ -187,66 +187,9 @@ namespace CloudFoundry.VisualStudio
 
             var dialog = new EditDialog(projectPackage, currentProject);
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            dialog.ShowModal();
 
-            if (dialog.ShowDialog().Value == false)
-            {
-                return;
-            }
 
-            OleMenuCommand commandInfo = sender as OleMenuCommand;
-            if (commandInfo != null)
-            {
-
-                var window = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
-                var output = (OutputWindow)window.Object;
-                OutputWindowPane pane = output.OutputWindowPanes.Add("Publish");
-
-                dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Activate();
-
-                if (currentProject != null)
-                {
-                    string msBuildPath = Microsoft.Build.Utilities.ToolLocationHelper.GetPathToBuildToolsFile("msbuild.exe", "12.0");
-                    string projectPath = currentProject.FullName;
-                    string solutionPath = Path.GetDirectoryName(dte.Solution.FullName);
-                    string projectName = currentProject.Name;
-                    string profileName = dialog.PublishProfile;
-                    bool localBuild = projectPackage.CFLocalBuild;
-
-                    await System.Threading.Tasks.Task.Factory.StartNew(() =>
-                    {
-                        string arguments = string.Empty;
-
-                        if (localBuild == true)
-                        {
-                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile={1}{2} ""{0}""", projectPath, profileName, extension);
-                        }
-                        else
-                        {
-                            arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile={3}{4} /p:PUBLISH_WEBSITE={2} /p:CFAppPath=""{1}"" ""{0}""", projectPath, solutionPath, projectName, profileName, extension);
-                        }
-
-                        var startInfo = new ProcessStartInfo(msBuildPath)
-                        {
-                            Arguments = arguments,
-                            WorkingDirectory = System.IO.Path.GetDirectoryName(projectPath),
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            WindowStyle = ProcessWindowStyle.Hidden,
-                            CreateNoWindow = true,
-                            UseShellExecute = false
-                        };
-                        pane.OutputString("> msbuild " + startInfo.Arguments);
-                        var process = System.Diagnostics.Process.Start(startInfo);
-
-                        string outline = string.Empty;
-                        while ((outline = process.StandardOutput.ReadLine()) != null)
-                        {
-                            pane.OutputString(outline + Environment.NewLine);
-                        }
-                        process.WaitForExit();
-                    });
-                }
-            }
         }
 
 
