@@ -42,6 +42,8 @@ namespace CloudFoundry.VisualStudio
 
             this.PublishProfile = "push";
             this.DataContext = package;
+            this.ProfilePath.Text = package.ConfigFile;
+
             LoadProjectConfigurationsAndPlatforms();
             Init(package);
         }
@@ -201,6 +203,7 @@ namespace CloudFoundry.VisualStudio
 
             if (dialogOpen.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
+                this.ProfilePath.Text = dialogOpen.FileName;
                 this.DataContext = null;
                 AppPackage package = new AppPackage();
                 try
@@ -218,6 +221,9 @@ namespace CloudFoundry.VisualStudio
                 this.PublishProfile = System.IO.Path.GetFileName(dialogOpen.FileName).Replace(CloudFoundry_VisualStudioPackage.extension, "");
                 if (package != null)
                 {
+                    OrgCombo.ItemsSource = null;
+                    SpacesCombo.ItemsSource = null;
+                    DomainsCombo.ItemsSource=null;
                     Init(package);
                 }
             }
@@ -235,7 +241,6 @@ namespace CloudFoundry.VisualStudio
 
             Dispatcher.Invoke(() =>
             {
-                this.ProfilePath.Text = package.ConfigFile;
                 this.LocalBuild.IsChecked = package.CFLocalBuild;
                 LocalBuild_Click(LocalBuild, null);
                 if (package.CFLocalBuild)
@@ -321,6 +326,7 @@ namespace CloudFoundry.VisualStudio
 
                     if (result == System.Windows.Forms.DialogResult.OK)
                     {
+                        this.IsEnabled = false;
                         var target = loginForm.CloudTarget;
 
                         if (target != null)
@@ -336,7 +342,14 @@ namespace CloudFoundry.VisualStudio
                                 TargetInfo.Text = package.CFServerUri;
                             });
 
+                            OrgCombo.ItemsSource = null;
+                            SpacesCombo.ItemsSource = null;
+                            DomainsCombo.ItemsSource = null;
+
                             await InitClient(package);
+
+
+                            this.IsEnabled = true;
                         }
                     }
                 }
