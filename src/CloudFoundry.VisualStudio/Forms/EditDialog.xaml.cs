@@ -223,7 +223,7 @@ namespace CloudFoundry.VisualStudio
                 {
                     OrgCombo.ItemsSource = null;
                     SpacesCombo.ItemsSource = null;
-                    DomainsCombo.ItemsSource = null;
+                    DomainsCombo.ItemsSource=null;
                     Init(package);
                 }
             }
@@ -326,6 +326,7 @@ namespace CloudFoundry.VisualStudio
 
                     if (result == System.Windows.Forms.DialogResult.OK)
                     {
+                        this.IsEnabled = false;
                         var target = loginForm.CloudTarget;
 
                         if (target != null)
@@ -341,7 +342,14 @@ namespace CloudFoundry.VisualStudio
                                 TargetInfo.Text = package.CFServerUri;
                             });
 
+                            OrgCombo.ItemsSource = null;
+                            SpacesCombo.ItemsSource = null;
+                            DomainsCombo.ItemsSource = null;
+
                             await InitClient(package);
+
+
+                            this.IsEnabled = true;
                         }
                     }
                 }
