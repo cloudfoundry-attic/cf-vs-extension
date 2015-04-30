@@ -33,7 +33,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private string _manifestpath = string.Empty;
         private string _deploytargetfile = string.Empty;
         private bool _localbuild = true;
-        private string _webpublishmethod = string.Empty;
+        private string _webpublishmethod = "CloudFoundry";
         private string _configuration = string.Empty;
         private string _platform = string.Empty;
         private string _services = string.Empty;
