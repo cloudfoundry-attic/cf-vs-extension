@@ -73,23 +73,36 @@ namespace CloudFoundry.VisualStudio
             if (package.CFServerUri != string.Empty)
             {
                 this.IsEnabled = false;
-                await InitClient(package);
-                await Load(package).ContinueWith((antecedent) =>
+                bool initClientError = false;
+                await InitClient(package).ContinueWith((antecedent) =>
                 {
                     if (antecedent.IsFaulted)
                     {
                         var errorMessages = new List<string>();
                         ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
                         MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
-                    }
-                    else
-                    {
-                        Dispatcher.Invoke(() =>
-                        {
-                            SelectLoadedValues(package);
-                        });
+                        initClientError = true;
                     }
                 });
+                if (!initClientError)
+                {
+                    await Load(package).ContinueWith((antecedent) =>
+                    {
+                        if (antecedent.IsFaulted)
+                        {
+                            var errorMessages = new List<string>();
+                            ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
+                            MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
+                        }
+                        else
+                        {
+                            Dispatcher.Invoke(() =>
+                            {
+                                SelectLoadedValues(package);
+                            });
+                        }
+                    });
+                }
                 this.IsEnabled = true;
             }
             else
@@ -395,7 +408,7 @@ namespace CloudFoundry.VisualStudio
                         message = string.Format(CultureInfo.InvariantCulture, "Could not login using the token in your profile. {0}", ex.Message);
                         Logger.Warning(message);
                         SetStatusInfo(imageType, message);
-                        return;
+                        throw ex;
                     }
                 }
                 else
@@ -431,7 +444,7 @@ namespace CloudFoundry.VisualStudio
                                 imageType = "error";
                                 message = ex.Message;
                                 SetStatusInfo(imageType, message);
-                                return;
+                                throw ex;
                             }
 
                             imageType = "ok";
@@ -460,7 +473,7 @@ namespace CloudFoundry.VisualStudio
                             imageType = "error";
                             message = string.Format(CultureInfo.InvariantCulture, "{0}. Your password is saved in clear text in the profile!", ex.Message);
                             SetStatusInfo(imageType, message);
-                            return;
+                            throw ex;
                         }
                         imageType = "warning";
                         message = "Target login was successful, but your password is saved in clear text in profile!";
