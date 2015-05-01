@@ -103,7 +103,17 @@ namespace CloudFoundry.VisualStudio
                         }
                     });
                 }
-                this.IsEnabled = true;
+
+                Dispatcher.Invoke(() =>
+                    {
+                        this.IsEnabled = true;
+
+                        if (OrgCombo.SelectedItem == null && (OrgCombo.Items != null && OrgCombo.Items.Count > 0))
+                        {
+                            OrgCombo.SelectedItem = OrgCombo.Items[0];
+                            //OrgCombo_SelectionChanged(OrgCombo, null);
+                        }
+                    });
             }
             else
             {
@@ -314,14 +324,17 @@ namespace CloudFoundry.VisualStudio
             {
                 OrgCombo.SelectedValue = OrgCombo.Items.Cast<ListAllOrganizationsResponse>().Where(o => o.Name == package.CFOrganization).Select(o => o.EntityMetadata.Guid).FirstOrDefault();
             }
+
             if (package.CFSpace != string.Empty)
             {
                 SpacesCombo.SelectedValue = SpacesCombo.Items.Cast<ListAllSpacesForOrganizationResponse>().Where(o => o.Name == package.CFSpace).Select(o => o.EntityMetadata.Guid).FirstOrDefault();
             }
+
             if (package.CFStack != string.Empty)
             {
                 StacksCombo.SelectedValue = StacksCombo.Items.Cast<ListAllStacksResponse>().Where(o => o.Name == package.CFStack).Select(o => o.Name).FirstOrDefault();
             }
+
             GetRoutes(package);
 
             if (this.DataContext == null)
@@ -370,6 +383,12 @@ namespace CloudFoundry.VisualStudio
 
 
                             this.IsEnabled = true;
+
+                            if (OrgCombo.SelectedItem == null && (OrgCombo.Items != null && OrgCombo.Items.Count > 0))
+                            {
+                                OrgCombo.SelectedItem = OrgCombo.Items[0];
+                                //OrgCombo_SelectionChanged(OrgCombo, null);
+                            }
                         }
                     }
                 }
@@ -481,7 +500,23 @@ namespace CloudFoundry.VisualStudio
                 }
             }
             SetStatusInfo(imageType, message);
-            await Load(package);
+
+            await Load(package).ContinueWith((antecedent) =>
+            {
+                if (antecedent.IsFaulted)
+                {
+                    var errorMessages = new List<string>();
+                    ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
+                    MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
+                }
+                else
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        SelectLoadedValues(package);
+                    });
+                }
+            });
         }
 
         private async void OrgCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -505,6 +540,11 @@ namespace CloudFoundry.VisualStudio
                     SpacesCombo.ItemsSource = spaces;
                     SpacesCombo.DisplayMemberPath = "Name";
                     SpacesCombo.SelectedValuePath = "EntityMetadata.Guid";
+
+                    if (SpacesCombo.SelectedItem == null && (SpacesCombo.Items != null && SpacesCombo.Items.Count > 0))
+                    {
+                        SpacesCombo.SelectedItem = SpacesCombo.Items[0];
+                    }
                 });
             }
         }
@@ -531,6 +571,11 @@ namespace CloudFoundry.VisualStudio
                     DomainsCombo.ItemsSource = domains;
                     DomainsCombo.DisplayMemberPath = "Name";
                     DomainsCombo.SelectedValuePath = "EntityMetadata.Guid";
+
+                    if (DomainsCombo.SelectedItem == null && (DomainsCombo.Items != null && DomainsCombo.Items.Count > 0))
+                    {
+                        DomainsCombo.SelectedItem = DomainsCombo.Items[0];
+                    }
                 });
             }
         }
