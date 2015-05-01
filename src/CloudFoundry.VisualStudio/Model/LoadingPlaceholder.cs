@@ -23,7 +23,7 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                return Resources.Refresh;
+                return Resources.Synchronizing;
             }
         }
 

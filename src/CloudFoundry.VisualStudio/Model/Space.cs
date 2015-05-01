@@ -40,7 +40,6 @@ namespace CloudFoundry.VisualStudio.Model
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
-
             return await Task<CloudItem[]>.Run(() =>
             {
                 return new CloudItem[] {

@@ -278,6 +278,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\Synchronizing.png" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -296,8 +297,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SynchronizeSmall.png" />
-    <Resource Include="Resources\RefreshMedium.png" />
-    <Resource Include="Resources\Restart.png" />
+    <Resource Include="Resources\Refresh.png" />
     <Resource Include="Resources\Stop.png" />
     <Resource Include="Resources\Start.png" />
     <Resource Include="Resources\Remove.png" />
@@ -309,7 +309,7 @@
     <Resource Include="Resources\Service.png" />
     <Resource Include="Resources\Space.png" />
     <Resource Include="Resources\Error.png" />
-    <Resource Include="Resources\Refresh.png" />
+    <Resource Include="Resources\Restart.png" />
     <Resource Include="Resources\StatusRunning.png" />
     <Resource Include="Resources\Cloud.png" />
     <Resource Include="Resources\Organization.png" />
@@ -330,6 +330,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="Resources\Cloud_16xLG.ico" />
+    <Resource Include="Resources\AppRunning.png" />
+    <Resource Include="Resources\AppStarted.png" />
+    <Resource Include="Resources\AppStopped.png" />
+    <Resource Include="Resources\AppUnknown.png" />
     <Content Include="Resources\Cloud_32xLG.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
