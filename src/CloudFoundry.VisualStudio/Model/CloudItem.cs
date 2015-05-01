@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.VisualStudio.Threading;
+using System.Diagnostics;
 
 namespace CloudFoundry.VisualStudio.Model
 {
@@ -19,6 +20,7 @@ namespace CloudFoundry.VisualStudio.Model
         private readonly AsyncObservableCollection<CloudItem> _children = new AsyncObservableCollection<CloudItem>();
         private System.Threading.CancellationToken cancellationToken;
         private CloudItem parent = null;
+        private readonly object childRefreshLock = new object();
 
         protected bool HasRefresh
         {
@@ -101,28 +103,32 @@ namespace CloudFoundry.VisualStudio.Model
 
             await populateChildrenTask.ContinueWith((antecedent) =>
                 {
-                    if (antecedent.IsFaulted)
+                    lock (this.childRefreshLock)
                     {
-                        _children.Clear();
-
-                        CloudError error = new CloudError(antecedent.Exception);
-
-                        _children.Add(error);
-                    }
-                    else
-                    {
-                        _children.Clear();
-
-                        foreach (var child in antecedent.Result)
+                        if (antecedent.IsFaulted)
                         {
-                            _children.Add(child);
-                            child.AttachToParent(this);
+                            _children.Clear();
+
+                            CloudError error = new CloudError(antecedent.Exception);
+
+                            _children.Add(error);
+                        }
+                        else
+                        {
+                            _children.Clear();
+
+                            foreach (var child in antecedent.Result)
+                            {
+                                _children.Add(child);
+
+                                child.AttachToParent(this);
+                            }
+
+                            _wasRefreshed = true;
                         }
 
-                        _wasRefreshed = true;
+                        this.ExecutingBackgroundAction = false;
                     }
-
-                    this.ExecutingBackgroundAction = false;
                 });
         }
 

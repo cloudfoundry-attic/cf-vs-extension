@@ -16,7 +16,8 @@
                         Background="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBackgroundGradientBrushKey}}" 
                         BorderThickness="1" BorderBrush="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarMenuBorderBrushKey}}">
                 </Border>
-                <ContentPresenter Name="HeaderHost" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,24,0" ContentSource="Header" RecognizesAccessKey="True"/>
+                <ContentPresenter TextBlock.Foreground="{DynamicResource {x:Static vsp:EnvironmentColors.CommandBarTextActiveBrushKey}}" 
+                                  Name="HeaderHost" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,24,0" ContentSource="Header" RecognizesAccessKey="True"/>
             </Grid>
         </Border>
         <ControlTemplate.Triggers>

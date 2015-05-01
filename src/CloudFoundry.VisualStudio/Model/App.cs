@@ -45,18 +45,18 @@ namespace CloudFoundry.VisualStudio.Model
                     case "STARTED":
                         if (_app.RunningInstances > 0)
                         {
-                            return Resources.StatusRunning;
+                            return Resources.AppRunning;
                         }
                         else
                         {
-                            return Resources.StatusStarted;
+                            return Resources.AppStarted;
                         }
                     case "STOPPED":
-                        return Resources.StatusStopped;
+                        return Resources.AppStopped;
                     case "RUNNING":
-                        return Resources.StatusRunning;
+                        return Resources.AppRunning;
                     default:
-                        return Resources.StatusUnknown;
+                        return Resources.AppUnknown;
                 }
             }
         }
