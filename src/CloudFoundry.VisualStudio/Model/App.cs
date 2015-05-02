@@ -35,10 +35,6 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                ListAllAppsResponse a;
-                
-                
-
                 if (_app == null) return Resources.StatusUnknown;
                 switch (_app.State.ToUpperInvariant())
                 {
