@@ -170,12 +170,12 @@
 				<Label Content="Configuration" Grid.Row="1" Margin="1.5,2.5,3.5,2.5" Grid.Column="0"/>
 
 				<ComboBox x:Name="Configurations" Margin="0,4" Grid.Row="1" IsEditable="True"
-					Text="{Binding CFMSBuildConfiguration}" Grid.Column="1"/>
+					Text="{Binding CFMSBuildConfiguration}" Grid.Column="1" IsEnabled="False"/>
 
 				<Label Content="Platform" Margin="1.5,2.5,3.5,2.5" Grid.Row="2" Grid.Column="0"/>
              
 				<ComboBox x:Name="Platforms" Margin="0,4.5" Grid.Row="2" IsEditable="True"
-					Text="{Binding CFMSBuildPlatform}" Grid.Column="1" VerticalAlignment="Center"/>
+					Text="{Binding CFMSBuildPlatform}" Grid.Column="1" VerticalAlignment="Center" IsEnabled="False"/>
 			</Grid>
 		</GroupBox>
 		<Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="0,6.001,0,-26.001">
@@ -200,7 +200,7 @@
 			<Button Content="Publish" x:Name="Publish" Grid.Column="4" Width="100" 
 				Click="Publish_Click" Margin="5,2,2.5,6"/>
 			<Button Content="Cancel" x:Name="Cancel" Grid.Column="5" Width="100"
-				Click="Cancel_Click"  Margin="2.5,2,10,6" IsCancel="True"/>
+				Click="Cancel_Click"  Margin="2.5,2,10,6" />
 		</Grid>
 
 	</Grid>
