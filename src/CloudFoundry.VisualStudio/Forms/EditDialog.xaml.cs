@@ -163,7 +163,6 @@ namespace CloudFoundry.VisualStudio
 
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
-
             System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog();
             if (currentProj != null)
             {
@@ -176,8 +175,6 @@ namespace CloudFoundry.VisualStudio
                 this.ProfilePath.Text = saveDialog.FileName;
 
             }
-
-
         }
 
         private void SaveCurrentToFile(string filepath)
@@ -283,9 +280,9 @@ namespace CloudFoundry.VisualStudio
                 OrgCombo.ItemsSource = orgs;
                 OrgCombo.SelectedValuePath = "EntityMetadata.Guid";
 
+                StacksCombo.ItemsSource = stacks;
                 StacksCombo.DisplayMemberPath = "Name";
                 StacksCombo.SelectedValuePath = "Name";
-                StacksCombo.ItemsSource = stacks;
             });
 
             string selectedOrg = string.Empty;
@@ -376,11 +373,33 @@ namespace CloudFoundry.VisualStudio
                             });
 
                             OrgCombo.ItemsSource = null;
+                            StacksCombo.ItemsSource = null;
                             SpacesCombo.ItemsSource = null;
                             DomainsCombo.ItemsSource = null;
 
-                            await InitClient(package);
-
+                            bool initClientError = false;
+                            await InitClient(package).ContinueWith((antecedent) =>
+                            {
+                                if (antecedent.IsFaulted)
+                                {
+                                    var errorMessages = new List<string>();
+                                    ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
+                                    MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
+                                    initClientError = true;
+                                }
+                            });
+                            if (!initClientError)
+                            {
+                                await Load(package).ContinueWith((antecedent) =>
+                                {
+                                    if (antecedent.IsFaulted)
+                                    {
+                                        var errorMessages = new List<string>();
+                                        ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
+                                        MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
+                                    }
+                                });
+                            }
 
                             this.IsEnabled = true;
 
@@ -500,23 +519,6 @@ namespace CloudFoundry.VisualStudio
                 }
             }
             SetStatusInfo(imageType, message);
-
-            await Load(package).ContinueWith((antecedent) =>
-            {
-                if (antecedent.IsFaulted)
-                {
-                    var errorMessages = new List<string>();
-                    ErrorFormatter.FormatExceptionMessage(antecedent.Exception, errorMessages);
-                    MessageBoxHelper.DisplayError(string.Join(Environment.NewLine, errorMessages));
-                }
-                else
-                {
-                    Dispatcher.Invoke(() =>
-                    {
-                        SelectLoadedValues(package);
-                    });
-                }
-            });
         }
 
         private async void OrgCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
