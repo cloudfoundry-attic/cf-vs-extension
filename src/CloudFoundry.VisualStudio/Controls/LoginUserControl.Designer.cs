@@ -88,7 +88,7 @@
             this.labelTargetUrl.Name = "labelTargetUrl";
             this.labelTargetUrl.Size = new System.Drawing.Size(222, 13);
             this.labelTargetUrl.TabIndex = 42;
-            this.labelTargetUrl.Text = "Enter target URL (ex. http://api.hpcloud.com)";
+            this.labelTargetUrl.Text = "Target URL";
             // 
             // labelLoginError
             // 
@@ -108,7 +108,7 @@
             this.checkBoxIgnoreSSLErrors.Name = "checkBoxIgnoreSSLErrors";
             this.checkBoxIgnoreSSLErrors.Size = new System.Drawing.Size(109, 17);
             this.checkBoxIgnoreSSLErrors.TabIndex = 50;
-            this.checkBoxIgnoreSSLErrors.Text = "Ignore SSL Errors";
+            this.checkBoxIgnoreSSLErrors.Text = "Skip SSL Validation";
             this.checkBoxIgnoreSSLErrors.UseVisualStyleBackColor = true;
             // 
             // LoginUserControl

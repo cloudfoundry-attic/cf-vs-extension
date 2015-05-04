@@ -76,7 +76,7 @@
             this.loginTargetLinkLabel.Size = new System.Drawing.Size(160, 18);
             this.loginTargetLinkLabel.TabIndex = 0;
             this.loginTargetLinkLabel.TabStop = true;
-            this.loginTargetLinkLabel.Text = "Login at target";
+            this.loginTargetLinkLabel.Text = "Target Login";
             this.loginTargetLinkLabel.UseCompatibleTextRendering = true;
             this.loginTargetLinkLabel.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
             this.loginTargetLinkLabel.Click += new System.EventHandler(this.loginTargetLinkLabel_Click);
