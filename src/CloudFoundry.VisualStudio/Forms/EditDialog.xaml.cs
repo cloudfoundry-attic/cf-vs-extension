@@ -119,6 +119,7 @@ namespace CloudFoundry.VisualStudio
             {
                 StatusIcon.Source = GetBitmapImageFromResources("warning");
                 StatusIcon.ToolTip = "Please set a target";
+                this.Publish.IsEnabled = false;
                 this.IsEnabled = true;
             }
         }
@@ -422,11 +423,19 @@ namespace CloudFoundry.VisualStudio
                 StatusIcon.ToolTip = message;
             });
         }
+        private void DisablePublishButton()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                this.Publish.IsEnabled = false;
+            });
+        }
 
         private async Task InitClient(AppPackage package)
         {
             string imageType = string.Empty;
             string message = string.Empty;
+            this.Publish.IsEnabled = true;
 
             if (package != null)
             {
@@ -446,6 +455,7 @@ namespace CloudFoundry.VisualStudio
                         message = string.Format(CultureInfo.InvariantCulture, "Could not login using the token in your profile. {0}", ex.Message);
                         Logger.Warning(message);
                         SetStatusInfo(imageType, message);
+                        DisablePublishButton();
                         throw ex;
                     }
                 }
@@ -456,6 +466,7 @@ namespace CloudFoundry.VisualStudio
                         imageType = "warning";
                         message = "Please configure credentials for your target.";
                         SetStatusInfo(imageType, message);
+                        DisablePublishButton();
                         return;
                     }
                     if (package.CFPassword == string.Empty)
@@ -468,6 +479,7 @@ namespace CloudFoundry.VisualStudio
                                 imageType = "warning";
                                 message = "Please configure credentials for your target.";
                                 SetStatusInfo(imageType, message);
+                                DisablePublishButton();
                                 return;
                             }
                             CloudCredentials creds = new CloudCredentials();
@@ -482,6 +494,7 @@ namespace CloudFoundry.VisualStudio
                                 imageType = "error";
                                 message = ex.Message;
                                 SetStatusInfo(imageType, message);
+                                DisablePublishButton();
                                 throw ex;
                             }
 
@@ -494,6 +507,7 @@ namespace CloudFoundry.VisualStudio
                             imageType = "warning";
                             message = "Please configure credentials for your target.";
                             SetStatusInfo(imageType, message);
+                            DisablePublishButton();
                             return;
                         }
                     }
@@ -511,6 +525,7 @@ namespace CloudFoundry.VisualStudio
                             imageType = "error";
                             message = string.Format(CultureInfo.InvariantCulture, "{0}. Your password is saved in clear text in the profile!", ex.Message);
                             SetStatusInfo(imageType, message);
+                            DisablePublishButton();
                             throw ex;
                         }
                         imageType = "warning";
