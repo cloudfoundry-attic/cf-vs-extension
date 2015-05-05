@@ -263,6 +263,7 @@ namespace CloudFoundry.VisualStudio
                 try
                 {
                     package.LoadFromFile(dialogOpen.FileName);
+                    this.DataContext = package;
                 }
                 catch (Exception ex)
                 {
@@ -388,6 +389,8 @@ namespace CloudFoundry.VisualStudio
 
                         if (target != null)
                         {
+                            package.CFPassword = string.Empty;
+                            package.CFSavedPassword = true;
                             package.CFServerUri = target.TargetUrl.ToString();
                             package.CFUser = target.Email;
                             package.CFSkipSSLValidation = target.IgnoreSSLErrors;

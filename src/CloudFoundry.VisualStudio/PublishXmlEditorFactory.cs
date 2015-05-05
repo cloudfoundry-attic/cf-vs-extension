@@ -1,7 +1,9 @@
 ﻿using CloudFoundry.VisualStudio.Forms;
 using CloudFoundry.VisualStudio.ProjectPush;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell.Interop;
+using NuGet.VisualStudio;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -28,8 +30,22 @@ namespace CloudFoundry.VisualStudio
             pgrfCDW = 0;
             pbstrEditorCaption = "Cloud Foundry Publish Profile";
 
+            object objProj;
+            pvHier.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out objProj);
+            var project = objProj as EnvDTE.Project;
+
+            var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
+
+            IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
+
             var fileInfo = new FileInfo(pszMkDocument);
-            if (!fileInfo.Name.ToLowerInvariant().EndsWith(".cf.pubxml"))
+
+            if (project == null)
+            {
+                return VSConstants.VS_E_UNSUPPORTEDFORMAT;
+            }
+
+            if (!fileInfo.Name.ToLowerInvariant().EndsWith(".cf.pubxml") || installerServices.IsPackageInstalled(project, CloudFoundry_VisualStudioPackage.packageId) == false)
             {
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
@@ -46,13 +62,9 @@ namespace CloudFoundry.VisualStudio
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
             }
 
-            object objProj;
-            pvHier.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out objProj);
-            var project = objProj as EnvDTE.Project;
-
+            
             var dialog = new EditDialog(packageFile, project);
             dialog.ShowDialog();
-
 
             return VSConstants.S_OK;
         }
