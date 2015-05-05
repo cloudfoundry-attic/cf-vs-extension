@@ -44,7 +44,8 @@ namespace CloudFoundry.VisualStudio.TargetStore
                 {
                     Logger.Warning(
                         string.Format(CultureInfo.InvariantCulture,
-                        "Error while loading target: {0}. It will be ignored. Details: {1}", 
+                        "Error while loading target: {0}. It will be ignored. Details: {1}",
+                        target.Key,
                         ex.ToString()));
                 }
             }

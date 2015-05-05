@@ -141,6 +141,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "xmlWriter does not take ownership over textWriter")]
         public void SaveToFile(string filePath)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(AppPackage));

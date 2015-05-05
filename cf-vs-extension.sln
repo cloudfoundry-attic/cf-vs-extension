@@ -24,22 +24,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudFoundry.VisualStudio.U
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Debug|x86.ActiveCfg = Debug|x86
+		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Debug|x86.Build.0 = Debug|x86
+		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Release|x86.ActiveCfg = Release|x86
+		{73C656BF-A2C8-4529-B684-11C2FDDC6106}.Release|x86.Build.0 = Release|x86
+		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Debug|x86.ActiveCfg = Debug|x86
+		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Debug|x86.Build.0 = Debug|x86
+		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Release|x86.ActiveCfg = Release|x86
+		{F6B2643A-C2BC-4C11-8023-0082046614B5}.Release|x86.Build.0 = Release|x86
+		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Debug|x86.ActiveCfg = Debug|x86
+		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Debug|x86.Build.0 = Debug|x86
+		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Release|x86.ActiveCfg = Release|x86
+		{036B199C-DA0A-4FD7-929C-BE9271BAEFC2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
