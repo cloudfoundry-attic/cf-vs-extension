@@ -100,7 +100,7 @@
 
   <!-- Target for restoring nuget packages -->
   <Target Name="RestoreNugetPackages">
-    <Exec Command="$(NuGetCommand) restore $(VSExtensionSolution)"/>
+    <Exec Command="$(NuGetCommand) restore $(VSExtensionSolution)" />
   </Target>
 
   <!-- Target for automatically versioning the assemblies -->
