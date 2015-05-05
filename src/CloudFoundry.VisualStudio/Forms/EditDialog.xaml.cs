@@ -167,8 +167,21 @@ namespace CloudFoundry.VisualStudio
             System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog();
             if (currentProj != null)
             {
-                saveDialog.InitialDirectory = System.IO.Path.GetDirectoryName(currentProj.FullName);
+                string projectDir = System.IO.Path.GetDirectoryName(currentProj.FullName);
+                string profilesDir = System.IO.Path.Combine(projectDir, "Properties", "PublishProfiles");
+
+                if (Directory.Exists(profilesDir))
+                {
+                    saveDialog.RestoreDirectory = true;
+                    saveDialog.InitialDirectory = profilesDir;
+                }
+                else if (Directory.Exists(projectDir))
+                {
+                    saveDialog.RestoreDirectory = true;
+                    saveDialog.InitialDirectory = projectDir;
+                }
             }
+
             saveDialog.Filter = string.Format(CultureInfo.InvariantCulture, "CF Publish file | *{0}", CloudFoundry_VisualStudioPackage.extension);
             if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -225,8 +238,21 @@ namespace CloudFoundry.VisualStudio
             System.Windows.Forms.OpenFileDialog dialogOpen = new System.Windows.Forms.OpenFileDialog();
             if (currentProj != null)
             {
-                dialogOpen.InitialDirectory = System.IO.Path.GetDirectoryName(currentProj.FullName);
+                string projectDir = System.IO.Path.GetDirectoryName(currentProj.FullName);
+                string profilesDir = System.IO.Path.Combine(projectDir, "Properties", "PublishProfiles");
+
+                if (Directory.Exists(profilesDir))
+                {
+                    dialogOpen.RestoreDirectory = true;
+                    dialogOpen.InitialDirectory = profilesDir;
+                }
+                else if (Directory.Exists(projectDir))
+                {
+                    dialogOpen.RestoreDirectory = true;
+                    dialogOpen.InitialDirectory = projectDir;
+                }
             }
+
             dialogOpen.Filter = string.Format(CultureInfo.InvariantCulture, "CF Publish file | *{0}", CloudFoundry_VisualStudioPackage.extension);
 
             if (dialogOpen.ShowDialog() == System.Windows.Forms.DialogResult.OK)
