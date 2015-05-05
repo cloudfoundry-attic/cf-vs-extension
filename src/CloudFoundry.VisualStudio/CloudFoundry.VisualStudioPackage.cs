@@ -51,7 +51,7 @@ namespace CloudFoundry.VisualStudio
 
     public sealed class CloudFoundry_VisualStudioPackage : Package
     {
-        private const string packageId = "cf-msbuild-tasks";
+        public const string packageId = "cf-msbuild-tasks";
 
         public const string extension = ".cf.pubxml";
 
