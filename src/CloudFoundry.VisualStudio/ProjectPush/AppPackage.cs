@@ -89,18 +89,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 throw new ArgumentNullException("project");
             }
 
-            configFile = Path.Combine(Path.GetDirectoryName(project.FullName), "Properties", "PublishProfiles", string.Format(CultureInfo.InvariantCulture, "push{0}", CloudFoundry_VisualStudioPackage.extension));
-            if (File.Exists(configFile))
-            {
-
-                LoadFromFile(configFile);
-
-                if (CFAppName == string.Empty)
-                {
-                    CFAppName = project.Name;
-                }
-
-            }
+            CFAppName = project.Name;
         }
 
         public void LoadFromFile(string filePath)
