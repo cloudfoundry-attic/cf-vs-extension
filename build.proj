@@ -26,6 +26,7 @@
     <VSExtensionSolution>cf-vs-extension.sln</VSExtensionSolution>
     <PackageOutputDir>$(BinariesFolder)\packages</PackageOutputDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -56,14 +57,14 @@
   <!-- Build target -->
   <Target Name="Build" DependsOnTargets="RestoreNugetPackages; Versioning">
     <MSBuild Projects="$(VSExtensionSolution)"
-             Properties="Configuration=$(Configuration);Platform=Any CPU;"
+             Properties="Configuration=$(Configuration);Platform=$(Platform)"
              Targets="Build" />
   </Target>
 
   <!-- Clean target -->
   <Target Name="Clean" DependsOnTargets="RestoreNugetPackages">
     <MSBuild Projects="$(VSExtensionSolution)"
-             Properties="Configuration=$(Configuration);Platform=Any CPU"
+             Properties="Configuration=$(Configuration);Platform=$(Platform)"
              Targets="Clean" />
   </Target>
 

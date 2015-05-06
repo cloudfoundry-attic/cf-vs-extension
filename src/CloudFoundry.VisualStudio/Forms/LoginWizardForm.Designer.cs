@@ -94,7 +94,7 @@
             this.summaryLinkLabel.Name = "summaryLinkLabel";
             this.summaryLinkLabel.Padding = new System.Windows.Forms.Padding(10, 4, 0, 0);
             this.summaryLinkLabel.Size = new System.Drawing.Size(160, 18);
-            this.summaryLinkLabel.TabIndex = 2;
+            this.summaryLinkLabel.TabIndex = 1;
             this.summaryLinkLabel.TabStop = true;
             this.summaryLinkLabel.Text = "Summary";
             this.summaryLinkLabel.UseCompatibleTextRendering = true;
@@ -179,7 +179,7 @@
             this.previousButton.Location = new System.Drawing.Point(220, 6);
             this.previousButton.Name = "previousButton";
             this.previousButton.Size = new System.Drawing.Size(75, 23);
-            this.previousButton.TabIndex = 3;
+            this.previousButton.TabIndex = 1;
             this.previousButton.TabStop = false;
             this.previousButton.Text = "< &Previous";
             this.previousButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
@@ -191,7 +191,7 @@
             this.nextButton.Location = new System.Drawing.Point(299, 6);
             this.nextButton.Name = "nextButton";
             this.nextButton.Size = new System.Drawing.Size(75, 23);
-            this.nextButton.TabIndex = 2;
+            this.nextButton.TabIndex = 0;
             this.nextButton.Text = "&Next >";
             this.nextButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.nextButton.UseVisualStyleBackColor = true;
@@ -203,7 +203,7 @@
             this.cancelButton.Location = new System.Drawing.Point(405, 6);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 0;
+            this.cancelButton.TabIndex = 2;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             // 

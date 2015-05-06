@@ -338,6 +338,7 @@ namespace CloudFoundry.VisualStudio.Forms
             this.summaryLinkLabel.Enabled = true;
             this.loginTargetLinkLabel.Enabled = false;
             summaryLinkLabel_Click(sender, e);
+            this.nextButton.Focus();
         }
     }
 }
