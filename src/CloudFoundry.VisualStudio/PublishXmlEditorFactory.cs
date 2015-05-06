@@ -1,9 +1,7 @@
 ﻿using CloudFoundry.VisualStudio.Forms;
 using CloudFoundry.VisualStudio.ProjectPush;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell.Interop;
-using NuGet.VisualStudio;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -34,10 +32,6 @@ namespace CloudFoundry.VisualStudio
             pvHier.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out objProj);
             var project = objProj as EnvDTE.Project;
 
-            var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
-
-            IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
-
             var fileInfo = new FileInfo(pszMkDocument);
 
             if (project == null)
@@ -45,7 +39,7 @@ namespace CloudFoundry.VisualStudio
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
 
-            if (!fileInfo.Name.ToLowerInvariant().EndsWith(".cf.pubxml") || installerServices.IsPackageInstalled(project, CloudFoundry_VisualStudioPackage.packageId) == false)
+            if (!fileInfo.Name.ToLowerInvariant().EndsWith(CloudFoundry_VisualStudioPackage.extension))
             {
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
