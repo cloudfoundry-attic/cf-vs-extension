@@ -5,7 +5,9 @@ using CloudFoundry.VisualStudio.Forms;
 using CloudFoundry.VisualStudio.ProjectPush;
 using CloudFoundry.VisualStudio.TargetStore;
 using EnvDTE;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.PlatformUI;
+using NuGet.VisualStudio;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -221,7 +223,19 @@ namespace CloudFoundry.VisualStudio
             if (package != null)
             {
                 package.Save();
-                Push(package);
+
+                var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
+
+                IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
+
+                if (installerServices.IsPackageInstalled(currentProj, CloudFoundry_VisualStudioPackage.packageId) == false)
+                {
+                    MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Cannot publish to Cloud Foundry{0}Cloud Foundry MSBuild Tasks is not installed in your project, please install it and try again", Environment.NewLine));
+                }
+                else
+                {
+                    Push(package);
+                }
                 this.Close();
             }
             else
@@ -389,6 +403,7 @@ namespace CloudFoundry.VisualStudio
 
                         if (target != null)
                         {
+                            package.CFOrganization = string.Empty;
                             package.CFPassword = string.Empty;
                             package.CFSavedPassword = true;
                             package.CFServerUri = target.TargetUrl.ToString();
