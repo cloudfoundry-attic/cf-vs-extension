@@ -224,6 +224,10 @@ namespace CloudFoundry.VisualStudio
 
         private void Publish_Click(object sender, RoutedEventArgs e)
         {
+            if (ValidateServicesInformation() == false)
+            {
+                return;
+            }
             SaveContext();
             AppPackage package = this.DataContext as AppPackage;
             if (package != null)
@@ -250,6 +254,23 @@ namespace CloudFoundry.VisualStudio
             }
 
 
+        }
+
+        private bool ValidateServicesInformation()
+        {
+            string[] servicesList = Services.Text.Split(';');
+            foreach (string serviceDetails in servicesList)
+            {
+                if (string.IsNullOrWhiteSpace(serviceDetails) == false)
+                {
+                    if (serviceDetails.Split(',').Length != 3)
+                    {
+                        MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Insufficient information in {0}", serviceDetails));
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         private void Load_Click(object sender, RoutedEventArgs e)
@@ -703,8 +724,31 @@ namespace CloudFoundry.VisualStudio
 
             var window = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
             var output = (OutputWindow)window.Object;
-            OutputWindowPane pane = output.OutputWindowPanes.Add("Publish");
+            bool paneFound = false;
 
+            OutputWindowPane pane = null;
+            
+            try
+            {
+                foreach (OutputWindowPane item in output.OutputWindowPanes)
+                {
+                    if (item.Name == "Publish")
+                    {
+                        pane = output.OutputWindowPanes.Item("Publish");
+                        paneFound = true;
+                        break;
+                    }
+                }
+                if (paneFound == false)
+                {
+                    pane = output.OutputWindowPanes.Add("Publish");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message, ex);
+            }
+ 
             dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Activate();
 
             if (currentProj != null)
