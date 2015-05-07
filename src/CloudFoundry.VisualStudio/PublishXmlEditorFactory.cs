@@ -39,6 +39,11 @@ namespace CloudFoundry.VisualStudio
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
 
+            if (project.Name.Contains("Miscellaneous Files"))
+            {
+                return VSConstants.VS_E_UNSUPPORTEDFORMAT;
+            }
+
             if (!fileInfo.Name.ToLowerInvariant().EndsWith(CloudFoundry_VisualStudioPackage.extension))
             {
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
