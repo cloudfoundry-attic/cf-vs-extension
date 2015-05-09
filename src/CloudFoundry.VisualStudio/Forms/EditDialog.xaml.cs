@@ -189,7 +189,6 @@ namespace CloudFoundry.VisualStudio
             {
                 SaveCurrentToFile(saveDialog.FileName);
                 this.ProfilePath.Text = saveDialog.FileName;
-
             }
         }
 
@@ -230,9 +229,18 @@ namespace CloudFoundry.VisualStudio
             }
             SaveContext();
             AppPackage package = this.DataContext as AppPackage;
+
             if (package != null)
             {
-                package.Save();
+                if (string.IsNullOrWhiteSpace(this.ProfilePath.Text))
+                {
+                    string tempFile = System.IO.Path.GetTempFileName();
+                    package.SaveToFile(tempFile);
+                }
+                else
+                {
+                    package.SaveToFile(this.ProfilePath.Text);
+                }
 
                 var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
 
