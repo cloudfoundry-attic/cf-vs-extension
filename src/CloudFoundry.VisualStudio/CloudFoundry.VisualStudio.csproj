@@ -44,25 +44,20 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CloudFoundry.CloudController.Common, Version=1.0.0.170, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.170-alpha\lib\Net45\CloudFoundry.CloudController.Common.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CloudFoundry.CloudController.Common">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.1\lib\Net45\CloudFoundry.CloudController.Common.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.CloudController.V2.Client, Version=1.0.0.170, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.170-alpha\lib\Net45\CloudFoundry.CloudController.V2.Client.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CloudFoundry.CloudController.V2.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.1\lib\Net45\CloudFoundry.CloudController.V2.Client.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.Loggregator.Client, Version=1.0.0.170, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.170-alpha\lib\Net45\CloudFoundry.Loggregator.Client.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CloudFoundry.Loggregator.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.1\lib\Net45\CloudFoundry.Loggregator.Client.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.Logyard.Client, Version=1.0.0.170, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.170-alpha\lib\Net45\CloudFoundry.Logyard.Client.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CloudFoundry.Logyard.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.1\lib\Net45\CloudFoundry.Logyard.Client.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.UAA.Client, Version=1.0.0.170, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.170-alpha\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="CloudFoundry.UAA.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.1\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Utilities.v12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -88,17 +83,15 @@
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.11.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Immutable.12.0" />
     <Reference Include="Microsoft.VisualStudio.Threading, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="NuGet.VisualStudio">
       <HintPath>..\..\packages\NuGet.VisualStudio.2.8.5\lib\net40\NuGet.VisualStudio.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+    <Reference Include="protobuf-net">
       <HintPath>..\..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Simple.CredentialManager">
       <HintPath>..\..\packages\Simple.CredentialManager.1.0.0\lib\net40\Simple.CredentialManager.dll</HintPath>
@@ -113,13 +106,11 @@
       <HintPath>..\..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.202250711\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Extensions, Version=2.2.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System.Net.Http.Extensions">
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.28\lib\net45\System.Net.Http.Extensions.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.Primitives, Version=4.2.28.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\..\packages\Microsoft.Net.Http.2.2.28\lib\net45\System.Net.Http.Primitives.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Web" />
@@ -127,17 +118,14 @@
     <Reference Include="System.Xml" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Thinktecture.IdentityModel.Client.Net45, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Thinktecture.IdentityModel.Client.Net45">
       <HintPath>..\..\packages\Thinktecture.IdentityModel.Client.4.0.0\lib\net45\Thinktecture.IdentityModel.Client.Net45.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="WebSocket4Net, Version=0.12.0.0, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
+    <Reference Include="WebSocket4Net">
       <HintPath>..\..\packages\WebSocket4Net.0.12\lib\net45\WebSocket4Net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="WebSocket4Net.ProxyUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.170-alpha\lib\Net45\WebSocket4Net.ProxyUtilities.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="WebSocket4Net.ProxyUtilities">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.1\lib\Net45\WebSocket4Net.ProxyUtilities.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
