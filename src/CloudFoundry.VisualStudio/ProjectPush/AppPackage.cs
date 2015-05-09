@@ -155,15 +155,10 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
             content += "</PropertyGroup></Project>";
 
+            this.configFile = filePath;
 
             File.WriteAllText(filePath, content);
         }
-
-        internal void Save()
-        {
-            SaveToFile(configFile);
-        }
-
 
         internal bool IsEqualTo(AppPackage that)
         {
