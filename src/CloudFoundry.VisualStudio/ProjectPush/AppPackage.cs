@@ -40,6 +40,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private string _refreshToken = string.Empty;
         private bool _savedPassword = true;
         private bool _skipSSLValidation = true;
+        private string _appPath = string.Empty;
 
         public string ConfigFile { get { return configFile; } }
 
@@ -81,6 +82,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         public string CFMSBuildPlatform { get { return _platform; } set { _platform = value; } }
 
         public bool CFSkipSSLValidation { get { return _skipSSLValidation; } set { _skipSSLValidation = value; } }
+
+        public string CFAppPath { get { return _appPath; } set { _appPath = value; } }
 
         public void Initialize(Project project)
         {
@@ -125,6 +128,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     case "webpublishmethod": { WebPublishMethod = node.InnerText; break; }
                     case "cfmsbuildconfiguration": { CFMSBuildConfiguration = node.InnerText; break; }
                     case "cfmsbuildplatform": { CFMSBuildPlatform = node.InnerText; break; }
+                    case "cfapppath": { CFAppPath = node.InnerText; break; }
                     default: break;
                 }
             }

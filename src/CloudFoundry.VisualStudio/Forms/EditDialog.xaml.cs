@@ -37,11 +37,22 @@ namespace CloudFoundry.VisualStudio
         public string PublishProfile { get; set; }
         private CloudFoundryClient client;
         private Project currentProj;
+        public bool IsBadInit { get; set; }
         public EditDialog(AppPackage package, Project currentProject)
         {
             InitializeComponent();
 
             this.currentProj = currentProject;
+
+            if (string.IsNullOrWhiteSpace(package.CFAppPath))
+            {
+                if ((package = SetCFAppPath(package)) == null)
+                {
+                    MessageBoxHelper.DisplayError("You cannot build a solution on the server if its path does not contain the projects that you want to be published");
+                    IsBadInit = true;
+                    return;
+                }
+            }
 
             this.PublishProfile = "push";
             this.DataContext = package;
@@ -49,6 +60,7 @@ namespace CloudFoundry.VisualStudio
 
             LoadProjectConfigurationsAndPlatforms();
             Init(package);
+            IsBadInit = false;
         }
 
         private void LoadProjectConfigurationsAndPlatforms()
@@ -445,6 +457,12 @@ namespace CloudFoundry.VisualStudio
                             package.CFUser = target.Email;
                             package.CFSkipSSLValidation = target.IgnoreSSLErrors;
 
+                            if ((package = SetCFAppPath(package)) == null)
+                            {
+                                MessageBoxHelper.DisplayError("You cannot build a solution on the server if its path does not contain the projects that you want to be published");
+                                return;
+                            }
+
                             CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Password);
 
                             Dispatcher.Invoke(() =>
@@ -492,6 +510,23 @@ namespace CloudFoundry.VisualStudio
                     }
                 }
             }
+        }
+
+        private AppPackage SetCFAppPath(AppPackage package)
+        {
+            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
+
+            string projectPath = System.IO.Path.GetDirectoryName(currentProj.FullName);
+            string solutionPath = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+
+            if (System.IO.Directory.GetDirectories(solutionPath).Contains(projectPath) == false)
+            {
+                return null;
+            }
+
+            package.CFAppPath = GetRelativePath(solutionPath, projectPath);
+
+            return package;
         }
 
         private void SetStatusInfo(string imageType, string message)
@@ -780,8 +815,8 @@ namespace CloudFoundry.VisualStudio
                     else
                     {
                         arguments = string.Format(CultureInfo.InvariantCulture,
-                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" /p:PUBLISH_WEBSITE={1} /p:CFAppPath=""{2}"" ""{3}""", package.ConfigFile,
-                            projectName, solutionPath, projectPath);
+                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" /p:PUBLISH_WEBSITE={1} ""{2}""", package.ConfigFile,
+                            projectName, projectPath);
                     }
 
                     var startInfo = new ProcessStartInfo(msBuildPath)
@@ -826,6 +861,18 @@ namespace CloudFoundry.VisualStudio
 
                 });
             }
+        }
+
+        internal string GetRelativePath(string filespec, string folder)
+        {
+            Uri pathUri = new Uri(filespec);
+            // Folders must end in a slash
+            if (!folder.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString()))
+            {
+                folder += System.IO.Path.DirectorySeparatorChar;
+            }
+            Uri folderUri = new Uri(folder);
+            return Uri.UnescapeDataString(folderUri.MakeRelativeUri(pathUri).ToString().Replace('/', System.IO.Path.DirectorySeparatorChar));
         }
     }
 }

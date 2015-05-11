@@ -187,9 +187,10 @@ namespace CloudFoundry.VisualStudio
 
             var dialog = new EditDialog(projectPackage, currentProject);
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            dialog.ShowModal();
-
-
+            if (!dialog.IsBadInit)
+            {
+                dialog.ShowModal();
+            }
         }
 
 
