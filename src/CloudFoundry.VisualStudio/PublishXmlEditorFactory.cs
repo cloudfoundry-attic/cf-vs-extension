@@ -63,7 +63,10 @@ namespace CloudFoundry.VisualStudio
 
             
             var dialog = new EditDialog(packageFile, project);
-            dialog.ShowDialog();
+            if (!dialog.IsBadInit)
+            {
+                dialog.ShowDialog();
+            }
 
             return VSConstants.S_OK;
         }
