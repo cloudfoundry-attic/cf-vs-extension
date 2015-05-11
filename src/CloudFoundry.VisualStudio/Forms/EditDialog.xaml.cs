@@ -801,24 +801,12 @@ namespace CloudFoundry.VisualStudio
                 string solutionPath = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
                 string projectName = currentProj.Name;
                 string profileName = this.PublishProfile;
-                bool localBuild = package.CFLocalBuild;
-
+              
                 await System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
-                    string arguments = string.Empty;
-
-                    if (localBuild == true)
-                    {
-                        arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=""{0}"" ""{1}""",
+                    string arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=""{0}"" ""{1}""",
                             package.ConfigFile, projectPath);
-                    }
-                    else
-                    {
-                        arguments = string.Format(CultureInfo.InvariantCulture,
-                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" /p:PUBLISH_WEBSITE={1} ""{2}""", package.ConfigFile,
-                            projectName, projectPath);
-                    }
-
+                    
                     var startInfo = new ProcessStartInfo(msBuildPath)
                     {
                         Arguments = arguments,
