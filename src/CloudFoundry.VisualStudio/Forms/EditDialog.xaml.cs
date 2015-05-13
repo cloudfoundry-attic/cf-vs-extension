@@ -56,7 +56,7 @@ namespace CloudFoundry.VisualStudio
             if (this.currentProj != null && this.currentProj.ConfigurationManager != null)
             {
                 var configurations = this.currentProj.ConfigurationManager.ConfigurationRowNames as Array;
-                var platforms = this.currentProj.ConfigurationManager.SupportedPlatforms as Array;
+                var platforms = this.currentProj.ConfigurationManager.PlatformNames as Array;
 
                 if (configurations != null)
                 {
