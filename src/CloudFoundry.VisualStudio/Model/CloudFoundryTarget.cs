@@ -85,15 +85,12 @@ namespace CloudFoundry.VisualStudio.Model
             PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
 
             JwtSecurityToken token = new JwtSecurityToken(authenticationContext.Token.AccessToken);
-            Guid userId = new Guid(token.Subject);
-
-            GetUserSummaryResponse userSummary = await client.Users.GetUserSummary(userId);
-
+            
             while (orgs != null && orgs.Properties.TotalResults != 0)
             {
                 foreach (var org in orgs)
                 {
-                    result.Add(new Organization(org, userSummary, client));
+                    result.Add(new Organization(org, client));
                 }
 
                 orgs = await orgs.GetNextPage();
