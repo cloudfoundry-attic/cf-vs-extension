@@ -83,8 +83,6 @@ namespace CloudFoundry.VisualStudio.Model
             List<Organization> result = new List<Organization>();
 
             PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
-
-            JwtSecurityToken token = new JwtSecurityToken(authenticationContext.Token.AccessToken);
             
             while (orgs != null && orgs.Properties.TotalResults != 0)
             {
