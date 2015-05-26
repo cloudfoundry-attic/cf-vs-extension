@@ -27,7 +27,7 @@
             <converters:VisiblityConverter x:Key="Visible" Reversed="False"/>
             
             <Style TargetType="MenuItem" x:Key="MenuItemEventStyle" >
-                <EventSetter Event="Click" Handler="treeMenuItem_Click" />
+                <EventSetter Event="Click" Handler="TreeMenuItem_Click" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>

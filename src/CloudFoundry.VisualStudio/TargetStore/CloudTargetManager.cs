@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security;
-using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Globalization;
-
-namespace CloudFoundry.VisualStudio.TargetStore
+﻿namespace CloudFoundry.VisualStudio.TargetStore
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Security;
+    using System.Windows.Forms;
+    using Microsoft.Win32;
+
     public static class CloudTargetManager
     {
         private const string CompanyKey = "CloudFoundry";
         private const string ProductKey = "VisualStudio";
         private const string TargetsKey = "Targets";
 
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Catching all exceptions for detailed logging purposes.")]
         public static CloudTarget[] GetTargets()
         {
             Dictionary<string, string[]> targets = GetValuesFromCloudTargets();
@@ -31,7 +30,7 @@ namespace CloudFoundry.VisualStudio.TargetStore
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(string.Format("There is an invalid key in the registry: {0}", target.Key), ex);
+                    Logger.Error(string.Format(CultureInfo.InvariantCulture, "There is an invalid key in the registry: {0}", target.Key), ex);
                     continue;
                 }
 
@@ -43,10 +42,11 @@ namespace CloudFoundry.VisualStudio.TargetStore
                 catch (Exception ex)
                 {
                     Logger.Warning(
-                        string.Format(CultureInfo.InvariantCulture,
-                        "Error while loading target: {0}. It will be ignored. Details: {1}",
-                        target.Key,
-                        ex.ToString()));
+                        string.Format(
+                            CultureInfo.InvariantCulture,
+                            "Error while loading target: {0}. It will be ignored. Details: {1}",
+                            target.Key,
+                            ex.ToString()));
                 }
             }
 
@@ -56,17 +56,18 @@ namespace CloudFoundry.VisualStudio.TargetStore
         public static void SaveTarget(CloudTarget target)
         {
             if (target == null)
+            { 
                 return;
-
+            }
+                
             if (GetValuesFromCloudTargets().ContainsKey(target.TargetId.ToString()))
             {
                 throw new InvalidOperationException("Specified target ID already exists in the collection!");
             }
 
             CloudTargetManager.AddValueToCloudTargets(
-                    target.TargetId.ToString(),
-                    target.ToRegistryText()
-                );
+                target.TargetId.ToString(),
+                target.ToRegistryText());
         }
 
         public static void RemoveTarget(CloudTarget target)
@@ -136,6 +137,7 @@ namespace CloudFoundry.VisualStudio.TargetStore
                     result.Add(value, strings);
                 }
             }
+
             return result;
         }
     }

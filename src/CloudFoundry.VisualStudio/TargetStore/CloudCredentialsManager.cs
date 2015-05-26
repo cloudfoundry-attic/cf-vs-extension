@@ -1,22 +1,15 @@
-﻿using Simple.CredentialManager;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-
-namespace CloudFoundry.VisualStudio.TargetStore
+﻿namespace CloudFoundry.VisualStudio.TargetStore
 {
-    class CloudCredentialsManager
-    {
-        private static string GetTargetString(Uri targetUri, string username)
-        {
-            UriBuilder uriBuilder = new UriBuilder(targetUri);
-            uriBuilder.UserName = HttpUtility.UrlEncode(username);
-            return uriBuilder.Uri.AbsoluteUri;
-        }
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Web;
+    using Simple.CredentialManager;
 
+    internal class CloudCredentialsManager
+    {
         public static void Save(Uri targetUri, string username, string password)
         {
             using (Credential creds = new Credential())
@@ -60,6 +53,13 @@ namespace CloudFoundry.VisualStudio.TargetStore
                     return null;
                 }
             }
+        }
+
+        private static string GetTargetString(Uri targetUri, string username)
+        {
+            UriBuilder uriBuilder = new UriBuilder(targetUri);
+            uriBuilder.UserName = HttpUtility.UrlEncode(username);
+            return uriBuilder.Uri.AbsoluteUri;
         }
     }
 }

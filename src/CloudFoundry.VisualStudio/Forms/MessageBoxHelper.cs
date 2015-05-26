@@ -7,10 +7,6 @@
 namespace CloudFoundry.VisualStudio.Forms
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Diagnostics;
     using System.Windows.Forms;
     using Microsoft.VisualStudio.Shell;
 
@@ -90,6 +86,5 @@ namespace CloudFoundry.VisualStudio.Forms
                 return MessageBox.Show(message, Logger.EventSource, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             });
         }
-
     }
 }

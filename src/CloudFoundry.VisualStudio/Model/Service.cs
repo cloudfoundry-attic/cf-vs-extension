@@ -1,42 +1,101 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using CloudFoundry.VisualStudio.Forms;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
-    class Service : CloudItem
-    {
-        private CloudFoundryClient _client;
-        private readonly ListAllServiceInstancesForSpaceResponse _service;
-        private readonly ICollection<GetAppSummaryResponse> _appsSummary;
-        private readonly RetrieveServicePlanResponse _servicePlan;
-        private readonly RetrieveServiceResponse _systemService;
-        private readonly PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> _serviceBindings;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using CloudFoundry.VisualStudio.Forms;
 
-        public Service(ListAllServiceInstancesForSpaceResponse service, ICollection<GetAppSummaryResponse> appsSummary,
-            RetrieveServicePlanResponse servicePlan, RetrieveServiceResponse systemService,
-            PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> serviceBindings, CloudFoundryClient client)
+    internal class Service : CloudItem
+    {
+        private readonly ListAllServiceInstancesForSpaceResponse service;
+        private readonly ICollection<GetAppSummaryResponse> appsSummary;
+        private readonly RetrieveServicePlanResponse servicePlan;
+        private readonly RetrieveServiceResponse systemService;
+        private readonly PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> serviceBindings;
+        private CloudFoundryClient client;
+
+        public Service(
+            ListAllServiceInstancesForSpaceResponse service, 
+            ICollection<GetAppSummaryResponse> appsSummary,
+            RetrieveServicePlanResponse servicePlan, 
+            RetrieveServiceResponse systemService,
+            PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> serviceBindings, 
+            CloudFoundryClient client)
             : base(CloudItemType.Service)
         {
-            _client = client;
-            _service = service;
-            _appsSummary = appsSummary;
-            _servicePlan = servicePlan;
-            _systemService = systemService;
-            _serviceBindings = serviceBindings;
-
+            this.client = client;
+            this.service = service;
+            this.appsSummary = appsSummary;
+            this.servicePlan = servicePlan;
+            this.systemService = systemService;
+            this.serviceBindings = serviceBindings;
         }
 
         public override string Text
         {
             get
             {
-                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", _service.Name, _systemService.Label);
+                return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", this.service.Name, this.systemService.Label);
+            }
+        }
+
+        [Description("The name of the service.")]
+        public string Name
+        {
+            get
+            {
+                return this.service.Name;
+            }
+        }
+
+        [DisplayName("Bound apps")]
+        [Description("Apps that have this service bound.")]
+        public string BoundApps
+        {
+            get
+            {
+                string boundApps = string.Empty;
+
+                foreach (var appSummary in this.appsSummary)
+                {
+                    boundApps = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", appSummary.Name, boundApps);
+                }
+
+                return boundApps.Trim().TrimEnd(',');
+            }
+        }
+
+        [DisplayName("Creation date")]
+        [Description("Date when the service was created.")]
+        public string CreationDate
+        {
+            get
+            {
+                return this.service.EntityMetadata.CreatedAt;
+            }
+        }
+
+        [DisplayName("Service plan")]
+        [Description("The name of the plan.")]
+        public string ServicePlan
+        {
+            get
+            {
+                return this.servicePlan.Name;
+            }
+        }
+
+        [DisplayName("Service type")]
+        [Description("Type of the service instance.")]
+        public string ServiceType
+        {
+            get
+            {
+                return this.systemService.Label;
             }
         }
 
@@ -48,6 +107,17 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
+        protected override IEnumerable<CloudItemAction> MenuActions
+        {
+            get
+            {
+                return new CloudItemAction[]
+                {
+                    new CloudItemAction(this, "Delete", Resources.Delete, this.Delete, CloudItemActionContinuation.RefreshParent)
+                };
+            }
+        }      
+
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
             return await Task<CloudItem[]>.Run(() =>
@@ -56,85 +126,22 @@ namespace CloudFoundry.VisualStudio.Model
             });
         }
 
-        protected override IEnumerable<CloudItemAction> MenuActions
-        {
-            get
-            {
-                return new CloudItemAction[]
-                {
-                    new CloudItemAction(this, "Delete", Resources.Delete, Delete, CloudItemActionContinuation.RefreshParent)
-                };
-            }
-        }
-
-
         private async Task Delete()
         {
             var answer = MessageBoxHelper.WarningQuestion(
                 string.Format(
                 CultureInfo.InvariantCulture,
                 "Are you sure you want to delete service '{0}'?",
-                this._service.Name
-                ));
+                this.service.Name));
 
             if (answer == System.Windows.Forms.DialogResult.Yes)
             {
-                foreach (var serviceBinding in _serviceBindings)
+                foreach (var serviceBinding in this.serviceBindings)
                 {
-                    await this._client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
+                    await this.client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
                 }
 
-                await this._client.ServiceInstances.DeleteServiceInstance(this._service.EntityMetadata.Guid);
-
-            }
-        }
-
-        [Description("The name of the service.")]
-        public string Name { get { return _service.Name; } }
-
-        [DisplayName("Bound apps")]
-        [Description("Apps that have this service bound.")]
-        public string BoundApps
-        {
-            get
-            {
-                string boundApps = string.Empty;
-
-                foreach (var appSummary in _appsSummary)
-                {
-                    boundApps = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", appSummary.Name, boundApps);
-                }
-                return boundApps.Trim().TrimEnd(',');
-            }
-        }
-
-        [DisplayName("Creation date")]
-        [Description("Date when the service was created.")]
-        public string CreationDate
-        {
-            get
-            {
-                return this._service.EntityMetadata.CreatedAt;
-            }
-        }
-
-        [DisplayName("Service plan")]
-        [Description("The name of the plan.")]
-        public string ServicePlan
-        {
-            get
-            {
-                return this._servicePlan.Name;
-            }
-        }
-
-        [DisplayName("Service type")]
-        [Description("Type of the service instance.")]
-        public string ServiceType
-        {
-            get
-            {
-                return this._systemService.Label;
+                await this.client.ServiceInstances.DeleteServiceInstance(this.service.EntityMetadata.Guid);
             }
         }
     }

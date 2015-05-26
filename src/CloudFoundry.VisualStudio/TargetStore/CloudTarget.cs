@@ -1,23 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-
-
-namespace CloudFoundry.VisualStudio.TargetStore
+﻿namespace CloudFoundry.VisualStudio.TargetStore
 {
-    public class CloudTarget
-    {
-        private enum CloudTargetPart
-        {
-            TypeTag = 0,
-            TargetUrl = 1,
-            Description = 2,
-            Email = 3,
-            IgnoreSSLErrors = 4,
-            Version = 5
-        }
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Security;
 
+    public class CloudTarget
+    {        
         private const int CloudTargetPartsCount = 6;
         
         // Increase the * part in v2-* any time there's a breaking change
@@ -32,6 +22,53 @@ namespace CloudFoundry.VisualStudio.TargetStore
 
         private CloudTarget()
         {
+        }
+
+        private enum CloudTargetPart
+        {
+            TypeTag = 0,
+            TargetUrl = 1,
+            Description = 2,
+            Email = 3,
+            IgnoreSSLErrors = 4,
+            Version = 5
+        }
+        
+        public string Version
+        {
+            get { return this.version; }
+        }
+
+        public string Email
+        {
+            get { return this.email; }
+        }
+
+        public Uri TargetUrl
+        {
+            get { return this.targetUrl; }
+        }
+
+        public Guid TargetId
+        {
+            get { return this.targetId; }
+            set { this.targetId = value; }
+        }
+
+        public string DisplayName
+        {
+            get { return string.Format(CultureInfo.InvariantCulture, "{0} ({1})", this.description.Length == 0 ? this.TargetUrl.Host : this.description, this.email); }
+        }
+
+        public bool IgnoreSSLErrors
+        {
+            get { return this.ignoreSSLErrors; }
+        }
+
+        public string Description
+        {
+            get { return this.description; }
+            set { this.description = value; }
         }
 
         public static CloudTarget CreateV2Target(Uri targetUri, string description, string email, bool ignoreSSLErrors, string version)
@@ -59,7 +96,6 @@ namespace CloudFoundry.VisualStudio.TargetStore
 
             if (CloudTarget.V2ApiTags.Contains(apiTypeTag))
             {
-
                 Uri targetUrl = new Uri(registryText[(int)CloudTargetPart.TargetUrl]);
                 string description = registryText[(int)CloudTargetPart.Description];
                 string email = registryText[(int)CloudTargetPart.Email];
@@ -93,58 +129,6 @@ namespace CloudFoundry.VisualStudio.TargetStore
         public override string ToString()
         {
             return this.DisplayName;
-        }
-
-        public string Version
-        {
-            get
-            {
-                return version;
-            }
-        }
-        public string Email
-        {
-            get { return email; }
-        }
-
-
-        public Uri TargetUrl
-        {
-            get { return targetUrl; }
-        }
-
-        public Guid TargetId
-        {
-            get { return targetId; }
-            set { targetId = value; }
-        }
-
-        public string DisplayName
-        {
-            get
-            {
-                return string.Format("{0} ({1})", description.Length == 0 ? TargetUrl.Host : description, email);
-            }
-        }
-
-        public bool IgnoreSSLErrors
-        {
-            get
-            {
-                return this.ignoreSSLErrors;
-            }
-        }
-
-        public string Description
-        {
-            get
-            {
-                return description;
-            }
-            set
-            {
-                description = value;
-            }
         }
     }
 }

@@ -1,86 +1,170 @@
-﻿using CloudFoundry.VisualStudio.Forms;
-using EnvDTE;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
-
-namespace CloudFoundry.VisualStudio.ProjectPush
+﻿namespace CloudFoundry.VisualStudio.ProjectPush
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using System.Runtime.InteropServices;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Xml;
+    using System.Xml.Serialization;
+    using CloudFoundry.VisualStudio.Forms;
+    using EnvDTE;
+
     [ComVisible(true)]
     public class AppPackage
     {
         private string configFile = string.Empty;
 
-        private string _username = string.Empty;
-        private string _password = string.Empty;
-        private string _server = string.Empty;
-        private string _appname = string.Empty;
-        private string _organization = string.Empty;
-        private string _space = string.Empty;
-        private int _memory = 512;
-        private int _instances = 1;
-        private string _stack = string.Empty;
-        private string _routes = string.Empty;
-        private string _manifestpath = string.Empty;
-        private string _deploytargetfile = string.Empty;
-        private bool _localbuild = true;
-        private string _webpublishmethod = "CloudFoundry";
-        private string _configuration = string.Empty;
-        private string _platform = string.Empty;
-        private string _services = string.Empty;
-        private string _refreshToken = string.Empty;
-        private bool _savedPassword = true;
-        private bool _skipSSLValidation = true;
+        private string username = string.Empty;
+        private string password = string.Empty;
+        private string server = string.Empty;
+        private string appname = string.Empty;
+        private string organization = string.Empty;
+        private string space = string.Empty;
+        private int memory = 512;
+        private int instances = 1;
+        private string stack = string.Empty;
+        private string routes = string.Empty;
+        private string manifestpath = string.Empty;
+        private string deploytargetfile = string.Empty;
+        private bool localbuild = true;
+        private string webpublishmethod = "CloudFoundry";
+        private string configuration = string.Empty;
+        private string platform = string.Empty;
+        private string services = string.Empty;
+        private string refreshToken = string.Empty;
+        private bool savedPassword = true;
+        private bool skipSSLValidation = true;
 
-        public string ConfigFile { get { return configFile; } }
+        public string ConfigFile 
+        {
+            get { return this.configFile; } 
+        }
 
-        public string CFUser { get { return _username; } set { _username = value; } }
+        public string CFUser 
+        {
+            get { return this.username; }
+            set { this.username = value; } 
+        }
 
-        public string CFPassword { get { return _password; } set { _password = value; } }
+        public string CFPassword 
+        {
+            get { return this.password; }
+            set { this.password = value; }
+        }
 
-        public bool CFSavedPassword { get { return _savedPassword; } set { _savedPassword = value; } }
+        public bool CFSavedPassword 
+        {
+            get { return this.savedPassword; }
+            set { this.savedPassword = value; }
+        }
 
-        public string CFRefreshToken { get { return _refreshToken; } set { _refreshToken = value; } }
+        public string CFRefreshToken 
+        {
+            get { return this.refreshToken; }
+            set { this.refreshToken = value; }
+        }
 
-        public string CFServerUri { get { return _server; } set { _server = value; } }
+        public string CFServerUri 
+        {
+            get { return this.server; }
+            set { this.server = value; } 
+        }
 
-        public string CFAppName { get { return _appname; } set { _appname = value; } }
+        public string CFAppName 
+        {
+            get { return this.appname; }
+            set { this.appname = value; } 
+        }
 
-        public string CFOrganization { get { return _organization; } set { _organization = value; } }
+        public string CFOrganization 
+        {
+            get { return this.organization; } 
+            set { this.organization = value; }
+        }
 
-        public string CFSpace { get { return _space; } set { _space = value; } }
+        public string CFSpace 
+        {
+            get { return this.space; }
+            set { this.space = value; }
+        }
 
-        public int CFAppMemory { get { return _memory; } set { _memory = value; } }
+        public int CFAppMemory
+        {
+            get { return this.memory; }
+            set { this.memory = value; }
+        }
 
-        public int CFAppInstances { get { return _instances; } set { _instances = value; } }
+        public int CFAppInstances 
+        {
+            get { return this.instances; }
+            set { this.instances = value; }
+        }
 
-        public string CFStack { get { return _stack; } set { _stack = value; } }
+        public string CFStack 
+        {
+            get { return this.stack; } 
+            set { this.stack = value; }
+        }
 
-        public string CFRoutes { get { return _routes; } set { _routes = value; } }
+        public string CFRoutes
+        {
+            get { return this.routes; }
+            set { this.routes = value; }
+        }
 
-        public string CFServices { get { return _services; } set { _services = value; } }
-        public string CFConfigurationFile { get { return _manifestpath; } set { _manifestpath = value; } }
+        public string CFServices 
+        {
+            get { return this.services; }
+            set { this.services = value; }
+        }
 
-        public string DeployTargetFile { get { return _deploytargetfile; } set { _deploytargetfile = value; } }
+        public string CFConfigurationFile
+        {
+            get { return this.manifestpath; }
+            set { this.manifestpath = value; }
+        }
 
-        public bool CFLocalBuild { get { return _localbuild; } set { _localbuild = value; } }
+        public string DeployTargetFile 
+        {
+            get { return this.deploytargetfile; }
+            set { this.deploytargetfile = value; }
+        }
 
-        public string WebPublishMethod { get { return _webpublishmethod; } set { _webpublishmethod = value; } }
+        public bool CFLocalBuild 
+        {
+            get { return this.localbuild; } 
+            set { this.localbuild = value; }
+        }
 
-        public string CFMSBuildConfiguration { get { return _configuration; } set { _configuration = value; } }
+        public string WebPublishMethod 
+        {
+            get { return this.webpublishmethod; } 
+            set { this.webpublishmethod = value; }
+        }
 
-        public string CFMSBuildPlatform { get { return _platform; } set { _platform = value; } }
+        public string CFMSBuildConfiguration 
+        {
+            get { return this.configuration; }
+            set { this.configuration = value; }
+        }
 
-        public bool CFSkipSSLValidation { get { return _skipSSLValidation; } set { _skipSSLValidation = value; } }
+        public string CFMSBuildPlatform 
+        {
+            get { return this.platform; } 
+            set { this.platform = value; }
+        }
+
+        public bool CFSkipSSLValidation 
+        {
+            get { return this.skipSSLValidation; }
+            set { this.skipSSLValidation = value; }
+        }
 
         public void Initialize(Project project)
         {
@@ -89,12 +173,12 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 throw new ArgumentNullException("project");
             }
 
-            CFAppName = project.Name;
+            this.CFAppName = project.Name;
         }
 
         public void LoadFromFile(string filePath)
         {
-            configFile = filePath;
+            this.configFile = filePath;
             XmlDocument doc = new XmlDocument();
 
             doc.Load(filePath);
@@ -105,26 +189,142 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 switch (node.Name.ToLowerInvariant())
                 {
-                    case "cfuser": { CFUser = node.InnerText; break; }
-                    case "cfpassword": { CFPassword = node.InnerText; break; }
-                    case "cfrefreshtoken": { CFRefreshToken = node.InnerText; break; }
-                    case "cfsavedpassword": { if (node.InnerText == string.Empty) { CFSavedPassword = false; } else { CFSavedPassword = Convert.ToBoolean(node.InnerText); } break; }
-                    case "cfskipsslvalidation": { if (node.InnerText == string.Empty) { CFSkipSSLValidation = false; } else { CFSkipSSLValidation = Convert.ToBoolean(node.InnerText); } break; }
-                    case "cfserveruri": { CFServerUri = node.InnerText; break; }
-                    case "cforganization": { CFOrganization = node.InnerText; break; }
-                    case "cfspace": { CFSpace = node.InnerText; break; }
-                    case "cfappname": { CFAppName = node.InnerText; break; }
-                    case "cfappmemory": { CFAppMemory = Convert.ToInt32(node.InnerText); break; }
-                    case "cfappinstances": { CFAppInstances = Convert.ToInt32(node.InnerText); break; }
-                    case "cfstack": { CFStack = node.InnerText; break; }
-                    case "cfroutes": { CFRoutes = node.InnerText; break; }
-                    case "cfconfigurationfile": { CFConfigurationFile = node.InnerText; break; }
-                    case "cfservices": { CFServices = node.InnerText; break; }
-                    case "cflocalbuild": { CFLocalBuild = Convert.ToBoolean(node.InnerText); break; }
-                    case "deploytargetfile": { DeployTargetFile = node.InnerText; break; }
-                    case "webpublishmethod": { WebPublishMethod = node.InnerText; break; }
-                    case "cfmsbuildconfiguration": { CFMSBuildConfiguration = node.InnerText; break; }
-                    case "cfmsbuildplatform": { CFMSBuildPlatform = node.InnerText; break; }
+                    case "cfuser": 
+                        {
+                            this.CFUser = node.InnerText; 
+                            break;
+                        }
+
+                    case "cfpassword": 
+                        { 
+                            this.CFPassword = node.InnerText; 
+                            break; 
+                        }
+
+                    case "cfrefreshtoken": 
+                        { 
+                            this.CFRefreshToken = node.InnerText; 
+                            break; 
+                        }
+
+                    case "cfsavedpassword": 
+                        {
+                            if (node.InnerText == string.Empty) 
+                            {
+                                this.CFSavedPassword = false; 
+                            } 
+                            else 
+                            { 
+                                this.CFSavedPassword = Convert.ToBoolean(node.InnerText);
+                            }
+
+                            break;
+                        }
+
+                    case "cfskipsslvalidation":
+                        {
+                            if (node.InnerText == string.Empty)
+                            {
+                                this.CFSkipSSLValidation = false;
+                            }
+                            else
+                            {
+                                this.CFSkipSSLValidation = Convert.ToBoolean(node.InnerText);
+                            }
+
+                            break;
+                        }
+
+                    case "cfserveruri": 
+                        {
+                            this.CFServerUri = node.InnerText;
+                            break;
+                        }
+
+                    case "cforganization":
+                        {
+                            this.CFOrganization = node.InnerText;
+                            break;
+                        }
+
+                    case "cfspace": 
+                        {
+                            this.CFSpace = node.InnerText;
+                            break; 
+                        }
+
+                    case "cfappname":
+                        {
+                            this.CFAppName = node.InnerText;
+                            break;
+                        }
+
+                    case "cfappmemory":
+                        {
+                            this.CFAppMemory = Convert.ToInt32(node.InnerText);
+                            break;
+                        }
+
+                    case "cfappinstances": 
+                        {
+                            this.CFAppInstances = Convert.ToInt32(node.InnerText);
+                            break;
+                        }
+
+                    case "cfstack":
+                        {
+                            this.CFStack = node.InnerText; 
+                            break;
+                        }
+
+                    case "cfroutes": 
+                        {
+                            this.CFRoutes = node.InnerText;
+                            break;
+                        }
+
+                    case "cfconfigurationfile": 
+                        {
+                            this.CFConfigurationFile = node.InnerText; 
+                            break;
+                        }
+
+                    case "cfservices":
+                        {
+                            this.CFServices = node.InnerText; 
+                            break; 
+                        }
+
+                    case "cflocalbuild":
+                        {
+                            this.CFLocalBuild = Convert.ToBoolean(node.InnerText);
+                            break; 
+                        }
+
+                    case "deploytargetfile": 
+                        {
+                            this.DeployTargetFile = node.InnerText;
+                            break;
+                        }
+
+                    case "webpublishmethod":
+                        {
+                            this.WebPublishMethod = node.InnerText;
+                            break;
+                        }
+
+                    case "cfmsbuildconfiguration": 
+                        {
+                            this.CFMSBuildConfiguration = node.InnerText;
+                            break;
+                        }
+
+                    case "cfmsbuildplatform": 
+                        {
+                            this.CFMSBuildPlatform = node.InnerText;
+                            break;
+                        }
+
                     default: break;
                 }
             }
@@ -148,10 +348,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 {
                     serializer.Serialize(xmlWriter, this);
                 }
+
                 content += textWriter.ToString();
             }
 
-            content = content.Replace("<?xml version=\"1.0\" encoding=\"utf-16\"?><AppPackage xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">", "").Replace("</AppPackage>", "");
+            content = content.Replace("<?xml version=\"1.0\" encoding=\"utf-16\"?><AppPackage xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">", string.Empty).Replace("</AppPackage>", string.Empty);
 
             content += "</PropertyGroup></Project>";
 
@@ -169,6 +370,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return false;
             }
+
             PropertyInfo[] sourceProperties = sourceType.GetProperties();
             foreach (PropertyInfo propertyInfo in sourceProperties)
             {
@@ -189,7 +391,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 {
                     return false;
                 }
-
             }
 
             return true;

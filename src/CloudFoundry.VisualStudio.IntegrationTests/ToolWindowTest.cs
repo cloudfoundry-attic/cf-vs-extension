@@ -42,12 +42,12 @@ namespace CloudFoundry.VisualStudio_IntegrationTests
         {
             UIThreadInvoker.Invoke((ThreadInvoker)delegate()
             {
-                CommandID toolWindowCmd = new CommandID(CloudFoundry.VisualStudio.GuidList.guidCloudFoundry_VisualStudioCmdSet, (int)CloudFoundry.VisualStudio.PkgCmdIDList.cmdidCloudFoundryExplorer);
+                CommandID toolWindowCmd = new CommandID(CloudFoundry.VisualStudio.GuidList.GuidCloudFoundryVisualStudioCmdSet, (int)CloudFoundry.VisualStudio.PkgCmdIDList.CmdidCloudFoundryExplorer);
 
                 TestUtils testUtils = new TestUtils();
                 testUtils.ExecuteCommand(toolWindowCmd);
 
-                Assert.IsTrue(testUtils.CanFindToolwindow(new Guid(CloudFoundry.VisualStudio.GuidList.guidToolWindowPersistanceString)));
+                Assert.IsTrue(testUtils.CanFindToolwindow(new Guid(CloudFoundry.VisualStudio.GuidList.GuidToolWindowPersistanceString)));
 
             });
         }

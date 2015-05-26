@@ -1,21 +1,21 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
-    class AppsCollection : CloudItem
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+
+    internal class AppsCollection : CloudItem
     {
-        private readonly CloudFoundryClient _client;
-        private readonly ListAllSpacesForOrganizationResponse _space;
+        private readonly CloudFoundryClient client;
+        private readonly ListAllSpacesForOrganizationResponse space;
 
         public AppsCollection(ListAllSpacesForOrganizationResponse space, CloudFoundryClient client)
             : base(CloudItemType.AppsCollection)
         {
-            _client = client;
-            _space = space;
+            this.client = client;
+            this.space = space;
         }
 
         public override string Text
@@ -34,32 +34,32 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
-        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
-        {
-            List<App> result = new List<App>();
-
-            PagedResponseCollection<ListAllAppsForSpaceResponse> apps = await _client.Spaces.ListAllAppsForSpace(this._space.EntityMetadata.Guid);
-
-            while (apps != null && apps.Properties.TotalResults != 0)
-            {
-                foreach (var app in apps)
-                {
-                    var appSummary = await _client.Apps.GetAppSummary(app.EntityMetadata.Guid);
-                    result.Add(new App(appSummary, this._client));
-                }
-
-                apps = await apps.GetNextPage();
-            }
-
-            return result;
-        }
-
         protected override IEnumerable<CloudItemAction> MenuActions
         {
             get
             {
                 return null;
             }
+        }
+
+        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
+        {
+            List<App> result = new List<App>();
+
+            PagedResponseCollection<ListAllAppsForSpaceResponse> apps = await this.client.Spaces.ListAllAppsForSpace(this.space.EntityMetadata.Guid);
+
+            while (apps != null && apps.Properties.TotalResults != 0)
+            {
+                foreach (var app in apps)
+                {
+                    var appSummary = await this.client.Apps.GetAppSummary(app.EntityMetadata.Guid);
+                    result.Add(new App(appSummary, this.client));
+                }
+
+                apps = await apps.GetNextPage();
+            }
+
+            return result;
         }
     }
 }

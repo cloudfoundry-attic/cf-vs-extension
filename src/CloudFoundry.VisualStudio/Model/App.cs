@@ -1,45 +1,90 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Globalization;
-using System.Diagnostics;
-using CloudFoundry.VisualStudio.Forms;
-using System.ComponentModel;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
-    class App : CloudItem
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using CloudFoundry.VisualStudio.Forms;
+
+    internal class App : CloudItem
     {
-        private CloudFoundryClient _client;
-        private readonly GetAppSummaryResponse _app;
+        private readonly GetAppSummaryResponse app;
+        private CloudFoundryClient client;
 
         public App(GetAppSummaryResponse app, CloudFoundryClient client)
             : base(CloudItemType.App)
         {
-            _client = client;
-            _app = app;
+            this.client = client;
+            this.app = app;
+        }
+
+        [Description("The buildpack of the application.")]
+        public string Buildpack 
+        { 
+            get { return this.app.Buildpack; } 
+        }
+
+        [DisplayName("Detected buildpack")]
+        [Description("The buildpack that was detected by the Cloud Constroller.")]
+        public string DetectedBuildpack 
+        { 
+            get { return this.app.DetectedBuildpack; } 
+        }
+
+        [Description("Number of instances that the application has.")]
+        public int? Instances 
+        { 
+            get { return this.app.Instances; } 
+        }
+
+        [Description("Number of running instances.")]
+        public int? RunningInstances 
+        { 
+            get { return this.app.RunningInstances;  } 
+        }
+
+        [DisplayName("Maximum memory")]
+        [Description("Maximum memory of the application.")]
+        public int? Memory 
+        { 
+            get { return this.app.Memory; } 
+        }
+
+        [Description("The name of the application.")]
+        public string Name 
+        { 
+            get { return this.app.Name; } 
+        }
+
+        [DisplayName("Last package update")]
+        [Description("Date when the application's package was last updated.")]
+        public string CreationDate 
+        { 
+            get { return this.app.PackageUpdatedAt; } 
         }
 
         public override string Text
         {
-            get
-            {
-                return _app.Name;
-            }
+            get { return this.app.Name; }
         }
 
         protected override System.Drawing.Bitmap IconBitmap
         {
             get
             {
-                if (_app == null) return Resources.StatusUnknown;
-                switch (_app.State.ToUpperInvariant())
+                if (this.app == null)
+                {
+                    return Resources.StatusUnknown;
+                }
+
+                switch (this.app.State.ToUpperInvariant())
                 {
                     case "STARTED":
-                        if (_app.RunningInstances > 0)
+                        if (this.app.RunningInstances > 0)
                         {
                             return Resources.AppRunning;
                         }
@@ -47,6 +92,7 @@ namespace CloudFoundry.VisualStudio.Model
                         {
                             return Resources.AppStarted;
                         }
+
                     case "STOPPED":
                         return Resources.AppStopped;
                     case "RUNNING":
@@ -54,6 +100,21 @@ namespace CloudFoundry.VisualStudio.Model
                     default:
                         return Resources.AppUnknown;
                 }
+            }
+        }
+
+        protected override IEnumerable<CloudItemAction> MenuActions
+        {
+            get
+            {
+                return new CloudItemAction[]
+                {
+                    new CloudItemAction(this, "View in Browser", Resources.Browse, this.Browse),
+                    new CloudItemAction(this, "Start", Resources.Start, this.Start, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Restart", Resources.Restart, this.Restart, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Stop", Resources.Stop, this.Stop, CloudItemActionContinuation.RefreshParent),
+                    new CloudItemAction(this, "Delete", Resources.Delete, this.Delete, CloudItemActionContinuation.RefreshParent)
+                };
             }
         }
 
@@ -65,21 +126,6 @@ namespace CloudFoundry.VisualStudio.Model
             });
         }
 
-        protected override IEnumerable<CloudItemAction> MenuActions
-        {
-            get
-            {
-                return new CloudItemAction[]
-                {
-                    new CloudItemAction(this, "View in Browser", Resources.Browse, Browse),
-                    new CloudItemAction(this, "Start", Resources.Start, Start, CloudItemActionContinuation.RefreshParent),
-                    new CloudItemAction(this, "Restart", Resources.Restart, Restart, CloudItemActionContinuation.RefreshParent),
-                    new CloudItemAction(this, "Stop", Resources.Stop, Stop, CloudItemActionContinuation.RefreshParent),
-                    new CloudItemAction(this, "Delete", Resources.Delete, Delete, CloudItemActionContinuation.RefreshParent)
-                };
-            }
-        }
-
         private async Task Stop()
         {
             var updateAppRequest = new UpdateAppRequest()
@@ -87,7 +133,7 @@ namespace CloudFoundry.VisualStudio.Model
                 State = "STOPPED"
             };
 
-            await this._client.Apps.UpdateApp(_app.Guid, updateAppRequest);
+            await this.client.Apps.UpdateApp(this.app.Guid, updateAppRequest);
         }
 
         private async Task Start()
@@ -97,17 +143,17 @@ namespace CloudFoundry.VisualStudio.Model
                 State = "STARTED"
             };
 
-            await this._client.Apps.UpdateApp(_app.Guid, updateAppRequest);
+            await this.client.Apps.UpdateApp(this.app.Guid, updateAppRequest);
         }
 
         private async Task Browse()
         {
-            if (this._app.Routes == null)
+            if (this.app.Routes == null)
             {
                 return;
             }
 
-            var route = _app.Routes.FirstOrDefault();
+            var route = this.app.Routes.FirstOrDefault();
 
             if (route == null)
             {
@@ -138,19 +184,18 @@ namespace CloudFoundry.VisualStudio.Model
                 string.Format(
                 CultureInfo.InvariantCulture,
                 "Are you sure you want to delete application '{0}'? By deleting this application, all it's service bindings will be deleted.",
-                this._app.Name
-                ));
+                this.app.Name));
 
             if (answer == System.Windows.Forms.DialogResult.Yes)
             {
-                var serviceBindings = await _client.Apps.ListAllServiceBindingsForApp(this._app.Guid);
+                var serviceBindings = await this.client.Apps.ListAllServiceBindingsForApp(this.app.Guid);
 
                 foreach (var serviceBinding in serviceBindings)
                 {
-                    await this._client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
+                    await this.client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
                 }
 
-                await this._client.Apps.DeleteApp(this._app.Guid);
+                await this.client.Apps.DeleteApp(this.app.Guid);
             }
         }
 
@@ -161,29 +206,5 @@ namespace CloudFoundry.VisualStudio.Model
                 await Start();
             });
         }
-
-        [Description("The buildpack of the application.")]
-        public string Buildpack { get { return this._app.Buildpack; } /*private set;*/ }
-
-        [DisplayName("Detected buildpack")]
-        [Description("The buildpack that was detected by the Cloud Constroller.")]
-        public string DetectedBuildpack { get { return this._app.DetectedBuildpack; } /*private set;*/ }
-
-        [Description("Number of instances that the application has.")]
-        public int? Instances { get { return this._app.Instances; } /*private set;*/ }
-
-        [Description("Number of running instances.")]
-        public int? RunningInstances { get { return this._app.RunningInstances; } /*private set;*/ }
-
-        [DisplayName("Maximum memory")]
-        [Description("Maximum memory of the application.")]
-        public int? Memory { get { return this._app.Memory; } /*private set;*/ }
-
-        [Description("The name of the application.")]
-        public string Name { get { return this._app.Name; } /*private set;*/ }
-
-        [DisplayName("Last package update")]
-        [Description("Date when the application's package was last updated.")]
-        public string CreationDate { get { return this._app.PackageUpdatedAt; } }
     }
 }

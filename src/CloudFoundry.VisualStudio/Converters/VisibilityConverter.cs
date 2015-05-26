@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
-
-namespace CloudFoundry.VisualStudio.Converters
+﻿namespace CloudFoundry.VisualStudio.Converters
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Data;
+
     public class VisiblityConverter : IValueConverter
     {
         public bool Reversed { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-           if(value as bool? != Reversed) {
+           if (value as bool? != this.Reversed) 
+           {
                return Visibility.Visible;
            }
            else

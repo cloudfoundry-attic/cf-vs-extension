@@ -1,10 +1,10 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-
 namespace CloudFoundry.VisualStudio.Model
 {
-    class LoadingPlaceholder : CloudItem
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Threading.Tasks;
+
+    internal class LoadingPlaceholder : CloudItem
     {
         public LoadingPlaceholder()
             : base(CloudItemType.LoadingPlaceholder)
@@ -13,31 +13,25 @@ namespace CloudFoundry.VisualStudio.Model
 
         public override string Text
         {
-            get
-            {
-                return "Loading ...";
-            }
+            get { return "Loading ..."; }
         }
 
         protected override System.Drawing.Bitmap IconBitmap
         {
-            get
-            {
-                return Resources.Synchronizing;
-            }
-        }
-
-        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
-        {
-            return await Task<CloudItem>.Run(() =>
-                {
-                    return new CloudItem[] { };
-                });
+            get { return Resources.Synchronizing; }
         }
 
         protected override IEnumerable<CloudItemAction> MenuActions
         {
             get { return null; }
+        }
+
+        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
+        {
+            return await Task<CloudItem>.Run(() =>
+            {
+                return new CloudItem[] { };
+            });
         }
     }
 }

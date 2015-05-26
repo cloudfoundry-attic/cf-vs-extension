@@ -1,55 +1,44 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
-using Microsoft.VisualStudio.Threading;
-using System.Diagnostics;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using System.Windows.Media.Imaging;
+    using Microsoft.VisualStudio.Threading;
+
     internal abstract class CloudItem : INotifyPropertyChanged
     {
-        private readonly CloudItemType _cloudItemType = CloudItemType.Target;
-        private volatile bool _isExpanded = false;
-        private volatile bool _wasRefreshed = false;
-        private readonly AsyncObservableCollection<CloudItem> _children = new AsyncObservableCollection<CloudItem>();
+        private readonly CloudItemType cloudItemType = CloudItemType.Target;
+        private readonly AsyncObservableCollection<CloudItem> children = new AsyncObservableCollection<CloudItem>();
+        private readonly object childRefreshLock = new object();
+        private volatile bool isExpanded = false;
+        private volatile bool wasRefreshed = false;
         private System.Threading.CancellationToken cancellationToken;
         private CloudItem parent = null;
-        private readonly object childRefreshLock = new object();
-
-        protected bool HasRefresh
-        {
-            get
-            {
-                return _cloudItemType != CloudItemType.LoadingPlaceholder &&
-                    _cloudItemType != CloudItemType.App &&
-                    _cloudItemType != CloudItemType.Route &&
-                    _cloudItemType != CloudItemType.Service &&
-                    _cloudItemType != CloudItemType.Error;
-            }
-        }
+        private bool executingBackgroundAction;
 
         protected CloudItem(CloudItemType cloudItemType)
         {
-            _cloudItemType = cloudItemType;
+            this.cloudItemType = cloudItemType;
 
             if (this.HasRefresh)
             {
-                _children.Add(new LoadingPlaceholder());
+                this.children.Add(new LoadingPlaceholder());
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         [Browsable(false)]
         public CancellationToken CancellationToken
         {
             get
             {
-                return cancellationToken;
+                return this.cancellationToken;
             }
         }
 
@@ -58,7 +47,7 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                return _cloudItemType;
+                return this.cloudItemType;
             }
         }
 
@@ -67,23 +56,18 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                return _isExpanded;
+                return this.isExpanded;
             }
+
             set
             {
-                _isExpanded = value;
+                this.isExpanded = value;
 
-                if (_isExpanded && !_wasRefreshed)
+                if (this.isExpanded && !this.wasRefreshed)
                 {
-                    RefreshChildren().Forget();
-
+                    this.RefreshChildren().Forget();
                 }
             }
-        }
-
-        private void AttachToParent(CloudItem parent)
-        {
-            this.parent = parent;
         }
 
         [Browsable(false)]
@@ -91,45 +75,8 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                return parent;
+                return this.parent;
             }
-        }
-
-        public async Task RefreshChildren()
-        {
-            this.ExecutingBackgroundAction = true;
-            var populateChildrenTask = this.UpdateChildren();
-            this.cancellationToken = new System.Threading.CancellationToken();
-
-            await populateChildrenTask.ContinueWith((antecedent) =>
-                {
-                    lock (this.childRefreshLock)
-                    {
-                        if (antecedent.IsFaulted)
-                        {
-                            _children.Clear();
-
-                            CloudError error = new CloudError(antecedent.Exception);
-
-                            _children.Add(error);
-                        }
-                        else
-                        {
-                            _children.Clear();
-
-                            foreach (var child in antecedent.Result)
-                            {
-                                _children.Add(child);
-
-                                child.AttachToParent(this);
-                            }
-
-                            _wasRefreshed = true;
-                        }
-
-                        this.ExecutingBackgroundAction = false;
-                    }
-                });
         }
 
         [Browsable(false)]
@@ -137,7 +84,7 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                return Converters.ImageConverter.ConvertBitmapToBitmapImage(IconBitmap);
+                return Converters.ImageConverter.ConvertBitmapToBitmapImage(this.IconBitmap);
             }
         }
 
@@ -148,10 +95,11 @@ namespace CloudFoundry.VisualStudio.Model
             {
                 return this.executingBackgroundAction;
             }
+
             set
             {
                 this.executingBackgroundAction = value;
-                NotifyPropertyChanged("ExecutingBackgroundAction");
+                this.NotifyPropertyChanged("ExecutingBackgroundAction");
             }
         }
 
@@ -161,26 +109,13 @@ namespace CloudFoundry.VisualStudio.Model
             get;
         }
 
-        protected abstract Bitmap IconBitmap
-        {
-            get;
-        }
-
-        protected abstract Task<IEnumerable<CloudItem>> UpdateChildren();
-
         [Browsable(false)]
         public ObservableCollection<CloudItem> Children
         {
             get
             {
-                return _children;
+                return this.children;
             }
-        }
-
-        [Browsable(false)]
-        protected abstract IEnumerable<CloudItemAction> MenuActions
-        {
-            get;
         }
 
         [Browsable(false)]
@@ -193,7 +128,7 @@ namespace CloudFoundry.VisualStudio.Model
 
                 if (this.HasRefresh)
                 {
-                    result.Add(new CloudItemAction(this, "Refresh", Resources.Refresh, RefreshChildren));
+                    result.Add(new CloudItemAction(this, "Refresh", Resources.Refresh, this.RefreshChildren));
                     if (menuAction != null && menuAction.Count() > 0)
                     {
                         result.Add(new CloudItemAction(this, "-", null, () => { return Task.Delay(0); }));
@@ -219,15 +154,79 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
-        private void NotifyPropertyChanged(string propertyName)
+        protected bool HasRefresh
         {
-            if (PropertyChanged != null)
+            get
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                return this.cloudItemType != CloudItemType.LoadingPlaceholder &&
+                    this.cloudItemType != CloudItemType.App &&
+                    this.cloudItemType != CloudItemType.Route &&
+                    this.cloudItemType != CloudItemType.Service &&
+                    this.cloudItemType != CloudItemType.Error;
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private bool executingBackgroundAction;
+        protected abstract Bitmap IconBitmap
+        {
+            get;
+        }
+
+        [Browsable(false)]
+        protected abstract IEnumerable<CloudItemAction> MenuActions
+        {
+            get;
+        }
+
+        public async Task RefreshChildren()
+        {
+            this.ExecutingBackgroundAction = true;
+            var populateChildrenTask = this.UpdateChildren();
+            this.cancellationToken = new System.Threading.CancellationToken();
+
+            await populateChildrenTask.ContinueWith((antecedent) =>
+            {
+                lock (this.childRefreshLock)
+                {
+                    if (antecedent.IsFaulted)
+                    {
+                        children.Clear();
+
+                        CloudError error = new CloudError(antecedent.Exception);
+
+                        children.Add(error);
+                    }
+                    else
+                    {
+                        children.Clear();
+
+                        foreach (var child in antecedent.Result)
+                        {
+                            children.Add(child);
+
+                            child.AttachToParent(this);
+                        }
+
+                        wasRefreshed = true;
+                    }
+
+                    this.ExecutingBackgroundAction = false;
+                }
+            });
+        }
+
+        protected abstract Task<IEnumerable<CloudItem>> UpdateChildren();
+
+        private void AttachToParent(CloudItem parent)
+        {
+            this.parent = parent;
+        }
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
 }

@@ -1,21 +1,19 @@
-﻿using System.Collections;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using CloudFoundry.VisualStudio.Forms;
-using CloudFoundry.VisualStudio.Model;
-using CloudFoundry.VisualStudio.TargetStore;
-using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Microsoft.VisualStudio.Threading;
-
-namespace CloudFoundry.VisualStudio
+﻿namespace CloudFoundry.VisualStudio
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Reflection;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using CloudFoundry.VisualStudio.Forms;
+    using CloudFoundry.VisualStudio.Model;
+    using CloudFoundry.VisualStudio.TargetStore;
+    using Microsoft.VisualStudio.Shell;
+    using Microsoft.VisualStudio.Threading;
+
     /// <summary>
     /// Interaction logic for MyControl.xaml
     /// </summary>
@@ -23,12 +21,11 @@ namespace CloudFoundry.VisualStudio
     {
         public CloudFoundryExplorer()
         {
-            InitializeComponent();
-            ReloadTargets();
+            this.InitializeComponent();
+            this.ReloadTargets();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1300:SpecifyMessageBoxOptions")]
-        private void treeMenuItem_Click(object sender, RoutedEventArgs e)
+        private void TreeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
 
@@ -69,6 +66,7 @@ namespace CloudFoundry.VisualStudio
                                 {
                                     await cloudItemAction.CloudItem.Parent.RefreshChildren();
                                 }
+
                                 break;
                             case CloudItemActionContinuation.None:
                             default:
@@ -84,7 +82,7 @@ namespace CloudFoundry.VisualStudio
             CloudItem item = e.NewValue as CloudItem;
             if (item != null)
             {
-                ListView.ItemsSource = GetItemList(item);
+                ListView.ItemsSource = this.GetItemList(item);
             }
         }
 
@@ -112,12 +110,11 @@ namespace CloudFoundry.VisualStudio
                     {
                         CloudTargetManager.SaveTarget(target);
                         CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Password);
-                        ReloadTargets();
+                        this.ReloadTargets();
                     }
                 }
             }
         }
-
 
         private void ReloadTargets()
         {
@@ -153,7 +150,10 @@ namespace CloudFoundry.VisualStudio
             foreach (PropertyInfo pi in properties)
             {
                 var browsable = pi.GetCustomAttribute<BrowsableAttribute>();
-                if ((browsable != null) && (!browsable.Browsable)) continue;
+                if ((browsable != null) && (!browsable.Browsable))
+                {
+                    continue;
+                }
 
                 var displayName = pi.GetCustomAttribute<DisplayNameAttribute>();
                 if (displayName != null)

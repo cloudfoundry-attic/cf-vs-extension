@@ -1,19 +1,19 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using CloudFoundry.UAA;
-using CloudFoundry.VisualStudio.Forms;
-using CloudFoundry.VisualStudio.TargetStore;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.IdentityModel.Tokens;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
-    class CloudFoundryTarget : CloudItem
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.IdentityModel.Tokens;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using CloudFoundry.UAA;
+    using CloudFoundry.VisualStudio.Forms;
+    using CloudFoundry.VisualStudio.TargetStore;
+
+    internal class CloudFoundryTarget : CloudItem
     {
         private readonly CloudTarget target;
 
@@ -68,6 +68,17 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
+        protected override IEnumerable<CloudItemAction> MenuActions
+        {
+            get
+            {
+                return new CloudItemAction[]
+                {
+                    new CloudItemAction(this, "Remove", Resources.Remove, this.Delete, CloudItemActionContinuation.RefreshParent)
+                };
+            }
+        }
+
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
             CloudFoundryClient client = new CloudFoundryClient(this.target.TargetUrl, this.CancellationToken, null, this.target.IgnoreSSLErrors);
@@ -97,25 +108,13 @@ namespace CloudFoundry.VisualStudio.Model
             return result;
         }
 
-        protected override IEnumerable<CloudItemAction> MenuActions
-        {
-            get
-            {
-                return new CloudItemAction[]
-                {
-                    new CloudItemAction(this, "Remove", Resources.Remove, Delete, CloudItemActionContinuation.RefreshParent)
-                };
-            }
-        }
-
         private async Task Delete()
         {
             var answer = MessageBoxHelper.WarningQuestion(
                 string.Format(
                 CultureInfo.InvariantCulture,
                 "Are you sure you want to delete target '{0}'?",
-                this.target.DisplayName
-                ));
+                this.target.DisplayName));
 
             if (answer == System.Windows.Forms.DialogResult.Yes)
             {

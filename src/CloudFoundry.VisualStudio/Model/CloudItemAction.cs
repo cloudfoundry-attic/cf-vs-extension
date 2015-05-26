@@ -1,15 +1,15 @@
-﻿using System;
-using System.Drawing;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
+    using System;
+    using System.Drawing;
+    using System.Threading.Tasks;
+
     internal class CloudItemAction
     {
-        private readonly string _text;
-        private readonly Bitmap _icon;
-        private readonly Func<Task> _onClick;
-        private readonly CloudItem _cloudItem;
+        private readonly string text;
+        private readonly Bitmap icon;
+        private readonly Func<Task> onClick;
+        private readonly CloudItem cloudItem;
         private CloudItemActionContinuation continuation;
 
         public CloudItemAction(CloudItem cloudItem, string text, Bitmap icon, Func<Task> onClick)
@@ -19,18 +19,18 @@ namespace CloudFoundry.VisualStudio.Model
 
         public CloudItemAction(CloudItem cloudItem, string text, Bitmap icon, Func<Task> onClick, CloudItemActionContinuation continuation)
         {
-            this._cloudItem = cloudItem;
+            this.cloudItem = cloudItem;
             this.continuation = continuation;
-            _text = text;
-            _icon = icon;
-            _onClick = onClick;
+            this.text = text;
+            this.icon = icon;
+            this.onClick = onClick;
         }
 
         public string Text
         {
             get
             {
-                return _text;
+                return this.text;
             }
         }
 
@@ -46,7 +46,7 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                return _onClick;
+                return this.onClick;
             }
         }
 
@@ -54,7 +54,7 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                return _cloudItem;
+                return this.cloudItem;
             }
         }
 
@@ -62,7 +62,7 @@ namespace CloudFoundry.VisualStudio.Model
         {
             get
             {
-                var bitmapImage = Converters.ImageConverter.ConvertBitmapToBitmapImage(_icon);
+                var bitmapImage = Converters.ImageConverter.ConvertBitmapToBitmapImage(this.icon);
 
                 if (bitmapImage != null)
                 {
@@ -71,6 +71,7 @@ namespace CloudFoundry.VisualStudio.Model
                         Source = bitmapImage
                     };
                 }
+
                 return null;
             }
         }

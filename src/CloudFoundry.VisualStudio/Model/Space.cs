@@ -1,30 +1,49 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
-    class Space : CloudItem
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+
+    internal class Space : CloudItem
     {
-        private readonly ListAllSpacesForOrganizationResponse _space;
-        private readonly CloudFoundryClient _client;
+        private readonly ListAllSpacesForOrganizationResponse space;
+        private readonly CloudFoundryClient client;
 
         public Space(ListAllSpacesForOrganizationResponse space, CloudFoundryClient client)
             : base(CloudItemType.Space)
         {
-            _client = client;
-            _space = space;
+            this.client = client;
+            this.space = space;
         }
 
         public override string Text
         {
             get
             {
-                return _space.Name;
+                return this.space.Name;
+            }
+        }
+
+        [Description("Name of the space.")]
+        public string Name
+        {
+            get
+            {
+                return this.space.Name;
+            }
+        }
+
+        [DisplayName("Creation date")]
+        [Description("Date when the space was created.")]
+        public string CreatedAt
+        {
+            get
+            {
+                return this.space.EntityMetadata.CreatedAt;
             }
         }
 
@@ -36,18 +55,6 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
-        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
-        {
-            return await Task<CloudItem[]>.Run(() =>
-            {
-                return new CloudItem[] {
-                    new AppsCollection(_space, _client),
-                    new ServicesCollection(_space, _client),
-                    new RoutesCollection(_space, _client),
-                };
-            });
-        }
-
         protected override IEnumerable<CloudItemAction> MenuActions
         {
             get
@@ -56,19 +63,17 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
-        [Description("Name of the space.")]
-        public string Name { get { return _space.Name; } }
-
-        [DisplayName("Creation date")]
-        [Description("Date when the space was created.")]
-        public string CreatedAt
+        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
-            get
+            return await Task<CloudItem[]>.Run(() =>
             {
-                return this._space.EntityMetadata.CreatedAt;
-            }
+                return new CloudItem[] 
+                {
+                    new AppsCollection(space, client),
+                    new ServicesCollection(space, client),
+                    new RoutesCollection(space, client),
+                };
+            });
         }
-
     }
-
 }
