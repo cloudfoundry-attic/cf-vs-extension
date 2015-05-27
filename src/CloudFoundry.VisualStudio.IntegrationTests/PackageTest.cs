@@ -49,7 +49,7 @@ namespace CloudFoundry.VisualStudio_IntegrationTests
 
                 //Validate package load
                 IVsPackage package;
-                Guid packageGuid = new Guid(CloudFoundry.VisualStudio.GuidList.guidCloudFoundry_VisualStudioPkgString);
+                Guid packageGuid = new Guid(CloudFoundry.VisualStudio.GuidList.GuidCloudFoundryVisualStudioPkgString);
                 Assert.IsTrue(0 == shellService.LoadPackage(ref packageGuid, out package));
                 Assert.IsNotNull(package, "Package failed to load");
 

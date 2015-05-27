@@ -1,31 +1,50 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
-    class Organization : CloudItem
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+
+    internal class Organization : CloudItem
     {
-        private readonly ListAllOrganizationsResponse _organization;
-        private readonly CloudFoundryClient _client;
+        private readonly ListAllOrganizationsResponse organization;
+        private readonly CloudFoundryClient client;
 
         public Organization(ListAllOrganizationsResponse org, CloudFoundryClient client)
             : base(CloudItemType.Organization)
         {
-            _client = client;
-            _organization = org;
+            this.client = client;
+            this.organization = org;
+        }
+
+        [Description("Name of the Organization")]
+        public string Name
+        {
+            get
+            {
+                return this.organization.Name;
+            }
+        }
+
+        [DisplayName("Creation date")]
+        [Description("Date when the organization was created.")]
+        public string CreationDate
+        {
+            get
+            {
+                return this.organization.EntityMetadata.CreatedAt;
+            }
         }
 
         public override string Text
         {
             get
             {
-                return _organization.Name;
+                return this.organization.Name;
             }
         }
 
@@ -37,25 +56,6 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
-        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
-        {
-            List<Space> result = new List<Space>();
-
-            PagedResponseCollection<ListAllSpacesForOrganizationResponse> spaces = await _client.Organizations.ListAllSpacesForOrganization(_organization.EntityMetadata.Guid);
-
-            while (spaces != null && spaces.Properties.TotalResults != 0)
-            {
-                foreach (var space in spaces)
-                {
-                    result.Add(new Space(space, this._client));
-                }
-
-                spaces = await spaces.GetNextPage();
-            }
-
-            return result;
-        }
-
         protected override IEnumerable<CloudItemAction> MenuActions
         {
             get
@@ -64,12 +64,23 @@ namespace CloudFoundry.VisualStudio.Model
             }
         }
 
-        [Description("Name of the Organization")]
-        public string Name { get { return _organization.Name; } }
+        protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
+        {
+            List<Space> result = new List<Space>();
 
-        [DisplayName("Creation date")]
-        [Description("Date when the organization was created.")]
-        public string CreationDate { get { return this._organization.EntityMetadata.CreatedAt; } }
+            PagedResponseCollection<ListAllSpacesForOrganizationResponse> spaces = await this.client.Organizations.ListAllSpacesForOrganization(this.organization.EntityMetadata.Guid);
 
+            while (spaces != null && spaces.Properties.TotalResults != 0)
+            {
+                foreach (var space in spaces)
+                {
+                    result.Add(new Space(space, this.client));
+                }
+
+                spaces = await spaces.GetNextPage();
+            }
+
+            return result;
+        }
     }
 }

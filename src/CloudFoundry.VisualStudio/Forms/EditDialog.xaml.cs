@@ -1,45 +1,39 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using CloudFoundry.UAA;
-using CloudFoundry.VisualStudio.Forms;
-using CloudFoundry.VisualStudio.ProjectPush;
-using CloudFoundry.VisualStudio.TargetStore;
-using EnvDTE;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.PlatformUI;
-using NuGet.VisualStudio;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Security.Authentication;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
-namespace CloudFoundry.VisualStudio
+﻿namespace CloudFoundry.VisualStudio
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Input;
+    using System.Windows.Media.Imaging;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using CloudFoundry.UAA;
+    using CloudFoundry.VisualStudio.Forms;
+    using CloudFoundry.VisualStudio.ProjectPush;
+    using CloudFoundry.VisualStudio.TargetStore;
+    using EnvDTE;
+    using Microsoft.VisualStudio.ComponentModelHost;
+    using Microsoft.VisualStudio.PlatformUI;
+    using NuGet.VisualStudio;
+
     /// <summary>
     /// Interaction logic for EditDialog.xaml
     /// </summary>
     public partial class EditDialog : DialogWindow
     {
-        public string PublishProfile { get; set; }
         private CloudFoundryClient client;
         private Project currentProj;
+
         public EditDialog(AppPackage package, Project currentProject)
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.currentProj = currentProject;
 
@@ -47,8 +41,46 @@ namespace CloudFoundry.VisualStudio
             this.DataContext = package;
             this.ProfilePath.Text = package.ConfigFile;
 
-            LoadProjectConfigurationsAndPlatforms();
-            Init(package);
+            this.LoadProjectConfigurationsAndPlatforms();
+            this.Init(package);
+        }
+
+        public string PublishProfile { get; set; }
+
+        public BitmapImage GetBitmapImageFromResources(string type)
+        {
+            System.Drawing.Bitmap bmp = null;
+
+            switch (type)
+            {
+                case "refresh":
+                    {
+                        bmp = CloudFoundry.VisualStudio.Resources.StatusStarted;
+                        break;
+                    }
+
+                case "ok":
+                    {
+                        bmp = CloudFoundry.VisualStudio.Resources.StatusRunning;
+                        break;
+                    }
+
+                case "error":
+                    {
+                        bmp = CloudFoundry.VisualStudio.Resources.Error;
+                        break;
+                    }
+
+                case "warning":
+                    {
+                        bmp = CloudFoundry.VisualStudio.Resources.SSLDisabled;
+                        break;
+                    }
+
+                default: break;
+            }
+
+            return Converters.ImageConverter.ConvertBitmapToBitmapImage(bmp);
         }
 
         private void LoadProjectConfigurationsAndPlatforms()
@@ -76,7 +108,7 @@ namespace CloudFoundry.VisualStudio
             {
                 this.IsEnabled = false;
                 bool initClientError = false;
-                await InitClient(package).ContinueWith((antecedent) =>
+                await this.InitClient(package).ContinueWith((antecedent) =>
                 {
                     if (antecedent.IsFaulted)
                     {
@@ -88,7 +120,7 @@ namespace CloudFoundry.VisualStudio
                 });
                 if (!initClientError)
                 {
-                    await Load(package).ContinueWith((antecedent) =>
+                    await this.Load(package).ContinueWith((antecedent) =>
                     {
                         if (antecedent.IsFaulted)
                         {
@@ -113,37 +145,21 @@ namespace CloudFoundry.VisualStudio
                         if (OrgCombo.SelectedItem == null && (OrgCombo.Items != null && OrgCombo.Items.Count > 0))
                         {
                             OrgCombo.SelectedItem = OrgCombo.Items[0];
-                            //OrgCombo_SelectionChanged(OrgCombo, null);
                         }
                     });
             }
             else
             {
-                StatusIcon.Source = GetBitmapImageFromResources("warning");
+                StatusIcon.Source = this.GetBitmapImageFromResources("warning");
                 StatusIcon.ToolTip = "Please set a target";
                 this.Publish.IsEnabled = false;
                 this.IsEnabled = true;
             }
         }
 
-        public BitmapImage GetBitmapImageFromResources(string type)
-        {
-            System.Drawing.Bitmap bmp = null;
-
-            switch (type)
-            {
-                case "refresh": { bmp = CloudFoundry.VisualStudio.Resources.StatusStarted; break; }
-                case "ok": { bmp = CloudFoundry.VisualStudio.Resources.StatusRunning; break; }
-                case "error": { bmp = CloudFoundry.VisualStudio.Resources.Error; break; }
-                case "warning": { bmp = CloudFoundry.VisualStudio.Resources.SSLDisabled; break; }
-                default: break;
-            }
-
-            return Converters.ImageConverter.ConvertBitmapToBitmapImage(bmp);
-        }
         private void GetRoutes(AppPackage package)
         {
-            //TODO: Generate controls for multiple routes
+            ////TODO: Generate controls for multiple routes
             string[] routesList = package.CFRoutes.Split(';');
 
             foreach (string route in routesList)
@@ -157,7 +173,6 @@ namespace CloudFoundry.VisualStudio
             }
         }
 
-
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
@@ -167,9 +182,9 @@ namespace CloudFoundry.VisualStudio
         private void SaveAs_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.SaveFileDialog saveDialog = new System.Windows.Forms.SaveFileDialog();
-            if (currentProj != null)
+            if (this.currentProj != null)
             {
-                string projectDir = System.IO.Path.GetDirectoryName(currentProj.FullName);
+                string projectDir = System.IO.Path.GetDirectoryName(this.currentProj.FullName);
                 string profilesDir = System.IO.Path.Combine(projectDir, "Properties", "PublishProfiles");
 
                 if (Directory.Exists(profilesDir))
@@ -184,29 +199,29 @@ namespace CloudFoundry.VisualStudio
                 }
             }
 
-            saveDialog.Filter = string.Format(CultureInfo.InvariantCulture, "CF Publish file | *{0}", CloudFoundry_VisualStudioPackage.extension);
+            saveDialog.Filter = string.Format(CultureInfo.InvariantCulture, "CF Publish file | *{0}", CloudFoundry_VisualStudioPackage.Extension);
             if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                SaveCurrentToFile(saveDialog.FileName);
+                this.SaveCurrentToFile(saveDialog.FileName);
                 this.ProfilePath.Text = saveDialog.FileName;
             }
         }
 
         private void SaveCurrentToFile(string filepath)
         {
-            SaveContext();
+            this.SaveContext();
             AppPackage package = this.DataContext as AppPackage;
             if (package != null)
             {
                 package.SaveToFile(filepath);
-                if (currentProj != null)
+                if (this.currentProj != null)
                 {
-                    string projRoot = System.IO.Path.GetDirectoryName(currentProj.FullName);
+                    string projRoot = System.IO.Path.GetDirectoryName(this.currentProj.FullName);
                     string projProfileDirPath = System.IO.Path.Combine(projRoot, "Properties", "PublishProfiles");
 
                     if (projProfileDirPath.ToUpperInvariant() == System.IO.Path.GetDirectoryName(filepath).ToUpperInvariant())
                     {
-                        currentProj.ProjectItems.AddFromFile(filepath);
+                        this.currentProj.ProjectItems.AddFromFile(filepath);
                     }
                 }
             }
@@ -223,11 +238,12 @@ namespace CloudFoundry.VisualStudio
 
         private void Publish_Click(object sender, RoutedEventArgs e)
         {
-            if (ValidateServicesInformation() == false)
+            if (this.ValidateServicesInformation() == false)
             {
                 return;
             }
-            SaveContext();
+
+            this.SaveContext();
             AppPackage package = this.DataContext as AppPackage;
 
             if (package != null)
@@ -246,22 +262,21 @@ namespace CloudFoundry.VisualStudio
 
                 IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 
-                if (installerServices.IsPackageInstalled(currentProj, CloudFoundry_VisualStudioPackage.packageId) == false)
+                if (installerServices.IsPackageInstalled(this.currentProj, CloudFoundry_VisualStudioPackage.PackageId) == false)
                 {
                     MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Cannot publish to Cloud Foundry{0}Cloud Foundry MSBuild Tasks is not installed in your project, please install it and try again", Environment.NewLine));
                 }
                 else
                 {
-                    Push(package);
+                    this.Push(package);
                 }
+
                 this.Close();
             }
             else
             {
                 MessageBoxHelper.DisplayWarning("Nothing to push, please check settings and try again");
             }
-
-
         }
 
         private bool ValidateServicesInformation()
@@ -278,6 +293,7 @@ namespace CloudFoundry.VisualStudio
                     }
                 }
             }
+
             return true;
         }
 
@@ -285,9 +301,9 @@ namespace CloudFoundry.VisualStudio
         {
             this.IsEnabled = false;
             System.Windows.Forms.OpenFileDialog dialogOpen = new System.Windows.Forms.OpenFileDialog();
-            if (currentProj != null)
+            if (this.currentProj != null)
             {
-                string projectDir = System.IO.Path.GetDirectoryName(currentProj.FullName);
+                string projectDir = System.IO.Path.GetDirectoryName(this.currentProj.FullName);
                 string profilesDir = System.IO.Path.Combine(projectDir, "Properties", "PublishProfiles");
 
                 if (Directory.Exists(profilesDir))
@@ -302,7 +318,7 @@ namespace CloudFoundry.VisualStudio
                 }
             }
 
-            dialogOpen.Filter = string.Format(CultureInfo.InvariantCulture, "CF Publish file | *{0}", CloudFoundry_VisualStudioPackage.extension);
+            dialogOpen.Filter = string.Format(CultureInfo.InvariantCulture, "CF Publish file | *{0}", CloudFoundry_VisualStudioPackage.Extension);
 
             if (dialogOpen.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -322,13 +338,13 @@ namespace CloudFoundry.VisualStudio
                     return;
                 }
 
-                this.PublishProfile = System.IO.Path.GetFileName(dialogOpen.FileName).Replace(CloudFoundry_VisualStudioPackage.extension, "");
+                this.PublishProfile = System.IO.Path.GetFileName(dialogOpen.FileName).Replace(CloudFoundry_VisualStudioPackage.Extension, string.Empty);
                 if (package != null)
                 {
                     OrgCombo.ItemsSource = null;
                     SpacesCombo.ItemsSource = null;
                     DomainsCombo.ItemsSource = null;
-                    Init(package);
+                    this.Init(package);
                 }
             }
             else
@@ -337,11 +353,15 @@ namespace CloudFoundry.VisualStudio
             }
         }
 
-        //This populates the comboboxes with the values required by the package
+        /// <summary>
+        /// This populates the comboboxes with the values required by the package
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
         private async Task Load(AppPackage package)
         {
-            var orgs = await client.Organizations.ListAllOrganizations().ConfigureAwait(false);
-            var stacks = await client.Stacks.ListAllStacks().ConfigureAwait(false);
+            var orgs = await this.client.Organizations.ListAllOrganizations().ConfigureAwait(false);
+            var stacks = await this.client.Stacks.ListAllStacks().ConfigureAwait(false);
 
             Dispatcher.Invoke(() =>
             {
@@ -369,14 +389,14 @@ namespace CloudFoundry.VisualStudio
             {
                 selectedOrg = orgs.Where(o => o.Name == package.CFOrganization).FirstOrDefault().EntityMetadata.Guid;
 
-                var spaces = await client.Organizations.ListAllSpacesForOrganization(new Guid(selectedOrg));
+                var spaces = await this.client.Organizations.ListAllSpacesForOrganization(new Guid(selectedOrg));
 
                 if (package.CFSpace != string.Empty)
                 {
                     selectedSpace = spaces.Where(o => o.Name == package.CFSpace).FirstOrDefault().EntityMetadata.Guid;
                 }
 
-                var domains = await client.Spaces.ListAllDomainsForSpaceDeprecated(new Guid(selectedSpace));
+                var domains = await this.client.Spaces.ListAllDomainsForSpaceDeprecated(new Guid(selectedSpace));
 
                 Dispatcher.Invoke(() =>
                 {
@@ -391,7 +411,10 @@ namespace CloudFoundry.VisualStudio
             }
         }
 
-        //This makes the proper selections in the comboboxes
+        /// <summary>
+        /// This makes the proper selections in the comboboxes
+        /// </summary>
+        /// <param name="package"></param>
         private void SelectLoadedValues(AppPackage package)
         {
             if (package.CFOrganization != string.Empty)
@@ -409,14 +432,13 @@ namespace CloudFoundry.VisualStudio
                 StacksCombo.SelectedValue = StacksCombo.Items.Cast<ListAllStacksResponse>().Where(o => o.Name == package.CFStack).Select(o => o.Name).FirstOrDefault();
             }
 
-            GetRoutes(package);
+            this.GetRoutes(package);
 
             if (this.DataContext == null)
             {
                 this.DataContext = package;
             }
         }
-
 
         private async void ChangeTarget_Click(object sender, RoutedEventArgs e)
         {
@@ -425,6 +447,7 @@ namespace CloudFoundry.VisualStudio
             {
                 package = new AppPackage();
             }
+
             if (package != null)
             {
                 using (var loginForm = new LoginWizardForm())
@@ -458,7 +481,7 @@ namespace CloudFoundry.VisualStudio
                             DomainsCombo.ItemsSource = null;
 
                             bool initClientError = false;
-                            await InitClient(package).ContinueWith((antecedent) =>
+                            await this.InitClient(package).ContinueWith((antecedent) =>
                             {
                                 if (antecedent.IsFaulted)
                                 {
@@ -470,7 +493,7 @@ namespace CloudFoundry.VisualStudio
                             });
                             if (!initClientError)
                             {
-                                await Load(package).ContinueWith((antecedent) =>
+                                await this.Load(package).ContinueWith((antecedent) =>
                                 {
                                     if (antecedent.IsFaulted)
                                     {
@@ -486,7 +509,6 @@ namespace CloudFoundry.VisualStudio
                             if (OrgCombo.SelectedItem == null && (OrgCombo.Items != null && OrgCombo.Items.Count > 0))
                             {
                                 OrgCombo.SelectedItem = OrgCombo.Items[0];
-                                //OrgCombo_SelectionChanged(OrgCombo, null);
                             }
                         }
                     }
@@ -502,6 +524,7 @@ namespace CloudFoundry.VisualStudio
                 StatusIcon.ToolTip = message;
             });
         }
+
         private void DisablePublishButton()
         {
             Dispatcher.Invoke(() =>
@@ -518,13 +541,13 @@ namespace CloudFoundry.VisualStudio
 
             if (package != null)
             {
-                client = new CloudFoundryClient(new Uri(package.CFServerUri), new System.Threading.CancellationToken(), null, package.CFSkipSSLValidation);
+                this.client = new CloudFoundryClient(new Uri(package.CFServerUri), new System.Threading.CancellationToken(), null, package.CFSkipSSLValidation);
 
                 if (package.CFRefreshToken != string.Empty)
                 {
                     try
                     {
-                        await client.Login(package.CFRefreshToken).ConfigureAwait(false);
+                        await this.client.Login(package.CFRefreshToken).ConfigureAwait(false);
                         imageType = "refresh";
                         message = "You are using a specific token to login";
                     }
@@ -533,8 +556,8 @@ namespace CloudFoundry.VisualStudio
                         imageType = "error";
                         message = string.Format(CultureInfo.InvariantCulture, "Could not login using the token in your profile. {0}", ex.Message);
                         Logger.Warning(message);
-                        SetStatusInfo(imageType, message);
-                        DisablePublishButton();
+                        this.SetStatusInfo(imageType, message);
+                        this.DisablePublishButton();
                         throw ex;
                     }
                 }
@@ -544,10 +567,11 @@ namespace CloudFoundry.VisualStudio
                     {
                         imageType = "warning";
                         message = "Please configure credentials for your target.";
-                        SetStatusInfo(imageType, message);
-                        DisablePublishButton();
+                        this.SetStatusInfo(imageType, message);
+                        this.DisablePublishButton();
                         return;
                     }
+
                     if (package.CFPassword == string.Empty)
                     {
                         if (package.CFSavedPassword == true)
@@ -557,36 +581,36 @@ namespace CloudFoundry.VisualStudio
                             {
                                 imageType = "warning";
                                 message = "Please configure credentials for your target.";
-                                SetStatusInfo(imageType, message);
-                                DisablePublishButton();
+                                this.SetStatusInfo(imageType, message);
+                                this.DisablePublishButton();
                                 return;
                             }
+
                             CloudCredentials creds = new CloudCredentials();
                             creds.User = package.CFUser;
                             creds.Password = password;
                             try
                             {
-                                await client.Login(creds).ConfigureAwait(false);
+                                await this.client.Login(creds).ConfigureAwait(false);
                             }
                             catch (Exception ex)
                             {
                                 imageType = "error";
                                 message = ex.Message;
-                                SetStatusInfo(imageType, message);
-                                DisablePublishButton();
+                                this.SetStatusInfo(imageType, message);
+                                this.DisablePublishButton();
                                 throw ex;
                             }
 
                             imageType = "ok";
                             message = "Target configuration is valid";
-
                         }
                         else
                         {
                             imageType = "warning";
                             message = "Please configure credentials for your target.";
-                            SetStatusInfo(imageType, message);
-                            DisablePublishButton();
+                            this.SetStatusInfo(imageType, message);
+                            this.DisablePublishButton();
                             return;
                         }
                     }
@@ -597,22 +621,24 @@ namespace CloudFoundry.VisualStudio
                         creds.Password = package.CFPassword;
                         try
                         {
-                            await client.Login(creds).ConfigureAwait(false);
+                            await this.client.Login(creds).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
                             imageType = "error";
                             message = string.Format(CultureInfo.InvariantCulture, "{0}. Your password is saved in clear text in the profile!", ex.Message);
-                            SetStatusInfo(imageType, message);
-                            DisablePublishButton();
+                            this.SetStatusInfo(imageType, message);
+                            this.DisablePublishButton();
                             throw ex;
                         }
+
                         imageType = "warning";
                         message = "Target login was successful, but your password is saved in clear text in profile!";
                     }
                 }
             }
-            SetStatusInfo(imageType, message);
+
+            this.SetStatusInfo(imageType, message);
         }
 
         private async void OrgCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -621,7 +647,7 @@ namespace CloudFoundry.VisualStudio
             {
                 var orgInfo = OrgCombo.SelectedValue.ToString();
 
-                await FillSpaces(orgInfo);
+                await this.FillSpaces(orgInfo);
             }
         }
 
@@ -629,7 +655,7 @@ namespace CloudFoundry.VisualStudio
         {
             if (orgInfo != string.Empty)
             {
-                var spaces = await client.Organizations.ListAllSpacesForOrganization(new Guid(orgInfo)).ConfigureAwait(false);
+                var spaces = await this.client.Organizations.ListAllSpacesForOrganization(new Guid(orgInfo)).ConfigureAwait(false);
 
                 Dispatcher.Invoke(() =>
                 {
@@ -651,8 +677,7 @@ namespace CloudFoundry.VisualStudio
             {
                 var spaceInfo = SpacesCombo.SelectedValue.ToString();
 
-                await FillDomains(spaceInfo);
-
+                await this.FillDomains(spaceInfo);
             }
         }
 
@@ -660,7 +685,7 @@ namespace CloudFoundry.VisualStudio
         {
             if (spaceInfo != string.Empty)
             {
-                var domains = await client.Spaces.ListAllDomainsForSpaceDeprecated(new Guid(spaceInfo)).ConfigureAwait(false);
+                var domains = await this.client.Spaces.ListAllDomainsForSpaceDeprecated(new Guid(spaceInfo)).ConfigureAwait(false);
 
                 Dispatcher.Invoke(() =>
                 {
@@ -699,24 +724,20 @@ namespace CloudFoundry.VisualStudio
                     }
                 }
             }
+
             this.Close();
         }
-
-
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(this.ProfilePath.Text))
             {
-                SaveAs_Click(sender, e);
+                this.SaveAs_Click(sender, e);
                 return;
             }
 
-            SaveCurrentToFile(this.ProfilePath.Text);
+            this.SaveCurrentToFile(this.ProfilePath.Text);
             MessageBoxHelper.DisplayInfo("Target successfully saved.");
-
-
-
         }
 
         private void LocalBuild_Click(object sender, RoutedEventArgs e)
@@ -747,6 +768,7 @@ namespace CloudFoundry.VisualStudio
                         break;
                     }
                 }
+
                 if (paneFound == false)
                 {
                     pane = output.OutputWindowPanes.Add("Publish");
@@ -759,12 +781,12 @@ namespace CloudFoundry.VisualStudio
  
             dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Activate();
 
-            if (currentProj != null)
+            if (this.currentProj != null)
             {
-                string msBuildPath = Microsoft.Build.Utilities.ToolLocationHelper.GetPathToBuildToolsFile("msbuild.exe", "12.0");
-                string projectPath = currentProj.FullName;
+                string pathToMsBuild = Microsoft.Build.Utilities.ToolLocationHelper.GetPathToBuildToolsFile("msbuild.exe", "12.0");
+                string projectPath = this.currentProj.FullName;
                 string solutionPath = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
-                string projectName = currentProj.Name;
+                string projectName = this.currentProj.Name;
                 string profileName = this.PublishProfile;
                 bool localBuild = package.CFLocalBuild;
 
@@ -774,17 +796,24 @@ namespace CloudFoundry.VisualStudio
 
                     if (localBuild == true)
                     {
-                        arguments = string.Format(CultureInfo.InvariantCulture, @"/p:DeployOnBuild=true;PublishProfile=""{0}"" ""{1}""",
-                            package.ConfigFile, projectPath);
+                        arguments = string.Format(
+                            CultureInfo.InvariantCulture,
+                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" ""{1}""",
+                            package.ConfigFile,
+                            projectPath);
                     }
                     else
                     {
-                        arguments = string.Format(CultureInfo.InvariantCulture,
-                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" /p:PUBLISH_WEBSITE={1} /p:CFAppPath=""{2}"" ""{3}""", package.ConfigFile,
-                            projectName, solutionPath, projectPath);
+                        arguments = string.Format(
+                            CultureInfo.InvariantCulture,
+                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" /p:PUBLISH_WEBSITE={1} /p:CFAppPath=""{2}"" ""{3}""",
+                            package.ConfigFile,
+                            projectName,
+                            solutionPath,
+                            projectPath);
                     }
 
-                    var startInfo = new ProcessStartInfo(msBuildPath)
+                    var startInfo = new ProcessStartInfo(pathToMsBuild)
                     {
                         Arguments = arguments,
                         WorkingDirectory = System.IO.Path.GetDirectoryName(projectPath),
@@ -795,7 +824,6 @@ namespace CloudFoundry.VisualStudio
                         UseShellExecute = false
                     };
                     pane.OutputString("> msbuild " + startInfo.Arguments);
-
 
                     using (var process = System.Diagnostics.Process.Start(startInfo))
                     {
@@ -823,7 +851,6 @@ namespace CloudFoundry.VisualStudio
 
                         process.WaitForExit();
                     }
-
                 });
             }
         }

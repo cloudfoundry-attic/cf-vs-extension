@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace CloudFoundry.VisualStudio.Model
+﻿namespace CloudFoundry.VisualStudio.Model
 {
-    class ErrorEventArgs : EventArgs
+    using System;
+
+    internal class ErrorEventArgs : EventArgs
     {
         public Exception Error
         {

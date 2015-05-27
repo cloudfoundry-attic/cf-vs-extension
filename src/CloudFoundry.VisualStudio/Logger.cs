@@ -1,42 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Security;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio
+﻿namespace CloudFoundry.VisualStudio
 {
-    class Logger
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+
+    internal class Logger
     {
         /// <summary>
         /// The process that generates the log entry message
         /// </summary>
         public const string EventSource = "Cloud Foundry Helion Visual Studio Extension";
-
-        private static void WriteToLog(string message, EventLogEntryType type, params object[] args)
-        {
-            Logger.WriteToLog(string.Format(
-                CultureInfo.InvariantCulture,
-                message,
-                args
-                ), type);
-        }
-
-        private static void WriteToLog(string message, EventLogEntryType type)
-        {
-            try
-            {
-                EventLog.WriteEntry(
-                    EventSource,
-                    message,
-                    type);
-            }
-            catch // If we can't write to log, there's really nothing we can do, and we can't let Visual Studio crash
-            { }
-        }
 
         /// <summary>
         /// Logs an error message.
@@ -78,6 +51,31 @@ namespace CloudFoundry.VisualStudio
         public static void Info(string message)
         {
             Logger.WriteToLog(message, EventLogEntryType.Information);
+        }
+
+        private static void WriteToLog(string message, EventLogEntryType type, params object[] args)
+        {
+            Logger.WriteToLog(
+                string.Format(
+                    CultureInfo.InvariantCulture,
+                    message,
+                    args), 
+                type);
+        }
+
+        private static void WriteToLog(string message, EventLogEntryType type)
+        {
+            try
+            {
+                EventLog.WriteEntry(
+                    EventSource,
+                    message,
+                    type);
+            }
+            catch 
+            {
+                // If we can't write to log, there's really nothing we can do, and we can't let Visual Studio crash
+            }
         }
     }
 }

@@ -1,11 +1,20 @@
 ﻿namespace CloudFoundry.VisualStudio.Controls
 {
-    partial class LoginUserControl
+    public partial class LoginUserControl
     {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+        private System.Windows.Forms.TextBox textBoxTarget;
+        private System.Windows.Forms.Label labelEmail;
+        private System.Windows.Forms.TextBox textBoxPassword;
+        private System.Windows.Forms.Label labelPassword;
+        private System.Windows.Forms.TextBox textBoxEmail;
+        private System.Windows.Forms.Label labelTargetUrl;
+        private System.Windows.Forms.Label labelLoginError;
+        private System.Windows.Forms.CheckBox checkBoxIgnoreSSLErrors;
 
         /// <summary> 
         /// Clean up any resources being used.
@@ -13,10 +22,11 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -44,7 +54,7 @@
             this.textBoxTarget.Name = "textBoxTarget";
             this.textBoxTarget.Size = new System.Drawing.Size(256, 20);
             this.textBoxTarget.TabIndex = 0;
-            this.textBoxTarget.Leave += new System.EventHandler(this.textBoxTarget_Leave);
+            this.textBoxTarget.Leave += new System.EventHandler(this.TextBoxTarget_Leave);
             // 
             // labelEmail
             // 
@@ -62,7 +72,7 @@
             this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(256, 20);
             this.textBoxPassword.TabIndex = 2;
-            this.textBoxPassword.Enter += new System.EventHandler(this.textBoxPassword_Enter);
+            this.textBoxPassword.Enter += new System.EventHandler(this.TextBoxPassword_Enter);
             // 
             // labelPassword
             // 
@@ -79,7 +89,7 @@
             this.textBoxEmail.Name = "textBoxEmail";
             this.textBoxEmail.Size = new System.Drawing.Size(256, 20);
             this.textBoxEmail.TabIndex = 1;
-            this.textBoxEmail.Enter += new System.EventHandler(this.textBoxEmail_Enter);
+            this.textBoxEmail.Enter += new System.EventHandler(this.TextBoxEmail_Enter);
             // 
             // labelTargetUrl
             // 
@@ -131,15 +141,5 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox textBoxTarget;
-        private System.Windows.Forms.Label labelEmail;
-        private System.Windows.Forms.TextBox textBoxPassword;
-        private System.Windows.Forms.Label labelPassword;
-        private System.Windows.Forms.TextBox textBoxEmail;
-        private System.Windows.Forms.Label labelTargetUrl;
-        private System.Windows.Forms.Label labelLoginError;
-        private System.Windows.Forms.CheckBox checkBoxIgnoreSSLErrors;
-
     }
 }

@@ -1,57 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-
-namespace CloudFoundry.VisualStudio.Controls
+﻿namespace CloudFoundry.VisualStudio.Controls
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Data;
+    using System.Drawing;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Windows.Forms;
+
     public partial class LoginUserControl : UserControl
     {
+        public LoginUserControl()
+        {
+            this.InitializeComponent();
+        }
+
         public string Email
         {
-            get
-            {
-                return this.textBoxEmail.Text;
-            }
+            get { return this.textBoxEmail.Text; }
         }
 
         public string Password
         {
-            get
-            {
-                return this.textBoxPassword.Text;
-            }
+            get { return this.textBoxPassword.Text; }
         }
 
         public string TargetUrl
         {
-            get
-            {
-                return this.textBoxTarget.Text;
-            }
-            set
-            {
-                this.textBoxTarget.Text = value;
-            }
+            get { return this.textBoxTarget.Text; }
+            set { this.textBoxTarget.Text = value; }
         }
 
         public bool IgnoreSSLErrors
         {
-            get
-            {
-                return this.checkBoxIgnoreSSLErrors.Checked;
-            }
+            get { return this.checkBoxIgnoreSSLErrors.Checked; }
         }
 
         public void ShowLoginError(string message)
         {
             this.labelLoginError.Visible = true;
             this.labelLoginError.ForeColor = Color.Red;
-            this.labelLoginError.Text = string.Format("* {0}", message);
+            this.labelLoginError.Text = string.Format(CultureInfo.InvariantCulture, "* {0}", message);
         }
 
         public void HideLoginErrorLabel()
@@ -64,12 +55,7 @@ namespace CloudFoundry.VisualStudio.Controls
             this.textBoxTarget.Enabled = value;
         }
 
-        public LoginUserControl()
-        {
-            InitializeComponent();
-        }
-
-        private void textBoxTarget_Leave(object sender, EventArgs e)
+        private void TextBoxTarget_Leave(object sender, EventArgs e)
         {
             if (!this.textBoxTarget.Text.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) && !this.textBoxTarget.Text.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -77,17 +63,16 @@ namespace CloudFoundry.VisualStudio.Controls
             }
         }
 
-        private void textBoxEmail_Enter(object sender, EventArgs e)
+        private void TextBoxEmail_Enter(object sender, EventArgs e)
         {
-            textBoxEmail.SelectionStart = 0;
-            textBoxEmail.SelectionLength = textBoxEmail.Text.Length;
+            this.textBoxEmail.SelectionStart = 0;
+            this.textBoxEmail.SelectionLength = this.textBoxEmail.Text.Length;
         }
 
-        private void textBoxPassword_Enter(object sender, EventArgs e)
+        private void TextBoxPassword_Enter(object sender, EventArgs e)
         {
-            textBoxPassword.SelectionStart = 0;
-            textBoxPassword.SelectionLength = textBoxPassword.Text.Length;
+            this.textBoxPassword.SelectionStart = 0;
+            this.textBoxPassword.SelectionLength = this.textBoxPassword.Text.Length;
         }       
-
     }
 }

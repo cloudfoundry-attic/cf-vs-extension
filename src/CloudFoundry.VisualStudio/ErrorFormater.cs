@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio
+﻿namespace CloudFoundry.VisualStudio
 {
+    using System;
+    using System.Collections.Generic;
+
     internal class ErrorFormatter
     {
         public static void FormatExceptionMessage(Exception ex, List<string> message)

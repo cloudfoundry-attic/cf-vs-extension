@@ -1,11 +1,23 @@
 ﻿namespace CloudFoundry.VisualStudio.Forms
 {
-    partial class LoginWizardForm
+    public partial class LoginWizardForm
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+        private System.Windows.Forms.FlowLayoutPanel orientationFlowLayoutPanel;
+        private System.Windows.Forms.LinkLabel loginTargetLinkLabel;
+        private System.Windows.Forms.LinkLabel summaryLinkLabel;
+        private System.Windows.Forms.Panel bannerPanel;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label titleLabel;
+        private System.Windows.Forms.SplitContainer pageSplitContainer;
+        private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.Button previousButton;
+        private System.Windows.Forms.Button nextButton;
+        private System.Windows.Forms.Label labelError;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -13,10 +25,11 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -29,7 +42,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginWizardForm));
-            this.OrientationFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.orientationFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.loginTargetLinkLabel = new System.Windows.Forms.LinkLabel();
             this.summaryLinkLabel = new System.Windows.Forms.LinkLabel();
             this.bannerPanel = new System.Windows.Forms.Panel();
@@ -40,7 +53,7 @@
             this.previousButton = new System.Windows.Forms.Button();
             this.nextButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
-            this.OrientationFlowLayoutPanel.SuspendLayout();
+            this.orientationFlowLayoutPanel.SuspendLayout();
             this.bannerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pageSplitContainer)).BeginInit();
@@ -51,16 +64,16 @@
             // 
             // OrientationFlowLayoutPanel
             // 
-            this.OrientationFlowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.orientationFlowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.OrientationFlowLayoutPanel.BackColor = System.Drawing.SystemColors.Control;
-            this.OrientationFlowLayoutPanel.Controls.Add(this.loginTargetLinkLabel);
-            this.OrientationFlowLayoutPanel.Controls.Add(this.summaryLinkLabel);
-            this.OrientationFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.OrientationFlowLayoutPanel.Location = new System.Drawing.Point(3, 41);
-            this.OrientationFlowLayoutPanel.Name = "OrientationFlowLayoutPanel";
-            this.OrientationFlowLayoutPanel.Size = new System.Drawing.Size(160, 368);
-            this.OrientationFlowLayoutPanel.TabIndex = 1;
+            this.orientationFlowLayoutPanel.BackColor = System.Drawing.SystemColors.Control;
+            this.orientationFlowLayoutPanel.Controls.Add(this.loginTargetLinkLabel);
+            this.orientationFlowLayoutPanel.Controls.Add(this.summaryLinkLabel);
+            this.orientationFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.orientationFlowLayoutPanel.Location = new System.Drawing.Point(3, 41);
+            this.orientationFlowLayoutPanel.Name = "OrientationFlowLayoutPanel";
+            this.orientationFlowLayoutPanel.Size = new System.Drawing.Size(160, 368);
+            this.orientationFlowLayoutPanel.TabIndex = 1;
             // 
             // loginTargetLinkLabel
             // 
@@ -79,7 +92,7 @@
             this.loginTargetLinkLabel.Text = "Target Login";
             this.loginTargetLinkLabel.UseCompatibleTextRendering = true;
             this.loginTargetLinkLabel.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
-            this.loginTargetLinkLabel.Click += new System.EventHandler(this.loginTargetLinkLabel_Click);
+            this.loginTargetLinkLabel.Click += new System.EventHandler(this.LoginTargetLinkLabel_Click);
             // 
             // summaryLinkLabel
             // 
@@ -99,7 +112,7 @@
             this.summaryLinkLabel.Text = "Summary";
             this.summaryLinkLabel.UseCompatibleTextRendering = true;
             this.summaryLinkLabel.VisitedLinkColor = System.Drawing.SystemColors.ControlText;
-            this.summaryLinkLabel.Click += new System.EventHandler(this.summaryLinkLabel_Click);
+            this.summaryLinkLabel.Click += new System.EventHandler(this.SummaryLinkLabel_Click);
             // 
             // bannerPanel
             // 
@@ -184,7 +197,7 @@
             this.previousButton.Text = "< &Previous";
             this.previousButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.previousButton.UseVisualStyleBackColor = false;
-            this.previousButton.Click += new System.EventHandler(this.previousButton_Click);
+            this.previousButton.Click += new System.EventHandler(this.PreviousButton_Click);
             // 
             // nextButton
             // 
@@ -195,7 +208,7 @@
             this.nextButton.Text = "&Next >";
             this.nextButton.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
             this.nextButton.UseVisualStyleBackColor = true;
-            this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+            this.nextButton.Click += new System.EventHandler(this.NextButton_Click);
             // 
             // cancelButton
             // 
@@ -217,7 +230,7 @@
             this.ClientSize = new System.Drawing.Size(659, 411);
             this.Controls.Add(this.pageSplitContainer);
             this.Controls.Add(this.bannerPanel);
-            this.Controls.Add(this.OrientationFlowLayoutPanel);
+            this.Controls.Add(this.orientationFlowLayoutPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -226,7 +239,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Login Wizard";
             this.Load += new System.EventHandler(this.LoginWizardForm_Load);
-            this.OrientationFlowLayoutPanel.ResumeLayout(false);
+            this.orientationFlowLayoutPanel.ResumeLayout(false);
             this.bannerPanel.ResumeLayout(false);
             this.bannerPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -240,17 +253,5 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.FlowLayoutPanel OrientationFlowLayoutPanel;
-        private System.Windows.Forms.LinkLabel loginTargetLinkLabel;
-        private System.Windows.Forms.LinkLabel summaryLinkLabel;
-        private System.Windows.Forms.Panel bannerPanel;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label titleLabel;
-        private System.Windows.Forms.SplitContainer pageSplitContainer;
-        private System.Windows.Forms.Button cancelButton;
-        private System.Windows.Forms.Button previousButton;
-        private System.Windows.Forms.Button nextButton;
-        private System.Windows.Forms.Label labelError;
     }
 }

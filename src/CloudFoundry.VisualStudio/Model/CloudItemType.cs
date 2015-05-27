@@ -1,5 +1,4 @@
-﻿
-namespace CloudFoundry.VisualStudio
+﻿namespace CloudFoundry.VisualStudio
 {
     internal enum CloudItemType
     {

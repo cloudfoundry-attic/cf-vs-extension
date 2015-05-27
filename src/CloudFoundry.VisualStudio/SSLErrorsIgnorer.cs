@@ -1,28 +1,23 @@
-﻿using System.Net;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
-
-namespace CloudFoundry.VisualStudio
+﻿namespace CloudFoundry.VisualStudio
 {
+    using System.Net;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
+
     internal class SSLErrorsIgnorer
     {
-
-        private static bool _ignore;
-
-        private static bool InternalCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
-        {
-            return true;
-        }
+        private static bool ignore;
 
         public static bool Ignore
         {
             get
             {
-                return SSLErrorsIgnorer._ignore;
+                return SSLErrorsIgnorer.ignore;
             }
+
             set
             {
-                SSLErrorsIgnorer._ignore = value;
+                SSLErrorsIgnorer.ignore = value;
 
                 if (SSLErrorsIgnorer.Ignore)
                 {
@@ -33,6 +28,11 @@ namespace CloudFoundry.VisualStudio
                     ServicePointManager.ServerCertificateValidationCallback = null;
                 }
             }
+        }
+
+        private static bool InternalCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
     }
 }

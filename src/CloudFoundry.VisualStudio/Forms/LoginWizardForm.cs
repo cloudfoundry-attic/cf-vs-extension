@@ -1,25 +1,17 @@
-﻿using CloudFoundry.CloudController.V2;
-using CloudFoundry.CloudController.V2.Client.Data;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using CloudFoundry.UAA;
-using CloudFoundry.UAA.Exceptions;
-using CloudFoundry.CloudController.Common.Exceptions;
-using System.Globalization;
-using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.VisualStudio.TargetStore;
-using CloudFoundry.VisualStudio.Controls;
-
-namespace CloudFoundry.VisualStudio.Forms
+﻿namespace CloudFoundry.VisualStudio.Forms
 {
+    using System;
+    using System.Drawing;
+    using System.Globalization;
+    using System.Threading;
+    using System.Windows.Forms;
+    using CloudFoundry.CloudController.Common.Exceptions;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.UAA;
+    using CloudFoundry.UAA.Exceptions;
+    using CloudFoundry.VisualStudio.Controls;
+    using CloudFoundry.VisualStudio.TargetStore;
+
     public partial class LoginWizardForm : Form
     {
         private CloudTarget[] cloudTargets = new CloudTarget[0];
@@ -32,13 +24,18 @@ namespace CloudFoundry.VisualStudio.Forms
         private Label summaryInfoLabel;
         private CloudFoundryClient client;
 
+        public LoginWizardForm()
+        {
+            this.InitializeComponent();
+        }
+
         private enum MessageType
         {
             Info,
             Error
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Catching all exceptions for detailed logging purposes.")]
         public CloudTarget CloudTarget
         {
             get
@@ -46,25 +43,22 @@ namespace CloudFoundry.VisualStudio.Forms
                 return CloudTarget.CreateV2Target(
                             new Uri(this.targetUrl),
                             string.Empty,
-                            loginControl.Email,
-                            loginControl.IgnoreSSLErrors,
+                            this.loginControl.Email,
+                            this.loginControl.IgnoreSSLErrors,
                             this.version);
             }
         }
 
         public string Password
         {
-            get
-            {
-                return this.loginControl.Password;
-            }
+            get { return this.loginControl.Password; }
         }
 
         public void SetLoginUrl(Uri newLoginUrl)
         {
-            if (loginControl != null)
+            if (this.loginControl != null)
             {
-                loginControl.TargetUrl = newLoginUrl.ToString();
+                this.loginControl.TargetUrl = newLoginUrl.ToString();
             }
         }
 
@@ -73,17 +67,12 @@ namespace CloudFoundry.VisualStudio.Forms
             this.reloginTarget = cloudTarget;
         }
 
-        public LoginWizardForm()
-        {
-            InitializeComponent();
-        }
-
         private void LoginWizardForm_Load(object sender, EventArgs e)
         {
-            loginTargetLinkLabel_Click(sender, e);
+            this.LoginTargetLinkLabel_Click(sender, e);
         }
 
-        private void loginTargetLinkLabel_Click(object sender, EventArgs e)
+        private void LoginTargetLinkLabel_Click(object sender, EventArgs e)
         {
             this.summaryLinkLabel.BackColor = SystemColors.Control;
             this.summaryLinkLabel.LinkColor = SystemColors.ControlDarkDark;
@@ -104,9 +93,10 @@ namespace CloudFoundry.VisualStudio.Forms
             {
                 this.loginControl = new LoginUserControl();
             }
+
             if (this.reloginTarget != null)
             {
-                this.loginControl.TargetUrl = reloginTarget.TargetUrl.ToString();
+                this.loginControl.TargetUrl = this.reloginTarget.TargetUrl.ToString();
                 this.loginControl.EnableTargetUrlTextBox(false);
             }
 
@@ -115,7 +105,7 @@ namespace CloudFoundry.VisualStudio.Forms
             this.loginControl.HideLoginErrorLabel();
         }
 
-        private void summaryLinkLabel_Click(object sender, EventArgs e)
+        private void SummaryLinkLabel_Click(object sender, EventArgs e)
         {
             this.loginTargetLinkLabel.BackColor = SystemColors.Control;
             this.loginTargetLinkLabel.LinkColor = SystemColors.ControlDarkDark;
@@ -125,7 +115,7 @@ namespace CloudFoundry.VisualStudio.Forms
 
             this.titleLabel.Text = "Spaces Summary";
 
-            EnableButtons();
+            this.EnableButtons();
             this.nextButton.Text = "Finish";
             this.cancelButton.Text = "Cancel";
 
@@ -140,14 +130,13 @@ namespace CloudFoundry.VisualStudio.Forms
                 this.summaryInfoLabel.Name = "summaryInfoLabel";
                 this.summaryInfoLabel.Size = new System.Drawing.Size(39, 17);
                 this.summaryInfoLabel.TabIndex = 0;
-                this.summaryInfoLabel.Text = string.Format("You're done!{0}Press Finish to close the wizard and save your target.", Environment.NewLine);
+                this.summaryInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, "You're done!{0}Press Finish to close the wizard and save your target.", Environment.NewLine);
             }
-            this.pageSplitContainer.Panel1.Controls.Add(this.summaryInfoLabel);
 
-            int yPosition = this.summaryInfoLabel.Size.Height + 8;
+            this.pageSplitContainer.Panel1.Controls.Add(this.summaryInfoLabel);
         }
 
-        private void nextButton_Click(object sender, EventArgs e)
+        private void NextButton_Click(object sender, EventArgs e)
         {
             if (this.loginTargetLinkLabel.Enabled)
             {
@@ -184,7 +173,7 @@ namespace CloudFoundry.VisualStudio.Forms
 
                         if (reloginTarget != null)
                         {
-                            Logger.Info(string.Format("Detected token refresh request for '{0}', target '{1}'", reloginTarget.Email, reloginTarget.TargetUrl));
+                            Logger.Info(string.Format(CultureInfo.InvariantCulture, "Detected token refresh request for '{0}', target '{1}'", reloginTarget.Email, reloginTarget.TargetUrl));
                         }
 
                         Logger.Info("User completed login process.");
@@ -243,6 +232,7 @@ namespace CloudFoundry.VisualStudio.Forms
                                 {
                                     loginEx = string.Concat(loginEx, Environment.NewLine, exception.InnerException.Message);
                                 }
+
                                 Logger.Error(loginEx, exception);
 
                                 SetControlsForLoginError(loginEx);
@@ -256,9 +246,6 @@ namespace CloudFoundry.VisualStudio.Forms
 
                         SetControlsForLoginError(loginEx);
                     }
-                    finally
-                    {
-                    }
                 });
             }
             else if (this.nextButton.Text == "Finish")
@@ -267,11 +254,11 @@ namespace CloudFoundry.VisualStudio.Forms
             }
         }
 
-        private void previousButton_Click(object sender, EventArgs e)
+        private void PreviousButton_Click(object sender, EventArgs e)
         {
             if (this.summaryLinkLabel.Enabled)
             {
-                loginTargetLinkLabel_Click(sender, e);
+                this.LoginTargetLinkLabel_Click(sender, e);
                 this.loginTargetLinkLabel.Enabled = true;
                 this.summaryLinkLabel.Enabled = false;
                 this.labelError.Visible = false;
@@ -290,8 +277,8 @@ namespace CloudFoundry.VisualStudio.Forms
             }
             else
             {
-                SetErrorLabel(error);
-                SetControlsForLoginError();
+                this.SetErrorLabel(error);
+                this.SetControlsForLoginError();
             }
         }
 
@@ -329,7 +316,7 @@ namespace CloudFoundry.VisualStudio.Forms
         private void CleanErrorControls()
         {
             this.loginControl.HideLoginErrorLabel();
-            this.pageSplitContainer.Panel1.Controls.Add(labelError);
+            this.pageSplitContainer.Panel1.Controls.Add(this.labelError);
             this.labelError.Visible = false;
         }
 
@@ -337,7 +324,7 @@ namespace CloudFoundry.VisualStudio.Forms
         {
             this.summaryLinkLabel.Enabled = true;
             this.loginTargetLinkLabel.Enabled = false;
-            summaryLinkLabel_Click(sender, e);
+            this.SummaryLinkLabel_Click(sender, e);
             this.nextButton.Focus();
         }
     }
