@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="CloudFoundry.VisualStudio.Controls.AppSettingsUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="450">
+    <Control.Resources>
+        <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
+    </Control.Resources>
+    <Grid VerticalAlignment="Center" Margin="40,0,40,0">
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition  Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  Width="auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Content="Buildpack" Grid.Row="0" Grid.Column="0" ></Label>
+        <ComboBox IsEditable="True" Name="cbBuildpack" Grid.Row="0" Grid.Column="1" Text="{Binding CFAppManifest.BuildpackUrl}" Margin="{StaticResource DefaultMargin}"></ComboBox>
+        <Label Content="Stack" Grid.Row="1" Grid.Column="0" ></Label>
+        <ComboBox Name="cbStack" Grid.Row="1" Grid.Column="1" Text="{Binding CFAppManifest.StackName}" Margin="{StaticResource DefaultMargin}"></ComboBox>
+        <Label Content="Memory" Grid.Row="2" Grid.Column="0" ></Label>
+        <TextBox Name="tbMemory" Grid.Row="2" Grid.Column="1" Text="{Binding CFAppManifest.Memory}" Margin="{StaticResource DefaultMargin}"></TextBox>
+        <Label Content="Instances" Grid.Row="3" Grid.Column="0" ></Label>
+        <TextBox Name="tbInstances" Grid.Row="3" Grid.Column="1" Text="{Binding CFAppManifest.InstanceCount}"></TextBox>
+    </Grid>
+</UserControl>

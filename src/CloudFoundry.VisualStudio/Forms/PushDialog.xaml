@@ -1,0 +1,41 @@
+﻿<Window xmlns:Controls="clr-namespace:CloudFoundry.VisualStudio.Controls"  x:Class="CloudFoundry.VisualStudio.Forms.PushDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="PushDialog" Height="350" Width="600"  WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    
+    <Grid>
+        <xctk:Wizard FinishButtonClosesWindow="True">
+            <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
+                                   Title="Target"
+                                   Description="Target">
+             <Controls:TargetUserControl x:Name="ucTarget"/>
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
+                                   Title="Application Settings"
+                                   Description="Application Settings">
+            <Controls:AppSettingsUserControl x:Name="ucAppSeetings"></Controls:AppSettingsUserControl>
+            </xctk:WizardPage>
+
+            <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
+                                   Title="Routes"
+                                   Description="Routes">
+                <Controls:RoutesUserControl x:Name="ucRoutes"></Controls:RoutesUserControl> 
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
+                                   Title="Services"
+                                   Description="Services">
+                <Controls:ServicesUserControl x:Name="ucServices"></Controls:ServicesUserControl>
+            </xctk:WizardPage>
+            <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
+                                   Title="Environment Variables"
+                                   Description="Environment Variables"
+                                   CanFinish="True">
+                <Controls:EnvVarsUserControl x:Name="ucEnvVars"></Controls:EnvVarsUserControl>
+               
+            </xctk:WizardPage>
+        </xctk:Wizard>
+    </Grid>
+    
+</Window>

@@ -19,7 +19,7 @@
     using Microsoft.VisualStudio.Shell.Interop;
     using Microsoft.Win32;
     using NuGet.VisualStudio;
-    
+
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
     /// The minimum requirement for a class to be considered a valid package for Visual Studio
@@ -32,21 +32,21 @@
     //// This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    
+
     // This attribute is used to register the information needed to show this package
     // in the Help/About dialog of Visual Studio.
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    
+
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    
+
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(CloudFoundryExplorerToolWindow))]
     [Guid(GuidList.GuidCloudFoundryVisualStudioPkgString)]
 
     [ProvideEditorFactory(typeof(PublishXmlEditorFactory), 101)]
     [ProvideEditorExtension(typeof(PublishXmlEditorFactory), ".pubxml", 100)]
-    
+
     // Our Editor supports Find and Replace therefore we need to declare support for LOGVIEWID_TextView.
     // This attribute declares that your EditorPane class implements IVsCodeWindow interface
     // used to navigate to find results from a "Find in Files" type of operation.
@@ -59,7 +59,7 @@
         private static ErrorListProvider errorList;
 
         private DTE dte;
-        
+
         /// <summary>
         /// Default constructor of the package.
         /// Inside this method you can place any initialization code that does not require 
@@ -151,7 +151,7 @@
             DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
             Project currentProject = this.GetSelectedProject(dte);
 
-            AppPackage projectPackage = new AppPackage();
+            PublishProfile projectPackage = new PublishProfile();
 
             try
             {
@@ -163,9 +163,9 @@
                 Logger.Error("Error loading default profile", ex);
             }
 
-            var dialog = new EditDialog(projectPackage, currentProject);
+            var dialog = new PushDialog(projectPackage, currentProject);
             dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            dialog.ShowModal();
+            dialog.ShowDialog();
         }
 
         private Project GetSelectedProject(DTE dte)

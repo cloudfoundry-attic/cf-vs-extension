@@ -44,19 +44,20 @@
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
 
-            AppPackage packageFile = new AppPackage();
+            PublishProfile packageFile = new PublishProfile();
             try
             {
-                packageFile.LoadFromFile(pszMkDocument);
+                packageFile = PublishProfile.LoadFromFile(pszMkDocument);
             }
             catch (Exception ex)
             {
-                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "Cannot load {0}. File is corrupt.", pszMkDocument));
+                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "Cannot load {0}. {1}.", pszMkDocument, ex.Message));
                 Logger.Error("Exception loading package file", ex);
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
             }
 
-            var dialog = new EditDialog(packageFile, project);
+            ////var dialog = new EditDialog(packageFile, project);
+            var dialog = new PushDialog(packageFile, project);
             dialog.ShowDialog();
 
             return VSConstants.S_OK;
