@@ -262,6 +262,9 @@
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="ErrorFormater.cs" />
+    <Compile Include="Forms\CreateService.xaml.cs">
+      <DependentUpon>CreateService.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PushDialog.xaml.cs">
       <DependentUpon>PushDialog.xaml</DependentUpon>
     </Compile>
@@ -421,6 +424,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\TargetUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\CreateService.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
