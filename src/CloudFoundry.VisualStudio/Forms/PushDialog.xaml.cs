@@ -1,4 +1,4 @@
-﻿using CloudFoundry.CloudController.V2.Client;
+using CloudFoundry.CloudController.V2.Client;
 using CloudFoundry.VisualStudio.ProjectPush;
 using System;
 using System.Collections.Generic;
