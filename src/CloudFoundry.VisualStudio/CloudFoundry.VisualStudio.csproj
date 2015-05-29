@@ -18,7 +18,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ExtendedDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -46,28 +47,30 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CloudFoundry.CloudController.Common, Version=1.2.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.6\lib\Net45\CloudFoundry.CloudController.Common.dll</HintPath>
+    <Reference Include="CloudFoundry.CloudController.Common, Version=1.0.0.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.189-alpha\lib\Net45\CloudFoundry.CloudController.Common.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CloudFoundry.CloudController.V2.Client, Version=1.2.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.6\lib\Net45\CloudFoundry.CloudController.V2.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.CloudController.V2.Client, Version=1.0.0.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.189-alpha\lib\Net45\CloudFoundry.CloudController.V2.Client.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CloudFoundry.Loggregator.Client, Version=1.2.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.6\lib\Net45\CloudFoundry.Loggregator.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.Loggregator.Client, Version=1.0.0.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.189-alpha\lib\Net45\CloudFoundry.Loggregator.Client.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CloudFoundry.Logyard.Client, Version=1.2.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.6\lib\Net45\CloudFoundry.Logyard.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.Logyard.Client, Version=1.0.0.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.189-alpha\lib\Net45\CloudFoundry.Logyard.Client.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="CloudFoundry.UAA.Client, Version=1.2.0.6, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.6\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.Manifests, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.189-alpha\lib\Net45\CloudFoundry.Manifests.XML\CloudFoundry.Manifests.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="CloudFoundry.UAA.Client, Version=1.0.0.189, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.189-alpha\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Build.Utilities.v12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\MSBuild\12.0\Bin\Microsoft.Build.Utilities.v12.0.dll</HintPath>
@@ -142,11 +145,39 @@
       <HintPath>..\..\packages\WebSocket4Net.0.12\lib\net45\WebSocket4Net.dll</HintPath>
     </Reference>
     <Reference Include="WebSocket4Net.ProxyUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.6\lib\Net45\WebSocket4Net.ProxyUtilities.dll</HintPath>
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.189-alpha\lib\Net45\WebSocket4Net.ProxyUtilities.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="YamlDotNet, Version=3.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\YamlDotNet.3.6.0\lib\net35\YamlDotNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="EnvDTE">
@@ -205,19 +236,34 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AppSettingsUserControl.xaml.cs">
+      <DependentUpon>AppSettingsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\EnvVarsUserControl.xaml.cs">
+      <DependentUpon>EnvVarsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LoginUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\LoginUserControl.Designer.cs">
       <DependentUpon>LoginUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RoutesUserControl.xaml.cs">
+      <DependentUpon>RoutesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ServicesUserControl.xaml.cs">
+      <DependentUpon>ServicesUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TargetUserControl.xaml.cs">
+      <DependentUpon>TargetUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\ImageConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
-    <Compile Include="Forms\EditDialog.xaml.cs">
-      <DependentUpon>EditDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ErrorFormater.cs" />
+    <Compile Include="Forms\PushDialog.xaml.cs">
+      <DependentUpon>PushDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="Forms\LoginWizardForm.cs">
       <SubType>Form</SubType>
@@ -228,9 +274,7 @@
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemActionContinuation.cs" />
-    <Compile Include="MSBuild\MSBuildLogger.cs" />
-    <Compile Include="MSBuild\MSBuildProcess.cs" />
-    <Compile Include="ProjectPush\AppPackage.cs" />
+    <Compile Include="ProjectPush\PublishProfile.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
     <Compile Include="Model\Service.cs" />
@@ -356,9 +400,29 @@
     <Content Include="Resources\Package.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Forms\EditDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Controls\AppSettingsUserControl.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\EnvVarsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RoutesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ServicesUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TargetUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\PushDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Style\ListViewStyle.xaml">
       <Generator>MSBuild:Compile</Generator>

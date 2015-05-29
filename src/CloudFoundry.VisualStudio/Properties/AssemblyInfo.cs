@@ -34,3 +34,4 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("CloudFoundry.VisualStudio.IntegrationTests")]
 [assembly: InternalsVisibleTo("CloudFoundry.VisualStudio.UnitTestss")]
+[assembly: System.Windows.ThemeInfo(System.Windows.ResourceDictionaryLocation.None, System.Windows.ResourceDictionaryLocation.SourceAssembly)]

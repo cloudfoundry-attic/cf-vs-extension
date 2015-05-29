@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="CloudFoundry.VisualStudio.Controls.TargetUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="450">
+    <Control.Resources>
+        <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
+    </Control.Resources>
+    <Grid VerticalAlignment="Center" Margin="40,0,40,0">
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition  Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  Width="auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Label Content="Profile" Grid.Row="0" Grid.Column="0" ></Label>
+        <ComboBox IsEditable="True" Name="cbProfile" Text ="{Binding ConfigFile, Mode=OneWay}"  Grid.Row="0" Grid.Column="1" Margin="{StaticResource DefaultMargin}"></ComboBox>
+        <Label Content="Target" Grid.Row="1" Grid.Column="0"></Label>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition ></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox Name="tbTarget" Text="{Binding CFServerUri}" Grid.Row="0" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></TextBox>
+            <Button Content="..." Grid.Row="0" Grid.Column="1" Width="30" HorizontalAlignment="Right" Margin="{StaticResource DefaultMargin}"></Button>
+        </Grid>
+        <Label Content="Organization" Grid.Row="2" Grid.Column="0"></Label>
+        <ComboBox Name="cbOrganization" Text="{Binding CFOrganization}" Grid.Row="2" Grid.Column="1" Margin="{StaticResource DefaultMargin}"></ComboBox>
+        <Label VerticalAlignment="Center" Content="Space" Grid.Row="3" Grid.Column="0"></Label>
+        <ComboBox Name="cbSpace" Grid.Row="3" Grid.Column="1" Margin="{StaticResource DefaultMargin}"></ComboBox>
+
+    </Grid>
+</UserControl>
