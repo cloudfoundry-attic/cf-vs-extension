@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudFoundry.VisualStudio.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace CloudFoundry.VisualStudio.Controls
         public ServicesUserControl()
         {
             InitializeComponent();
+        }
+
+        private async void Button_Click(object sender, RoutedEventArgs e)
+        {
+           
         }
     }
 }

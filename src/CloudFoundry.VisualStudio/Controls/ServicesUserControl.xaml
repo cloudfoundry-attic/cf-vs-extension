@@ -25,6 +25,6 @@
                 <DataGridTextColumn Header="Plan"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="New Service ..." Grid.Column="0" Grid.Row="1" Width="100" HorizontalAlignment="Right" Margin="{StaticResource DefaultMargin}"></Button>
+        <Button Content="New Service ..." Grid.Column="0" Grid.Row="1" Width="100" HorizontalAlignment="Right" Margin="{StaticResource DefaultMargin}" Click="Button_Click"></Button>
     </Grid>
 </UserControl>
