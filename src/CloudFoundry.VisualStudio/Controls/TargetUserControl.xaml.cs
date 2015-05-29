@@ -1,4 +1,4 @@
-﻿using CloudFoundry.VisualStudio.ProjectPush;
+using CloudFoundry.VisualStudio.ProjectPush;
 using System;
 using System.Collections.Generic;
 using System.Linq;
