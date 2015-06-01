@@ -11,7 +11,10 @@
 
   /t:UnitTest
     Runs unit tests
-    
+
+  /t:IntegrationTest
+    Runs integration tests
+
   /t:RestoreNugetPackages
     Restores nuget packages
     
@@ -99,6 +102,18 @@
     <Exec Command="$(ReportGeneratorCommand) -reports:&quot;$(CoverageXml)&quot; -targetdir:&quot;$(CoverageHtmlDir)&quot;" />
   </Target>
 
+  <!-- Target for running unit tests -->
+  <Target Name="IntegrationTest">
+    <ItemGroup>
+      <TestDlls Include=".\src\CloudFoundry.VisualStudio.IntegrationTests\bin\x86\$(Configuration)\CloudFoundry.VisualStudio.IntegrationTests.dll"/>
+    </ItemGroup>
+
+    <Exec Command="$(VSTestCommand) %(TestDlls.Identity) /inIsolation /settings:CodeCoverage.runsettings /logger:trx"  ConsoleToMSBuild="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
+      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfTestRun" />
+    </Exec>
+  </Target>
+  
   <!-- Target for restoring nuget packages -->
   <Target Name="RestoreNugetPackages">
     <Exec Command="$(NuGetCommand) restore $(VSExtensionSolution)"/>
