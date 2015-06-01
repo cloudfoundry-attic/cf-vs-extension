@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E58D8DAF
 	ProjectSection(SolutionItems) = preProject
 		build.proj = build.proj
 		CodeCoverage.runsettings = CodeCoverage.runsettings
+		IntegrationTests.testsettings = IntegrationTests.testsettings
 		Settings.StyleCop = Settings.StyleCop
 	EndProjectSection
 EndProject

@@ -17,6 +17,7 @@ using Microsoft.VsSDK.UnitTestLibrary;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CloudFoundry.VisualStudio;
+using CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest;
 
 namespace CloudFoundry.VisualStudio_UnitTests
 {
@@ -45,6 +46,14 @@ namespace CloudFoundry.VisualStudio_UnitTests
 
             // Create a basic service provider
             OleServiceProvider serviceProvider = OleServiceProvider.CreateOleServiceProviderWithBasicServices();
+
+            // Add site support for activity log
+            BaseMock activityLogMock = new GenericMockFactory("MockVsActivityLog", new[] { typeof(Microsoft.VisualStudio.Shell.Interop.IVsActivityLog) }).GetInstance();
+            serviceProvider.AddService(typeof(Microsoft.VisualStudio.Shell.Interop.SVsActivityLog), activityLogMock, true);
+
+            // Add site support to register editor factory
+            BaseMock registerEditor = RegisterEditorMock.GetRegisterEditorsInstance();
+            serviceProvider.AddService(typeof(SVsRegisterEditors), registerEditor, false);
 
             // Site the package
             Assert.AreEqual(0, package.SetSite(serviceProvider), "SetSite did not return S_OK");

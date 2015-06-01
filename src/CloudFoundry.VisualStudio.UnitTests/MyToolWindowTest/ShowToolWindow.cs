@@ -37,6 +37,14 @@ namespace CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest
             BaseMock uiShellService = UIShellServiceMock.GetUiShellInstanceCreateToolWin();
             serviceProvider.AddService(typeof(SVsUIShell), uiShellService, false);
 
+            // Add site support for activity log
+            BaseMock activityLogMock = new GenericMockFactory("MockVsActivityLog", new[] { typeof(Microsoft.VisualStudio.Shell.Interop.IVsActivityLog) }).GetInstance();
+            serviceProvider.AddService(typeof(Microsoft.VisualStudio.Shell.Interop.SVsActivityLog), activityLogMock, true);
+
+            // Add site support to register editor factory
+            BaseMock registerEditor = RegisterEditorMock.GetRegisterEditorsInstance();
+            serviceProvider.AddService(typeof(SVsRegisterEditors), registerEditor, false);
+
             // Site the package
             Assert.AreEqual(0, package.SetSite(serviceProvider), "SetSite did not return S_OK");
 

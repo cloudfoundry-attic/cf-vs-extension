@@ -25,4 +25,9 @@
       </DataCollector>
     </DataCollectors>
   </DataCollectionRunSettings>
+  
+  <MSTest>
+    <SettingsFile>IntegrationTests.testsettings</SettingsFile> 
+    <ForcedLegacyMode>true</ForcedLegacyMode> 
+  </MSTest>
 </RunSettings>
