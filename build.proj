@@ -71,7 +71,7 @@
   <!-- Target for running unit tests -->
   <Target Name="UnitTest">
     <ItemGroup>
-      <TestDlls Include=".\src\CloudFoundry.VisualStudio.UnitTests\bin\$(Configuration)\CloudFoundry.VisualStudio.UnitTests.dll"/>
+      <TestDlls Include=".\src\CloudFoundry.VisualStudio.UnitTests\bin\x86\$(Configuration)\CloudFoundry.VisualStudio.UnitTests.dll"/>
     </ItemGroup>
 
     <Exec Command="$(VSTestCommand) %(TestDlls.Identity) /inIsolation /settings:CodeCoverage.runsettings /logger:trx"  ConsoleToMSBuild="true">
