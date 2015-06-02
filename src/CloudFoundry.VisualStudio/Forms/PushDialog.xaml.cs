@@ -21,12 +21,10 @@ namespace CloudFoundry.VisualStudio.Forms
     /// </summary>
     public partial class PushDialog : Window
     {
-        private PublishProfile dataContext;
 
         public PushDialog(PublishProfile package, EnvDTE.Project currentProject)
         {
             //package.CFAppManifest.NoRoute
-            this.dataContext = package;
             this.DataContext = package;
             InitializeComponent();
 
@@ -35,7 +33,7 @@ namespace CloudFoundry.VisualStudio.Forms
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await this.dataContext.InitiCFClient();
+            await (this.DataContext as PublishProfile).InitiCFClient();
         }
 
 

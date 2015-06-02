@@ -24,6 +24,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set { busyMessage = value; RaisePropertyChanged(() => BusyMessage); }
         }
 
+        public void SetMessage(string message)
+        {
+            this.IsBusy = true;
+            this.BusyMessage = message;
+        }
 
 
     }

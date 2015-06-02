@@ -151,11 +151,11 @@
             DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
             Project currentProject = this.GetSelectedProject(dte);
 
-            PublishProfile projectPackage = new PublishProfile();
+            PublishProfile projectPackage;
 
             try
             {
-                projectPackage.Initialize(currentProject);
+                //projectPackage.Initialize(currentProject);
             }
             catch (Exception ex)
             {
@@ -163,9 +163,9 @@
                 Logger.Error("Error loading default profile", ex);
             }
 
-            var dialog = new PushDialog(projectPackage, currentProject);
-            dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            dialog.ShowDialog();
+            //var dialog = new PushDialog(projectPackage, currentProject);
+            //dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            //dialog.ShowDialog();
         }
 
         private Project GetSelectedProject(DTE dte)
