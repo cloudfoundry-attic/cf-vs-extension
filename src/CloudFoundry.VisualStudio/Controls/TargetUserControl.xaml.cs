@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CloudFoundry.VisualStudio.ProjectPush;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,11 @@ namespace CloudFoundry.VisualStudio.Controls
         public TargetUserControl()
         {
             InitializeComponent();
+        }
+
+        private async void cbOrganization_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            await (this.DataContext as PublishProfile).RefreshSpaces();
         }
     }
 }
