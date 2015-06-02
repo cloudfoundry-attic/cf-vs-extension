@@ -16,6 +16,11 @@
     using EnvDTE;
     using CloudFoundry.Manifests;
     using CloudFoundry.Manifests.Models;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using System.Collections.ObjectModel;
+    using CloudFoundry.VisualStudio.TargetStore;
+    using CloudFoundry.UAA;
 
     [ComVisible(true)]
     [Serializable, XmlRoot("PropertyGroup")]
@@ -33,7 +38,31 @@
         private string refreshToken = string.Empty;
         private bool savedPassword = true;
         private bool skipSSLValidation = true;
+        private CloudFoundryClient cfClient;
         private Application appManifest = new Application();
+        private BusyBox busyBox = new BusyBox();
+
+        private ObservableCollection<ListAllSpacesForOrganizationResponse> spaces = new ObservableCollection<ListAllSpacesForOrganizationResponse>();
+
+        private ObservableCollection<ListAllOrganizationsResponse> orgs = new ObservableCollection<ListAllOrganizationsResponse>();
+
+        [XmlIgnore]
+        public BusyBox BusyBox
+        {
+            get { return busyBox; }
+        }
+
+        [XmlIgnore]
+        public ObservableCollection<ListAllSpacesForOrganizationResponse> Spaces
+        {
+            get { return spaces; }
+        }
+
+        [XmlIgnore]
+        public ObservableCollection<ListAllOrganizationsResponse> Orgs
+        {
+            get { return orgs; }
+        }
 
         public string ConfigFile
         {
@@ -113,6 +142,103 @@
             }
         }
 
+        public async Task InitiCFClient()
+        {
+            this.busyBox.IsBusy = true;
+            this.busyBox.BusyMessage = "Initializing client";
+            this.cfClient = new CloudFoundryClient(new Uri(this.server), new System.Threading.CancellationToken(), null, this.skipSSLValidation);
+
+            if (this.CFRefreshToken != string.Empty)
+            {
+                try
+                {
+                    await this.cfClient.Login(this.CFRefreshToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            else
+            {
+                if (this.CFUser == string.Empty)
+                {
+                    //imageType = "warning";
+                    //message = "Please configure credentials for your target.";
+                    //this.SetStatusInfo(imageType, message);
+                    //this.DisablePublishButton();
+                    return;
+                }
+
+                if (this.CFPassword == string.Empty)
+                {
+                    if (this.CFSavedPassword == true)
+                    {
+                        string password = CloudCredentialsManager.GetPassword(new Uri(this.CFServerUri), this.CFUser);
+                        if (password == null)
+                        {
+                            //imageType = "warning";
+                            //message = "Please configure credentials for your target.";
+                            //this.SetStatusInfo(imageType, message);
+                            //this.DisablePublishButton();
+                            return;
+                        }
+
+                        CloudCredentials creds = new CloudCredentials();
+                        creds.User = this.CFUser;
+                        creds.Password = password;
+                        try
+                        {
+                            await this.cfClient.Login(creds).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            //imageType = "error";
+                            //message = ex.Message;
+                            //this.SetStatusInfo(imageType, message);
+                            //this.DisablePublishButton();
+                            throw ex;
+                        }
+
+                        //imageType = "ok";
+                        //message = "Target configuration is valid";
+                    }
+                    else
+                    {
+                        //imageType = "warning";
+                        //message = "Please configure credentials for your target.";
+                        //this.SetStatusInfo(imageType, message);
+                        //this.DisablePublishButton();
+                        return;
+                    }
+                }
+                else
+                {
+                    CloudCredentials creds = new CloudCredentials();
+                    creds.User = this.CFUser;
+                    creds.Password = this.CFPassword;
+                    try
+                    {
+                        await this.cfClient.Login(creds);
+                    }
+                    catch (Exception ex)
+                    {
+                        //imageType = "error";
+                        //message = string.Format(CultureInfo.InvariantCulture, "{0}. Your password is saved in clear text in the profile!", ex.Message);
+                        //this.SetStatusInfo(imageType, message);
+                        //this.DisablePublishButton();
+                        throw ex;
+                    }
+
+                    //imageType = "warning";
+                    //message = "Target login was successful, but your password is saved in clear text in profile!";
+                }
+            }
+            await RefreshOrgs();
+            this.busyBox.IsBusy = false;
+        }
+
+
         public static PublishProfile LoadFromFile(string filePath)
         {
             PublishProfile publishProfile = new PublishProfile();
@@ -137,6 +263,7 @@
             return publishProfile;
 
         }
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "xmlWriter does not take ownership over textWriter")]
         public void SaveToFile(string filePath)
@@ -166,6 +293,48 @@
             //this.configFile = filePath;
 
             //File.WriteAllText(filePath, content);
+        }
+
+        internal async Task RefreshOrgs()
+        {
+            this.busyBox.IsBusy = true;
+            this.busyBox.BusyMessage = "Loading organizations";
+            var srvOrgs = await cfClient.Organizations.ListAllOrganizations();
+
+            this.orgs.Clear();
+            foreach (var org in srvOrgs)
+            {
+                this.orgs.Add(org);
+            }
+            this.busyBox.IsBusy = false;
+
+        }
+
+        internal async Task RefreshSpaces()
+        {
+            this.busyBox.IsBusy = true;
+            this.busyBox.BusyMessage = "Loading spaces";
+            this.spaces.Clear();
+
+            if (this.orgs.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var srvOrg in this.orgs)
+            {
+                if (srvOrg.Name == this.organization)
+                {
+                    var srvSpaces = await cfClient.Organizations.ListAllSpacesForOrganization(srvOrg.EntityMetadata.Guid);
+                    foreach (var srvSpace in srvSpaces)
+                    {
+                        this.spaces.Add(srvSpace);
+                    }
+                    break;
+                }
+            }
+            this.busyBox.IsBusy = false;
+
         }
 
         internal bool IsEqualTo(PublishProfile that)
@@ -202,5 +371,8 @@
 
             return true;
         }
+
+
+
     }
 }

@@ -21,23 +21,25 @@ namespace CloudFoundry.VisualStudio.Forms
     /// </summary>
     public partial class PushDialog : Window
     {
-        private CloudFoundryClient cfClient;
+        private PublishProfile dataContext;
 
         public PushDialog(PublishProfile package, EnvDTE.Project currentProject)
         {
-            this.DataContext = package;
             //package.CFAppManifest.NoRoute
+            this.dataContext = package;
+            this.DataContext = package;
             InitializeComponent();
+
+
         }
 
-        private async Task InitClient(PublishProfile package)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            await this.dataContext.InitiCFClient();
         }
 
-        private void LoadUI()
-        {
 
-        }
+
+
     }
 }

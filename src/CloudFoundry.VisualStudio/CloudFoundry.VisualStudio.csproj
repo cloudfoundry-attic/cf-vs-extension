@@ -274,6 +274,8 @@
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemActionContinuation.cs" />
+    <Compile Include="ProjectPush\BusyBox.cs" />
+    <Compile Include="ProjectPush\NotificationObject.cs" />
     <Compile Include="ProjectPush\PublishProfile.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
