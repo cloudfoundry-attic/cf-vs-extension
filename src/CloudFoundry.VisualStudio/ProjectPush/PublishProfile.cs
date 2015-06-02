@@ -42,9 +42,24 @@
         private Application appManifest = new Application();
         private BusyBox busyBox = new BusyBox();
 
+
         private ObservableCollection<ListAllSpacesForOrganizationResponse> spaces = new ObservableCollection<ListAllSpacesForOrganizationResponse>();
 
         private ObservableCollection<ListAllOrganizationsResponse> orgs = new ObservableCollection<ListAllOrganizationsResponse>();
+        private ObservableCollection<ListAllStacksResponse> stacks = new ObservableCollection<ListAllStacksResponse>();
+        private ObservableCollection<ListAllBuildpacksResponse> buildpacks = new ObservableCollection<ListAllBuildpacksResponse>();
+
+        [XmlIgnore]
+        public ObservableCollection<ListAllBuildpacksResponse> Buildpacks
+        {
+            get { return buildpacks; }
+        }
+
+        [XmlIgnore]
+        public ObservableCollection<ListAllStacksResponse> Stacks
+        {
+            get { return stacks; }
+        }
 
         [XmlIgnore]
         public BusyBox BusyBox
@@ -134,18 +149,22 @@
             get { return appManifest; }
         }
 
-        public void Initialize(Project project)
+        //public  Initialize(Project project)
+        //{
+        //    if (project == null)
+        //    {
+        //        throw new ArgumentNullException("project");
+        //    }
+        //}
+
+        private PublishProfile()
         {
-            if (project == null)
-            {
-                throw new ArgumentNullException("project");
-            }
+
         }
 
         public async Task InitiCFClient()
         {
-            this.busyBox.IsBusy = true;
-            this.busyBox.BusyMessage = "Initializing client";
+            this.busyBox.SetMessage("Initializing client");
             this.cfClient = new CloudFoundryClient(new Uri(this.server), new System.Threading.CancellationToken(), null, this.skipSSLValidation);
 
             if (this.CFRefreshToken != string.Empty)
@@ -235,11 +254,13 @@
                 }
             }
             await RefreshOrgs();
+            await RefreshStacks();
+            await RefreshBuildpacks();
             this.busyBox.IsBusy = false;
         }
 
 
-        public static PublishProfile LoadFromFile(string filePath)
+        public static PublishProfile Initialize(string filePath)
         {
             PublishProfile publishProfile = new PublishProfile();
             XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile));
@@ -297,8 +318,8 @@
 
         internal async Task RefreshOrgs()
         {
-            this.busyBox.IsBusy = true;
-            this.busyBox.BusyMessage = "Loading organizations";
+
+            this.busyBox.SetMessage("Loading organizations");
             var srvOrgs = await cfClient.Organizations.ListAllOrganizations();
 
             this.orgs.Clear();
@@ -312,8 +333,7 @@
 
         internal async Task RefreshSpaces()
         {
-            this.busyBox.IsBusy = true;
-            this.busyBox.BusyMessage = "Loading spaces";
+            this.busyBox.SetMessage("Loading spaces");
             this.spaces.Clear();
 
             if (this.orgs.Count == 0)
@@ -335,6 +355,35 @@
             }
             this.busyBox.IsBusy = false;
 
+        }
+
+        internal async Task RefreshStacks()
+        {
+            this.busyBox.SetMessage("Loading stacks");
+            this.stacks.Clear();
+
+            var srvStacks = await this.cfClient.Stacks.ListAllStacks();
+            foreach (var srvStack in srvStacks)
+            {
+                this.stacks.Add(srvStack);
+            }
+
+            this.busyBox.IsBusy = false;
+        }
+
+        internal async Task RefreshBuildpacks()
+        {
+            this.busyBox.SetMessage("Loading Buildpacks");
+
+            this.buildpacks.Clear();
+
+            var srvBuildpacks = await this.cfClient.Buildpacks.ListAllBuildpacks();
+            foreach (var srvBuildpack in srvBuildpacks)
+            {
+                this.buildpacks.Add(srvBuildpack);
+            }
+
+            this.busyBox.IsBusy = false;
         }
 
         internal bool IsEqualTo(PublishProfile that)

@@ -20,9 +20,11 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Label Content="Buildpack" Grid.Row="0" Grid.Column="0" ></Label>
-        <ComboBox IsEditable="True" Name="cbBuildpack" Grid.Row="0" Grid.Column="1" Text="{Binding CFAppManifest.BuildpackUrl}" Margin="{StaticResource DefaultMargin}"></ComboBox>
+        <ComboBox IsEditable="True"  Name="cbBuildpack" Grid.Row="0" Grid.Column="1"  SelectedValue="{Binding CFAppManifest.BuildpackUrl}" 
+                  ItemsSource="{Binding Buildpacks}" SelectedValuePath="Name" DisplayMemberPath="Name" Margin="{StaticResource DefaultMargin}"></ComboBox>
         <Label Content="Stack" Grid.Row="1" Grid.Column="0" ></Label>
-        <ComboBox Name="cbStack" Grid.Row="1" Grid.Column="1" Text="{Binding CFAppManifest.StackName}" Margin="{StaticResource DefaultMargin}"></ComboBox>
+        <ComboBox Name="cbStack" Grid.Row="1" Grid.Column="1" SelectedValuePath="Name"  DisplayMemberPath="Name" ItemsSource="{Binding Path=Stacks}"
+                  SelectedValue="{Binding CFAppManifest.StackName}" Margin="{StaticResource DefaultMargin}"></ComboBox>
         <Label Content="Memory" Grid.Row="2" Grid.Column="0" ></Label>
         <TextBox Name="tbMemory" Grid.Row="2" Grid.Column="1" Text="{Binding CFAppManifest.Memory}" Margin="{StaticResource DefaultMargin}"></TextBox>
         <Label Content="Instances" Grid.Row="3" Grid.Column="0" ></Label>

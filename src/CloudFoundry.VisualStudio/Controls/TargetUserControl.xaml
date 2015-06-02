@@ -34,7 +34,8 @@
         <ComboBox Name="cbOrganization" SelectedValue="{Binding CFOrganization}" SelectedValuePath="Name" ItemsSource="{Binding Path=Orgs}" 
                   DisplayMemberPath="Name" Grid.Row="2" Grid.Column="1" Margin="{StaticResource DefaultMargin}" SelectionChanged="cbOrganization_SelectionChanged"></ComboBox>
         <Label VerticalAlignment="Center" Content="Space" Grid.Row="3" Grid.Column="0"></Label>
-        <ComboBox Name="cbSpace" Grid.Row="3" DisplayMemberPath="Name" Grid.Column="1" ItemsSource="{Binding Path=Spaces}" Margin="{StaticResource DefaultMargin}"></ComboBox>
+        <ComboBox Name="cbSpace" Grid.Row="3" DisplayMemberPath="Name" Grid.Column="1" SelectedValue="{Binding CFSpace}" SelectedValuePath="Name"
+                  ItemsSource="{Binding Path=Spaces}" Margin="{StaticResource DefaultMargin}"></ComboBox>
 
     </Grid>
 </UserControl>

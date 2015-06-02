@@ -44,10 +44,10 @@
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
 
-            PublishProfile packageFile = new PublishProfile();
+            PublishProfile packageFile;
             try
             {
-                packageFile = PublishProfile.LoadFromFile(pszMkDocument);
+                packageFile = PublishProfile.Initialize(pszMkDocument);
             }
             catch (Exception ex)
             {
