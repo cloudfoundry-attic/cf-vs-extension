@@ -23,17 +23,214 @@
     using CloudFoundry.UAA;
 
     [ComVisible(true)]
+    [Serializable, XmlRoot("PropertyGroup", Namespace="http://schemas.microsoft.com/developer/msbuild/2003")]
+    public class PublishProfile2
+    {
+        private Project project;
+        private string path;
+
+        public string CFUser
+        {
+            get;
+            set;
+        }
+
+        public string CFPassword
+        {
+            get;
+            set;
+        }
+
+        public bool CFSavedPassword
+        {
+            get;
+            set;
+        }
+
+        public string CFRefreshToken
+        {
+            get;
+            set;
+        }
+
+        public string CFServerUri
+        {
+            get;
+            set;
+        }
+
+        public bool CFSkipSSLValidation
+        {
+            get;
+            set;
+        }
+
+        public string CFOrganization
+        {
+            get;
+            set;
+        }
+
+        public string CFSpace
+        {
+            get;
+            set;
+        }
+
+        public string DeployTargetFile
+        {
+            get;
+            set;
+        }
+
+        public string WebPublishMethod
+        {
+            get;
+            set;
+        }
+
+        public string CFManifest
+        {
+            get;
+            set;
+        }
+
+        [XmlIgnore]
+        public Application Application
+        {
+            get;
+            private set;
+        }
+
+        private PublishProfile2()
+        {
+        }
+
+        private void LoadManifest()
+        {
+            string projectDir = Path.GetDirectoryName(project.FullName);
+            string absoluteManifestPath = Path.Combine(projectDir, this.CFManifest);
+
+
+            if (File.Exists(absoluteManifestPath))
+            {
+                CloudFoundry.Manifests.ManifestDiskRepository manifestRepo = new ManifestDiskRepository();
+
+
+                var manifest = manifestRepo.ReadManifest(absoluteManifestPath);
+
+                if (manifest.Applications().Count() > 1)
+                {
+                    throw new FileFormatException("Invalid CloudFoundry manifest file: more than one application is configured.");
+                }
+                else if (manifest.Applications().Count() < 1)
+                {
+                    throw new FileFormatException("Invalid CloudFoundry manifest file: there is no application configured.");
+                }
+
+                this.Application = manifest.Applications().First();
+            }
+            else
+            {
+                this.Application = new Application()
+                {
+                    BuildpackUrl = string.Empty,
+                    Command = null,
+                    DiskQuota = null,
+                    Domains = new string[0],
+                    EnvironmentVars = new Dictionary<string,string>(),
+                    HealthCheckTimeout = null,
+                    Hosts = new string[] { project.Name.ToLowerInvariant() },
+                    InstanceCount = 1,
+                    Memory = 256,
+                    Name = project.Name,
+                    NoHostname = false,
+                    NoRoute = false,
+                    Path = null,
+                    ServicesToBind = new string[0],
+                    StackName = string.Empty,
+                    UseRandomHostname = false
+                };
+            }
+        }
+
+        private void SaveManifest()
+        {
+            string projectDir = Path.GetDirectoryName(project.FullName);
+            string absoluteManifestPath = Path.Combine(projectDir, this.CFManifest);
+
+            Manifest.Save(new Application[] {this.Application}, absoluteManifestPath );
+        }
+
+        /// <summary>
+        /// Loads the specified publish profile for the specified project.
+        /// </summary>
+        /// <param name="project">The Visual Studio EnvDTE project. Cannot be null.</param>
+        /// <param name="path">Absolute path to the publish profile to load. If the file does not exist, defaults will be loaded for the object.</param>
+        /// <returns>A new PublishProfile.</returns>
+        /// <exception cref="System.ArgumentNullException">project</exception>
+        public static PublishProfile2 Load(Project project, string path)
+        {
+            if (project == null)
+            {
+                throw new ArgumentNullException("project");
+            }
+
+            PublishProfile2 publishProfile = null;
+
+            if (File.Exists(path))
+            {
+                // If the file exists, we load it
+                XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile2));
+
+                using (XmlReader xmlReader = XmlReader.Create(path))
+                {
+                    xmlReader.ReadToDescendant("PropertyGroup");
+                    publishProfile = (PublishProfile2)serializer.Deserialize(xmlReader.ReadSubtree());
+                }
+            }
+            else
+            {
+                // If the file does not exist, we set defaults
+                publishProfile = new PublishProfile2()
+                {
+                    CFManifest = "manifest.yml",
+                    CFOrganization = string.Empty,
+                    CFPassword = null,
+                    CFRefreshToken = null,
+                    CFSavedPassword = true,
+                    CFServerUri = string.Empty,
+                    CFSkipSSLValidation = false,
+                    CFSpace = string.Empty,
+                    CFUser = string.Empty,
+                    DeployTargetFile = null,
+                    WebPublishMethod = "CloudFoundry"
+                };
+            }
+
+            publishProfile.path = path;
+            publishProfile.project = project;
+            publishProfile.LoadManifest();
+
+            return publishProfile;
+        }
+
+        public void Save()
+        {
+
+        }
+    }
+
+    [ComVisible(true)]
     [Serializable, XmlRoot("PropertyGroup")]
     public class PublishProfile
     {
-        private string configFile = string.Empty;
-
         private string username = string.Empty;
         private string password = string.Empty;
         private string server = string.Empty;
         private string organization = string.Empty;
         private string space = string.Empty;
-        private string deploytargetfile = string.Empty;
+        //private string deploytargetfile = string.Empty;
         private string webpublishmethod = "CloudFoundry";
         private string refreshToken = string.Empty;
         private bool savedPassword = true;
@@ -48,6 +245,7 @@
         private ObservableCollection<ListAllOrganizationsResponse> orgs = new ObservableCollection<ListAllOrganizationsResponse>();
         private ObservableCollection<ListAllStacksResponse> stacks = new ObservableCollection<ListAllStacksResponse>();
         private ObservableCollection<ListAllBuildpacksResponse> buildpacks = new ObservableCollection<ListAllBuildpacksResponse>();
+        private string path;
 
         [XmlIgnore]
         public ObservableCollection<ListAllBuildpacksResponse> Buildpacks
@@ -79,15 +277,16 @@
             get { return orgs; }
         }
 
-        public string ConfigFile
-        {
-            get { return this.configFile; }
-        }
-
         public string CFUser
         {
             get { return this.username; }
             set { this.username = value; }
+        }
+
+        public string CFManifest
+        {
+            get;
+            set;
         }
 
         public string CFPassword
@@ -126,11 +325,11 @@
             set { this.space = value; }
         }
 
-        public string DeployTargetFile
-        {
-            get { return this.deploytargetfile; }
-            set { this.deploytargetfile = value; }
-        }
+        //public string DeployTargetFile
+        //{
+        //    get { return this.deploytargetfile; }
+        //    set { this.deploytargetfile = value; }
+        //}
 
         public string WebPublishMethod
         {
@@ -271,18 +470,20 @@
                 publishProfile = (PublishProfile)serializer.Deserialize(xmlReader.ReadSubtree());
             }
 
-
             CloudFoundry.Manifests.ManifestDiskRepository manifestRepo = new ManifestDiskRepository();
-            var manifest = manifestRepo.ReadManifest(publishProfile.deploytargetfile);
+
+            //string manifestPath = Proj
+
+            var manifest = manifestRepo.ReadManifest(publishProfile.CFManifest);
 
             if (manifest.Applications().Count() != 1)
             {
-                throw new FileFormatException("Invalid publish file, Cloud Foundry manifest must contain only one application.");
+                throw new FileFormatException("Invalid CloudFoundry manifest file, more than one application is configured.");
             }
-            publishProfile.appManifest = manifest.Applications().First();
-            publishProfile.configFile = filePath;
-            return publishProfile;
 
+            publishProfile.appManifest = manifest.Applications().First();
+            publishProfile.path = filePath;
+            return publishProfile;
         }
 
 
