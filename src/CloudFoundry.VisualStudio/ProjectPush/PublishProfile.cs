@@ -28,6 +28,7 @@
     {
         private Project project;
         private string path;
+        private XmlSerializerNamespaces namespaces = null;
 
         public string CFUser
         {
@@ -102,8 +103,20 @@
             private set;
         }
 
+        [XmlNamespaceDeclarations]
+        public XmlSerializerNamespaces Namespaces
+        {
+            get 
+            {
+                return this.namespaces;
+            }
+        }
+
         private PublishProfile2()
         {
+            this.namespaces = new XmlSerializerNamespaces(new XmlQualifiedName[] {
+                new XmlQualifiedName(string.Empty, "http://schemas.microsoft.com/developer/msbuild/2003")
+            });
         }
 
         private void LoadManifest()
@@ -157,9 +170,11 @@
         private void SaveManifest()
         {
             string projectDir = Path.GetDirectoryName(project.FullName);
+            Directory.CreateDirectory(projectDir);
+
             string absoluteManifestPath = Path.Combine(projectDir, this.CFManifest);
 
-            Manifest.Save(new Application[] {this.Application}, absoluteManifestPath );
+            Manifest.Save(new Application[] { this.Application }, absoluteManifestPath);
         }
 
         /// <summary>
@@ -217,7 +232,31 @@
 
         public void Save()
         {
+            SaveManifest();
 
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+
+            XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile2),
+                    new XmlRootAttribute("PropertyGroup") { Namespace = "http://schemas.microsoft.com/developer/msbuild/2003" });
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = true;
+
+            using (StringWriter textWriter = new StringWriter(System.Globalization.CultureInfo.InvariantCulture))
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings))
+                {
+                    xmlWriter.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+                    xmlWriter.WriteAttributeString("ToolsVersion", "4.0");
+
+                    serializer.Serialize(xmlWriter, this, this.Namespaces);
+
+                    xmlWriter.WriteEndElement();
+                }
+
+                File.WriteAllText(this.path, textWriter.ToString());
+            }
         }
     }
 
