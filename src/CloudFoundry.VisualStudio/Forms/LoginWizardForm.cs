@@ -1,6 +1,7 @@
 ﻿namespace CloudFoundry.VisualStudio.Forms
 {
     using System;
+    using System.Collections.Generic;
     using System.Drawing;
     using System.Globalization;
     using System.Threading;
@@ -190,58 +191,13 @@
                             SetSummarySpacesControls(sender, e);
                         }
                     }
-                    catch (System.AggregateException ex)
-                    {
-                        foreach (var exception in ex.InnerExceptions)
-                        {
-                            if (exception.GetType() == typeof(AuthenticationException))
-                            {
-                                loginEx = ex.Message;
-                                Logger.Error(loginEx, exception);
-
-                                if (this.InvokeRequired)
-                                {
-                                    this.Invoke(new MethodInvoker(() =>
-                                    {
-                                        this.loginControl.ShowLoginError("Invalid username or password");
-
-                                        SetControlsForLoginError();
-                                    }));
-                                }
-                                else
-                                {
-                                    this.loginControl.ShowLoginError("Invalid username or password");
-
-                                    SetControlsForLoginError();
-                                }
-                            }
-                            else if (exception.GetType() == typeof(CloudFoundryException))
-                            {
-                                var cloudClientException = (CloudFoundryException)exception;
-                                loginEx = cloudClientException.Message;
-
-                                Logger.Error(string.Format(CultureInfo.InvariantCulture, "{0} {1}", loginEx, cloudClientException.Source), cloudClientException);
-
-                                SetControlsForLoginError(loginEx);
-                            }
-                            else
-                            {
-                                loginEx = exception.Message;
-
-                                if (exception.InnerException != null)
-                                {
-                                    loginEx = string.Concat(loginEx, Environment.NewLine, exception.InnerException.Message);
-                                }
-
-                                Logger.Error(loginEx, exception);
-
-                                SetControlsForLoginError(loginEx);
-                            }
-                        }
-                    }
                     catch (Exception ex)
                     {
-                        loginEx = ex.Message;
+                        List<string> messages = new List<string>();
+                        FormatExceptionMessage(ex, messages);
+
+                        loginEx = string.Join(Environment.NewLine, messages);
+
                         Logger.Error(loginEx, ex);
 
                         SetControlsForLoginError(loginEx);
@@ -326,6 +282,26 @@
             this.loginTargetLinkLabel.Enabled = false;
             this.SummaryLinkLabel_Click(sender, e);
             this.nextButton.Focus();
+        }
+
+        private static void FormatExceptionMessage(Exception ex, List<string> message)
+        {
+            if (ex is AggregateException)
+            {
+                foreach (Exception iex in (ex as AggregateException).Flatten().InnerExceptions)
+                {
+                    FormatExceptionMessage(iex, message);
+                }
+            }
+            else
+            {
+                message.Add(ex.Message);
+                Logger.Error(ex.Message, ex);
+                if (ex.InnerException != null)
+                {
+                    FormatExceptionMessage(ex.InnerException, message);
+                }
+            }
         }
     }
 }
