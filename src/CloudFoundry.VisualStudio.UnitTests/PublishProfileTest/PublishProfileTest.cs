@@ -15,7 +15,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
 {
     [TestClass()]
     [DeploymentItem("Assets")]
-    public class PublishProfile
+    public class PublishProfileTest
     {
         private string PublishProfileProjectDir
         {
@@ -46,16 +46,16 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             PublishProfile2 publishProfile = PublishProfile2.Load(project, this.PublishProfilePath);
 
             // Assert
-            Assert.AreEqual("user", publishProfile.CFUser);
-            Assert.AreEqual(string.Empty, publishProfile.CFPassword);
-            Assert.AreEqual(string.Empty, publishProfile.CFRefreshToken);
-            Assert.AreEqual("https://api.1.2.3.4.xip.io/", publishProfile.CFServerUri);
-            Assert.AreEqual(true, publishProfile.CFSkipSSLValidation);
-            Assert.AreEqual("numenor", publishProfile.CFOrganization);
-            Assert.AreEqual("arandor", publishProfile.CFSpace);
+            Assert.AreEqual("user", publishProfile.User);
+            Assert.AreEqual(string.Empty, publishProfile.Password);
+            Assert.AreEqual(string.Empty, publishProfile.RefreshToken);
+            Assert.AreEqual("https://api.1.2.3.4.xip.io/", publishProfile.ServerUri.ToString());
+            Assert.AreEqual(true, publishProfile.SkipSSLValidation);
+            Assert.AreEqual("numenor", publishProfile.Organization);
+            Assert.AreEqual("arandor", publishProfile.Space);
             Assert.AreEqual(string.Empty, publishProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
-            Assert.AreEqual("manifest.yml", publishProfile.CFManifest);
+            Assert.AreEqual("manifest.yml", publishProfile.Manifest);
         }
 
         [TestMethod()]
@@ -98,16 +98,16 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             PublishProfile2 publishProfile = PublishProfile2.Load(project, @"c:\foo-bar.cf.pubxml");
 
             // Assert
-            Assert.AreEqual(string.Empty, publishProfile.CFUser);
-            Assert.AreEqual(null, publishProfile.CFPassword);
-            Assert.AreEqual(null, publishProfile.CFRefreshToken);
-            Assert.AreEqual(string.Empty, publishProfile.CFServerUri);
-            Assert.AreEqual(false, publishProfile.CFSkipSSLValidation);
-            Assert.AreEqual(string.Empty, publishProfile.CFOrganization);
-            Assert.AreEqual(string.Empty, publishProfile.CFSpace);
+            Assert.AreEqual(string.Empty, publishProfile.User);
+            Assert.AreEqual(null, publishProfile.Password);
+            Assert.AreEqual(null, publishProfile.RefreshToken);
+            Assert.AreEqual(null, publishProfile.ServerUri);
+            Assert.AreEqual(false, publishProfile.SkipSSLValidation);
+            Assert.AreEqual(string.Empty, publishProfile.Organization);
+            Assert.AreEqual(string.Empty, publishProfile.Space);
             Assert.AreEqual(null, publishProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
-            Assert.AreEqual("manifest.yml", publishProfile.CFManifest);
+            Assert.AreEqual("manifest.yml", publishProfile.Manifest);
         }
 
         [TestMethod()]
@@ -149,14 +149,14 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             string manifestPath = Path.Combine(testProjectDir, "manifest.yml");
 
             PublishProfile2 publishProfile = PublishProfile2.Load(project, publishProfilePath);
-            publishProfile.CFOrganization = "doriath";
-            publishProfile.CFSpace = "menegroth";
-            publishProfile.CFUser = "beren";
-            publishProfile.CFPassword = "luthien";
-            publishProfile.CFRefreshToken = "012345";
-            publishProfile.CFSavedPassword = true;
-            publishProfile.CFServerUri = "https://my.server.url";
-            publishProfile.CFSkipSSLValidation = false;
+            publishProfile.Organization = "doriath";
+            publishProfile.Space = "menegroth";
+            publishProfile.User = "beren";
+            publishProfile.Password = "luthien";
+            publishProfile.RefreshToken = "012345";
+            publishProfile.SavedPassword = true;
+            publishProfile.ServerUri = new Uri("https://my.server.url");
+            publishProfile.SkipSSLValidation = false;
 
             publishProfile.Application.BuildpackUrl = "https://my.buildpack.url";
             publishProfile.Application.Command = "ls";
@@ -183,15 +183,15 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.IsTrue(File.Exists(manifestPath));
 
             var loadedProfile = PublishProfile2.Load(project, publishProfilePath);
-            Assert.AreEqual(publishProfile.CFManifest, loadedProfile.CFManifest);
-            Assert.AreEqual(publishProfile.CFOrganization, loadedProfile.CFOrganization);
-            Assert.AreEqual(publishProfile.CFPassword, loadedProfile.CFPassword);
-            Assert.AreEqual(publishProfile.CFRefreshToken, loadedProfile.CFRefreshToken);
-            Assert.AreEqual(publishProfile.CFSavedPassword, loadedProfile.CFSavedPassword);
-            Assert.AreEqual(publishProfile.CFServerUri, loadedProfile.CFServerUri);
-            Assert.AreEqual(publishProfile.CFSkipSSLValidation, loadedProfile.CFSkipSSLValidation);
-            Assert.AreEqual(publishProfile.CFSpace, loadedProfile.CFSpace);
-            Assert.AreEqual(publishProfile.CFUser, loadedProfile.CFUser);
+            Assert.AreEqual(publishProfile.Manifest, loadedProfile.Manifest);
+            Assert.AreEqual(publishProfile.Organization, loadedProfile.Organization);
+            Assert.AreEqual(publishProfile.Password, loadedProfile.Password);
+            Assert.AreEqual(publishProfile.RefreshToken, loadedProfile.RefreshToken);
+            Assert.AreEqual(publishProfile.SavedPassword, loadedProfile.SavedPassword);
+            Assert.AreEqual(publishProfile.ServerUri, loadedProfile.ServerUri);
+            Assert.AreEqual(publishProfile.SkipSSLValidation, loadedProfile.SkipSSLValidation);
+            Assert.AreEqual(publishProfile.Space, loadedProfile.Space);
+            Assert.AreEqual(publishProfile.User, loadedProfile.User);
             Assert.AreEqual(null, loadedProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
 
