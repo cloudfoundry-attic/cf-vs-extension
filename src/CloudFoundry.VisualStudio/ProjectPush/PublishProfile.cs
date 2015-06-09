@@ -21,79 +21,213 @@
     using System.Collections.ObjectModel;
     using CloudFoundry.VisualStudio.TargetStore;
     using CloudFoundry.UAA;
+    using System.Threading;
+    using Microsoft.VisualStudio.Threading;
+
+    /// <summary>
+    /// An EventArgs class for error events.
+    /// </summary>
+    public class ErrorEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gets the error that occured while trying to communicate with the Loggregator service.
+        /// </summary>
+        /// <value>
+        /// An exception that describes the error.
+        /// </value>
+        public Exception Error
+        {
+            get;
+            internal set;
+        }
+
+
+        /// <summary>
+        /// Gets a formatted error message that can be shown to the user.
+        /// <remarks>The error message can contain newline characters.</remarks>
+        /// </summary>
+        /// <value>
+        /// The formatted error.
+        /// </value>
+        public string FormattedError
+        {
+            get;
+            internal set;
+        }
+    }
 
     [ComVisible(true)]
-    [Serializable, XmlRoot("PropertyGroup", Namespace="http://schemas.microsoft.com/developer/msbuild/2003")]
-    public class PublishProfile2
+    [Serializable, XmlRoot("PropertyGroup", Namespace = "http://schemas.microsoft.com/developer/msbuild/2003")]
+    public class PublishProfile2 : INotifyPropertyChanged
     {
         private Project project;
         private string path;
         private XmlSerializerNamespaces namespaces = null;
 
-        public string CFUser
+        private string user;
+        private string password;
+        private bool savedPassword;
+        private string refreshToken;
+        private XmlUri serverUri;
+        private bool skipSSLValidation;
+        private string organization;
+        private string space;
+        private string deployTargetFile;
+        private string webPublishMethod;
+        private string manifest;
+
+        [XmlElement(ElementName="CFUser")]
+        public string User
         {
-            get;
-            set;
+            get
+            {
+                return this.user;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("User");
+                this.user = value;
+            }
         }
 
-        public string CFPassword
+        [XmlElement(ElementName = "CFPassword")]
+        public string Password
         {
-            get;
-            set;
+            get
+            {
+                return this.password;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("Password");
+                this.password = value;
+            }
         }
 
-        public bool CFSavedPassword
+        [XmlElement(ElementName = "CFSavedPassword")]
+        public bool SavedPassword
         {
-            get;
-            set;
+            get
+            {
+                return this.savedPassword;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("SavedPassword");
+                this.savedPassword = value;
+            }
         }
 
-        public string CFRefreshToken
+        [XmlElement(ElementName = "CFRefreshToken")]
+        public string RefreshToken
         {
-            get;
-            set;
+            get
+            {
+                return this.refreshToken;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("RefreshToken");
+                this.refreshToken = value;
+            }
         }
 
-        public string CFServerUri
+        [XmlElement(ElementName = "CFServerUri")]
+        public XmlUri ServerUri
         {
-            get;
-            set;
+            get
+            {
+                return this.serverUri;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("ServerUri");
+                this.serverUri = value;
+            }
         }
 
-        public bool CFSkipSSLValidation
+        [XmlElement(ElementName = "CFSkipSSLValidation")]
+        public bool SkipSSLValidation
         {
-            get;
-            set;
+            get
+            {
+                return this.skipSSLValidation;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("SkipSSLValidation");
+                this.skipSSLValidation = value;
+            }
         }
 
-        public string CFOrganization
+        [XmlElement(ElementName = "CFOrganization")]
+        public string Organization
         {
-            get;
-            set;
+            get
+            {
+                return this.organization;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("Organization");
+                this.organization = value;
+            }
         }
 
-        public string CFSpace
+        [XmlElement(ElementName = "CFSpace")]
+        public string Space
         {
-            get;
-            set;
+            get
+            {
+                return this.space;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("Space");
+                this.space = value;
+            }
         }
 
+        [XmlElement(ElementName = "DeployTargetFile")]
         public string DeployTargetFile
         {
-            get;
-            set;
+            get
+            {
+                return this.deployTargetFile;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("DeployTargetFile");
+                this.deployTargetFile = value;
+            }
         }
 
+        [XmlElement(ElementName = "WebPublishMethod")]
         public string WebPublishMethod
         {
-            get;
-            set;
+            get
+            {
+                return this.webPublishMethod;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("WebPublishMethod");
+                this.webPublishMethod = value;
+            }
         }
 
-        public string CFManifest
+        [XmlElement(ElementName = "CFManifest")]
+        public string Manifest
         {
-            get;
-            set;
+            get
+            {
+                return this.manifest;
+            }
+            set
+            {
+                RaisePropertyChangedEvent("Manifest");
+                this.manifest = value;
+            }
         }
 
         [XmlIgnore]
@@ -106,7 +240,7 @@
         [XmlNamespaceDeclarations]
         public XmlSerializerNamespaces Namespaces
         {
-            get 
+            get
             {
                 return this.namespaces;
             }
@@ -122,7 +256,7 @@
         private void LoadManifest()
         {
             string projectDir = Path.GetDirectoryName(project.FullName);
-            string absoluteManifestPath = Path.Combine(projectDir, this.CFManifest);
+            string absoluteManifestPath = Path.Combine(projectDir, this.Manifest);
 
 
             if (File.Exists(absoluteManifestPath))
@@ -151,7 +285,7 @@
                     Command = null,
                     DiskQuota = null,
                     Domains = new string[0],
-                    EnvironmentVars = new Dictionary<string,string>(),
+                    EnvironmentVars = new Dictionary<string, string>(),
                     HealthCheckTimeout = null,
                     Hosts = new string[] { project.Name.ToLowerInvariant() },
                     InstanceCount = 1,
@@ -172,9 +306,9 @@
             string projectDir = Path.GetDirectoryName(project.FullName);
             Directory.CreateDirectory(projectDir);
 
-            string absoluteManifestPath = Path.Combine(projectDir, this.CFManifest);
+            string absoluteManifestPath = Path.Combine(projectDir, this.Manifest);
 
-            Manifest.Save(new Application[] { this.Application }, absoluteManifestPath);
+            CloudFoundry.Manifests.Manifest.Save(new Application[] { this.Application }, absoluteManifestPath);
         }
 
         /// <summary>
@@ -209,15 +343,15 @@
                 // If the file does not exist, we set defaults
                 publishProfile = new PublishProfile2()
                 {
-                    CFManifest = "manifest.yml",
-                    CFOrganization = string.Empty,
-                    CFPassword = null,
-                    CFRefreshToken = null,
-                    CFSavedPassword = true,
-                    CFServerUri = string.Empty,
-                    CFSkipSSLValidation = false,
-                    CFSpace = string.Empty,
-                    CFUser = string.Empty,
+                    Manifest = "manifest.yml",
+                    Organization = string.Empty,
+                    Password = null,
+                    RefreshToken = null,
+                    SavedPassword = true,
+                    ServerUri = null,
+                    SkipSSLValidation = false,
+                    Space = string.Empty,
+                    User = string.Empty,
                     DeployTargetFile = null,
                     WebPublishMethod = "CloudFoundry"
                 };
@@ -258,7 +392,321 @@
                 File.WriteAllText(this.path, textWriter.ToString());
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaisePropertyChangedEvent(string propertyName)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
     }
+
+
+
+    internal class PublishProfileEditorResources
+    {
+        private ObservableCollection<ListAllOrganizationsResponse> orgs = new ObservableCollection<ListAllOrganizationsResponse>();
+        private ObservableCollection<ListAllSpacesForOrganizationResponse> spaces = new ObservableCollection<ListAllSpacesForOrganizationResponse>();
+        private ObservableCollection<ListAllStacksResponse> stacks = new ObservableCollection<ListAllStacksResponse>();
+        private ObservableCollection<ListAllBuildpacksResponse> buildpacks = new ObservableCollection<ListAllBuildpacksResponse>();
+        private ObservableCollection<ListAllSharedDomainsResponse> sharedDomains = new ObservableCollection<ListAllSharedDomainsResponse>();
+        private ObservableCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomains = new ObservableCollection<ListAllPrivateDomainsForOrganizationResponse>();
+        private ObservableCollection<ListAllServiceInstancesForSpaceResponse> serviceInstances = new ObservableCollection<ListAllServiceInstancesForSpaceResponse>();
+
+
+        public PublishProfile2 publishProfile;
+        public event EventHandler<ErrorEventArgs> ErrorOccurred;
+
+        private bool hasErrors = false;
+        private string errorMessage = string.Empty;
+        private bool refreshing = false;
+        private CancellationToken cancellationToken;
+        private CloudFoundryClient client;
+
+        public bool HasErrors
+        {
+            get { return hasErrors; }
+            set { hasErrors = value; }
+        }
+
+        public string ErrorMessage
+        {
+            get { return errorMessage; }
+            set { errorMessage = value; }
+        }
+
+        public bool Refreshing
+        {
+            get { return refreshing; }
+            set { refreshing = value; }
+        }
+
+        public PublishProfileEditorResources(PublishProfile2 publishProfile, CancellationToken cancellationToken)
+        {
+            this.publishProfile = publishProfile;
+            this.publishProfile.PropertyChanged += publishProfile_PropertyChanged;
+            this.cancellationToken = cancellationToken;
+        }
+
+        private void publishProfile_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Organization":
+                    {
+                        this.RefreshSpaces().Forget();
+                        this.RefreshPrivateDomains().Forget();
+                    }
+                    break;
+                case "Space":
+                    {
+                        this.RefreshServiceInstances().Forget();
+                    }
+                    break;
+            }
+        }
+
+        private void EnterRefresh()
+        {
+            this.Refreshing = true;
+            this.HasErrors = false;
+            this.ErrorMessage = string.Empty;
+        }
+
+        private void ExitRefresh()
+        {
+            this.ExitRefresh(null);
+        }
+
+        private void ExitRefresh(Exception error)
+        {
+            this.Refreshing = false;
+            this.HasErrors = error != null;
+            if (this.hasErrors)
+            {
+                List<string> errors = new List<string>();
+                ErrorFormatter.FormatExceptionMessage(error, errors);
+                StringBuilder sb = new StringBuilder();
+                foreach (string errorLine in errors)
+                {
+                    sb.AppendLine(errorLine);
+                }
+
+                this.ErrorMessage = sb.ToString();
+            }
+        }
+
+        public async Task RefreshClient()
+        {
+            try
+            {
+                EnterRefresh();
+
+                this.client = new CloudFoundryClient(
+                    this.publishProfile.ServerUri,
+                    this.cancellationToken,
+                    null,
+                    this.publishProfile.SkipSSLValidation);
+
+                string password = CloudCredentialsManager.GetPassword(
+                    this.publishProfile.ServerUri,
+                    this.publishProfile.User);
+
+                var authenticationContext = await client.Login(new CloudCredentials()
+                {
+                    User = this.publishProfile.User,
+                    Password = password
+                });
+
+                await this.RefreshOrganizations();
+                await this.RefreshStacks();
+                await this.RefreshBuildpacks();
+                await this.RefreshSharedDomains();
+            }
+            catch (Exception ex)
+            {
+                ExitRefresh(ex);
+            }
+        }
+
+        public async Task RefreshOrganizations()
+        {
+            this.orgs.Clear();
+
+            PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
+
+            while (orgs != null && orgs.Properties.TotalResults != 0)
+            {
+                foreach (var org in orgs)
+                {
+                    this.orgs.Add(org);
+                }
+
+                orgs = await orgs.GetNextPage();
+            }
+
+            await this.RefreshSpaces();
+            await this.RefreshPrivateDomains();
+        }
+
+        public async Task RefreshSpaces()
+        {
+            this.spaces.Clear();
+
+            var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
+
+            if (org == null)
+            {
+                return;
+            }
+
+            PagedResponseCollection<ListAllSpacesForOrganizationResponse> spaces = await this.client.Organizations.ListAllSpacesForOrganization(org.EntityMetadata.Guid);
+
+            while (spaces != null && spaces.Properties.TotalResults != 0)
+            {
+                foreach (var space in spaces)
+                {
+                    this.spaces.Add(space);
+                }
+
+                spaces = await spaces.GetNextPage();
+            }
+
+            await this.RefreshServiceInstances();
+        }
+
+        public async Task RefreshServiceInstances()
+        {
+            this.serviceInstances.Clear();
+
+            var space = this.spaces.FirstOrDefault(s => s.Name == this.publishProfile.Space);
+
+            if (space == null)
+            {
+                return;
+            }
+
+            PagedResponseCollection<ListAllServiceInstancesForSpaceResponse> serviceInstances = await this.client.Spaces.ListAllServiceInstancesForSpace(space.EntityMetadata.Guid);
+
+            while (serviceInstances != null && serviceInstances.Properties.TotalResults != 0)
+            {
+                foreach (var privateDomain in serviceInstances)
+                {
+                    this.serviceInstances.Add(privateDomain);
+                }
+
+                serviceInstances = await serviceInstances.GetNextPage();
+            }
+        }
+
+        public async Task RefreshStacks()
+        {
+            this.stacks.Clear();
+
+            PagedResponseCollection<ListAllStacksResponse> stacks = await this.client.Stacks.ListAllStacks();
+
+            while (stacks != null && stacks.Properties.TotalResults != 0)
+            {
+                foreach (var stack in stacks)
+                {
+                    this.stacks.Add(stack);
+                }
+
+                stacks = await stacks.GetNextPage();
+            }
+        }
+
+        public async Task RefreshBuildpacks()
+        {
+            this.buildpacks.Clear();
+
+            PagedResponseCollection<ListAllBuildpacksResponse> buildpacks = await this.client.Buildpacks.ListAllBuildpacks();
+
+            while (buildpacks != null && buildpacks.Properties.TotalResults != 0)
+            {
+                foreach (var buildpack in buildpacks)
+                {
+                    this.buildpacks.Add(buildpack);
+                }
+
+                buildpacks = await buildpacks.GetNextPage();
+            }
+        }
+
+        public async Task RefreshSharedDomains()
+        {
+            this.sharedDomains.Clear();
+
+            PagedResponseCollection<ListAllSharedDomainsResponse> sharedDomains = await this.client.SharedDomains.ListAllSharedDomains();
+
+            while (sharedDomains != null && sharedDomains.Properties.TotalResults != 0)
+            {
+                foreach (var sharedDomain in sharedDomains)
+                {
+                    this.sharedDomains.Add(sharedDomain);
+                }
+
+                sharedDomains = await sharedDomains.GetNextPage();
+            }
+        }
+
+        public async Task RefreshPrivateDomains()
+        {
+            this.privateDomains.Clear();
+
+            var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
+
+            if (org == null)
+            {
+                return;
+            }
+            
+            PagedResponseCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomains = await this.client.Organizations.ListAllPrivateDomainsForOrganization(org.EntityMetadata.Guid);
+
+            while (privateDomains != null && privateDomains.Properties.TotalResults != 0)
+            {
+                foreach (var privateDomain in privateDomains)
+                {
+                    this.privateDomains.Add(privateDomain);
+                }
+
+                privateDomains = await privateDomains.GetNextPage();
+            }
+        }
+
+        private void NotifyError(Exception error)
+        {
+            if (error == null)
+            {
+                throw new ArgumentNullException("error");
+            }
+
+            if (ErrorOccurred == null)
+            {
+                return;
+            }
+
+            List<string> errors = new List<string>();
+            ErrorFormatter.FormatExceptionMessage(error, errors);
+            StringBuilder sb = new StringBuilder();
+            foreach (string errorLine in errors)
+            {
+                sb.AppendLine(errorLine);
+            }
+
+            ErrorEventArgs errorArgs = new ErrorEventArgs();
+            errorArgs.FormattedError = sb.ToString();
+            errorArgs.Error = error;
+
+            ErrorOccurred(this, errorArgs);
+        }
+    }
+
 
     [ComVisible(true)]
     [Serializable, XmlRoot("PropertyGroup")]

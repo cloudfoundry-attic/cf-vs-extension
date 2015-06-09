@@ -315,6 +315,7 @@
     <Compile Include="TargetStore\CloudTarget.cs" />
     <Compile Include="TargetStore\CloudTargetManager.cs" />
     <Compile Include="TargetStore\CloudCredentialsManager.cs" />
+    <Compile Include="XmlUri.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\LoginUserControl.resx">
