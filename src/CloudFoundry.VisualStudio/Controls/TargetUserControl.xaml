@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
+             xmlns:profile="clr-namespace:CloudFoundry.VisualStudio.ProjectPush"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
     <Control.Resources>
@@ -21,7 +22,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="50" />
+            <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -42,7 +43,21 @@
             </Grid.ColumnDefinitions>
 
             <TextBox Grid.Row="0" Grid.Column="0" Name="tbTarget" 
-                     Text="{Binding PublishProfile.ServerUri, Converter={StaticResource UriToString}}" />
+                     Text="{Binding PublishProfile.ServerUri, Converter={StaticResource UriToString}}">
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=LastRefreshTarget}" Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
+                                    <Condition Binding="{Binding Path=HasErrors}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Crimson" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
 
             <Button Grid.Row="0" Grid.Column="1" Content="..."  
                     Width="30" HorizontalAlignment="Right" />
@@ -60,8 +75,9 @@
                   SelectedValue="{Binding PublishProfile.Space}" 
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
 
-        <TextBox Grid.Row="9" Grid.Column="1" IsReadOnly="True" BorderBrush="Transparent" 
-                 Foreground="Crimson" MinLines="3" Background="Transparent" TextWrapping="Wrap"
+        <TextBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
+                 BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Foreground="Crimson" MinLines="4" MaxLines="4" Background="Transparent"
                  Text="{Binding Path=ErrorMessage}" 
                  Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
     </Grid>
