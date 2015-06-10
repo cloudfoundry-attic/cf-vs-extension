@@ -63,8 +63,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("User");
                 this.user = value;
+                RaisePropertyChangedEvent("User");
             }
         }
 
@@ -77,8 +77,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("Password");
                 this.password = value;
+                RaisePropertyChangedEvent("Password");
             }
         }
 
@@ -91,8 +91,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("SavedPassword");
                 this.savedPassword = value;
+                RaisePropertyChangedEvent("SavedPassword");
             }
         }
 
@@ -105,8 +105,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("RefreshToken");
                 this.refreshToken = value;
+                RaisePropertyChangedEvent("RefreshToken");
             }
         }
 
@@ -119,8 +119,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("ServerUri");
                 this.serverUri = value;
+                RaisePropertyChangedEvent("ServerUri");
             }
         }
 
@@ -133,8 +133,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("SkipSSLValidation");
                 this.skipSSLValidation = value;
+                RaisePropertyChangedEvent("SkipSSLValidation");
             }
         }
 
@@ -147,8 +147,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("Organization");
                 this.organization = value;
+                RaisePropertyChangedEvent("Organization");
             }
         }
 
@@ -161,8 +161,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("Space");
                 this.space = value;
+                RaisePropertyChangedEvent("Space");
             }
         }
 
@@ -175,8 +175,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("DeployTargetFile");
                 this.deployTargetFile = value;
+                RaisePropertyChangedEvent("DeployTargetFile");
             }
         }
 
@@ -189,8 +189,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("WebPublishMethod");
                 this.webPublishMethod = value;
+                RaisePropertyChangedEvent("WebPublishMethod");
             }
         }
 
@@ -203,8 +203,8 @@
             }
             set
             {
-                RaisePropertyChangedEvent("Manifest");
                 this.manifest = value;
+                RaisePropertyChangedEvent("Manifest");
             }
         }
 
@@ -400,7 +400,7 @@
         PrivateDomains
     }
 
-    internal class PublishProfileEditorResources
+    internal class PublishProfileEditorResources : INotifyPropertyChanged
     {
         private ObservableCollection<ListAllOrganizationsResponse> orgs = new ObservableCollection<ListAllOrganizationsResponse>();
         private ObservableCollection<ListAllSpacesForOrganizationResponse> spaces = new ObservableCollection<ListAllSpacesForOrganizationResponse>();
@@ -475,20 +475,41 @@
 
         public bool HasErrors
         {
-            get { return hasErrors; }
-            set { hasErrors = value; }
+            get 
+            { 
+                return hasErrors; 
+            }
+            set 
+            { 
+                hasErrors = value;
+                this.RaisePropertyChangedEvent("HasErrors");
+            }
         }
 
         public string ErrorMessage
         {
-            get { return errorMessage; }
-            set { errorMessage = value; }
+            get 
+            { 
+                return errorMessage; 
+            }
+            set 
+            { 
+                errorMessage = value;
+                this.RaisePropertyChangedEvent("ErrorMessage");
+            }
         }
 
         public bool Refreshing
         {
-            get { return refreshing; }
-            set { refreshing = value; }
+            get 
+            { 
+                return refreshing; 
+            }
+            set 
+            { 
+                refreshing = value;
+                this.RaisePropertyChangedEvent("Refreshing");
+            }
         }
 
         public PublishProfileEditorResources(PublishProfile publishProfile, CancellationToken cancellationToken)
@@ -546,6 +567,10 @@
             }
         }
 
+        private void OnUIThread(Action action)
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
+        }
 
         public void Refresh(PublishProfileRefreshTarget refreshTarget)
         {
@@ -625,13 +650,15 @@
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Organizations;
 
+            OnUIThread(() => this.orgs.Clear());
+
             PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
 
             while (orgs != null && orgs.Properties.TotalResults != 0)
             {
                 foreach (var org in orgs)
                 {
-                    this.orgs.Add(org);
+                    OnUIThread(() => this.orgs.Add(org));
                 }
 
                 orgs = await orgs.GetNextPage();
@@ -645,7 +672,7 @@
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Spaces;
 
-            this.spaces.Clear();
+            OnUIThread(() => this.spaces.Clear());
 
             var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
 
@@ -660,7 +687,7 @@
             {
                 foreach (var space in spaces)
                 {
-                    this.spaces.Add(space);
+                    OnUIThread(() => this.spaces.Add(space));
                 }
 
                 spaces = await spaces.GetNextPage();
@@ -673,7 +700,7 @@
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.ServiceInstances;
 
-            this.serviceInstances.Clear();
+            OnUIThread(() => this.serviceInstances.Clear());
 
             var space = this.spaces.FirstOrDefault(s => s.Name == this.publishProfile.Space);
 
@@ -688,7 +715,7 @@
             {
                 foreach (var privateDomain in serviceInstances)
                 {
-                    this.serviceInstances.Add(privateDomain);
+                    OnUIThread(() => this.serviceInstances.Add(privateDomain));
                 }
 
                 serviceInstances = await serviceInstances.GetNextPage();
@@ -699,7 +726,7 @@
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Stacks;
 
-            this.stacks.Clear();
+            OnUIThread(() => this.stacks.Clear());
 
             PagedResponseCollection<ListAllStacksResponse> stacks = await this.client.Stacks.ListAllStacks();
 
@@ -707,7 +734,7 @@
             {
                 foreach (var stack in stacks)
                 {
-                    this.stacks.Add(stack);
+                    OnUIThread(() => this.stacks.Add(stack));
                 }
 
                 stacks = await stacks.GetNextPage();
@@ -718,7 +745,7 @@
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Buildpacks;
 
-            this.buildpacks.Clear();
+            OnUIThread(() => this.buildpacks.Clear());
 
             PagedResponseCollection<ListAllBuildpacksResponse> buildpacks = await this.client.Buildpacks.ListAllBuildpacks();
 
@@ -726,7 +753,7 @@
             {
                 foreach (var buildpack in buildpacks)
                 {
-                    this.buildpacks.Add(buildpack);
+                    OnUIThread(() => this.buildpacks.Add(buildpack));
                 }
 
                 buildpacks = await buildpacks.GetNextPage();
@@ -737,7 +764,7 @@
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.SharedDomains;
 
-            this.sharedDomains.Clear();
+            OnUIThread(() => this.sharedDomains.Clear());
 
             PagedResponseCollection<ListAllSharedDomainsResponse> sharedDomains = await this.client.SharedDomains.ListAllSharedDomains();
 
@@ -745,7 +772,7 @@
             {
                 foreach (var sharedDomain in sharedDomains)
                 {
-                    this.sharedDomains.Add(sharedDomain);
+                    OnUIThread(() => this.sharedDomains.Add(sharedDomain));
                 }
 
                 sharedDomains = await sharedDomains.GetNextPage();
@@ -756,7 +783,7 @@
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.PrivateDomains;
 
-            this.privateDomains.Clear();
+            OnUIThread(() => this.privateDomains.Clear());
 
             var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
 
@@ -771,10 +798,22 @@
             {
                 foreach (var privateDomain in privateDomains)
                 {
-                    this.privateDomains.Add(privateDomain);
+                    OnUIThread(() => this.privateDomains.Add(privateDomain));
                 }
 
                 privateDomains = await privateDomains.GetNextPage();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaisePropertyChangedEvent(string propertyName)
+        {
+            var handler = PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }
