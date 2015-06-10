@@ -108,7 +108,7 @@
       <TestDlls Include=".\src\CloudFoundry.VisualStudio.IntegrationTests\bin\x86\$(Configuration)\CloudFoundry.VisualStudio.IntegrationTests.dll"/>
     </ItemGroup>
 
-    <Exec Command="$(VSTestCommand) %(TestDlls.Identity) /inIsolation /settings:CodeCoverage.runsettings /logger:trx"  ConsoleToMSBuild="true">
+    <Exec Command="$(VSTestCommand) %(TestDlls.Identity) /inIsolation /settings:Integration.runsettings /logger:trx"  ConsoleToMSBuild="true">
       <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
       <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfTestRun" />
     </Exec>
