@@ -8,26 +8,41 @@
     <Control.Resources>
         <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
     </Control.Resources>
-    <Grid VerticalAlignment="Center" Margin="40,0,40,0">
+    <Grid VerticalAlignment="Center">
         <Grid.RowDefinitions>
-            <RowDefinition  Height="auto"></RowDefinition>
-            <RowDefinition  Height="auto"></RowDefinition>
-            <RowDefinition  Height="auto"></RowDefinition>
-            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition  Width="auto"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
-        <Label Content="Buildpack" Grid.Row="0" Grid.Column="0" ></Label>
-        <ComboBox IsEditable="True"  Name="cbBuildpack" Grid.Row="0" Grid.Column="1"  SelectedValue="{Binding CFAppManifest.BuildpackUrl}" 
-                  ItemsSource="{Binding Buildpacks}" SelectedValuePath="Name" DisplayMemberPath="Name" Margin="{StaticResource DefaultMargin}"></ComboBox>
-        <Label Content="Stack" Grid.Row="1" Grid.Column="0" ></Label>
-        <ComboBox Name="cbStack" Grid.Row="1" Grid.Column="1" SelectedValuePath="Name"  DisplayMemberPath="Name" ItemsSource="{Binding Path=Stacks}"
-                  SelectedValue="{Binding CFAppManifest.StackName}" Margin="{StaticResource DefaultMargin}"></ComboBox>
-        <Label Content="Memory" Grid.Row="2" Grid.Column="0" ></Label>
-        <TextBox Name="tbMemory" Grid.Row="2" Grid.Column="1" Text="{Binding CFAppManifest.Memory}" Margin="{StaticResource DefaultMargin}"></TextBox>
-        <Label Content="Instances" Grid.Row="3" Grid.Column="0" ></Label>
-        <TextBox Name="tbInstances" Grid.Row="3" Grid.Column="1" Text="{Binding CFAppManifest.InstanceCount}"></TextBox>
+
+        <Label Grid.Row="0" Grid.Column="1" Content="Buildpack" />
+        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
+                  ItemsSource="{Binding Buildpacks}" 
+                  SelectedValue="{Binding PublishProfile.Application.BuildpackUrl}" 
+                  SelectedValuePath="Name" DisplayMemberPath="Name"/>
+
+        <Label Grid.Row="2" Grid.Column="1" Content="Stack" />
+        <ComboBox Grid.Row="3" Grid.Column="1" Name="cbStack" 
+                  ItemsSource="{Binding Path=Stacks}"
+                  SelectedValue="{Binding PublishProfile.Application.StackName}"
+                  SelectedValuePath="Name" DisplayMemberPath="Name" />
+
+        <Label Grid.Row="4" Grid.Column="1" Content="Memory" />
+        <TextBox Grid.Row="5" Grid.Column="1" Name="tbMemory" 
+                 Text="{Binding PublishProfile.Application.Memory}" />
+
+        <Label Grid.Row="6" Grid.Column="1" Content="Instances" />
+        <TextBox Grid.Row="7" Grid.Column="1" Name="tbInstances"
+                 Text="{Binding PublishProfile.Application.InstanceCount}" />
     </Grid>
 </UserControl>

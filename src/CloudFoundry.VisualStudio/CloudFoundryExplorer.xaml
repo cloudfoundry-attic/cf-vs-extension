@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Style/ListViewStyle.xaml" />
+                <ResourceDictionary Source="Style\ListViewStyle.xaml" />
                 <ResourceDictionary Source="Style\TreeViewStyle.xaml" />
                 <ResourceDictionary Source="Style\ButtonStyle.xaml" />
                 <ResourceDictionary Source="Style\ToggleButtonStyle.xaml" />

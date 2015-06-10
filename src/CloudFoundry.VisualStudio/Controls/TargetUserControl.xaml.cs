@@ -25,10 +25,5 @@ namespace CloudFoundry.VisualStudio.Controls
         {
             InitializeComponent();
         }
-
-        private async void cbOrganization_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            await (this.DataContext as PublishProfile).RefreshSpaces();
-        }
     }
 }

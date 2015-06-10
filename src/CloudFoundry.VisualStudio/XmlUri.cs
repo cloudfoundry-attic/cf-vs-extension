@@ -15,6 +15,7 @@ namespace CloudFoundry.VisualStudio
         private Uri value;
 
         public XmlUri() { }
+
         public XmlUri(Uri source) { value = source; }
 
         public static implicit operator Uri(XmlUri o)

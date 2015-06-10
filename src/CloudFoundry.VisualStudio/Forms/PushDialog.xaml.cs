@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.VisualStudio.Threading;
 
 namespace CloudFoundry.VisualStudio.Forms
 {
@@ -21,23 +23,25 @@ namespace CloudFoundry.VisualStudio.Forms
     /// </summary>
     public partial class PushDialog : Window
     {
+        private CancellationToken cancellationToken;
 
-        public PushDialog(PublishProfile package, EnvDTE.Project currentProject)
+        public PushDialog(PublishProfile package)
         {
-            //package.CFAppManifest.NoRoute
-            this.DataContext = package;
+            this.cancellationToken = new CancellationToken();
+            this.DataContext = new PublishProfileEditorResources(package, this.cancellationToken);
             InitializeComponent();
-
-
         }
 
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await (this.DataContext as PublishProfile).InitiCFClient();
+            var publishResources = this.DataContext as PublishProfileEditorResources;
+
+            if (publishResources == null)
+            {
+                return;
+            }
+
+            publishResources.Refresh(PublishProfileRefreshTarget.Client);
         }
-
-
-
-
     }
 }

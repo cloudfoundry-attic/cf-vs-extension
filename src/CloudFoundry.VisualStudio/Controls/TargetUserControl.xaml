@@ -3,39 +3,58 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
     <Control.Resources>
         <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
+        <converters:XmlUriToStringConverter x:Key="UriToString"/>
     </Control.Resources>
-    <Grid VerticalAlignment="Center" Margin="40,0,40,0">
+    <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>
-            <RowDefinition  Height="auto"></RowDefinition>
-            <RowDefinition  Height="auto"></RowDefinition>
-            <RowDefinition  Height="auto"></RowDefinition>
-            <RowDefinition  Height="auto"></RowDefinition>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition  Width="auto"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
-        <Label Content="Profile" Grid.Row="0" Grid.Column="0" ></Label>
-        <ComboBox IsEditable="True" Name="cbProfile" Text ="{Binding ConfigFile, Mode=OneWay}"  Grid.Row="0" Grid.Column="1" Margin="{StaticResource DefaultMargin}"></ComboBox>
-        <Label Content="Target" Grid.Row="1" Grid.Column="0"></Label>
-        <Grid Grid.Row="1" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition ></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <TextBox Name="tbTarget" Text="{Binding CFServerUri}" Grid.Row="0" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></TextBox>
-            <Button Content="..." Grid.Row="0" Grid.Column="1" Width="30" HorizontalAlignment="Right" Margin="{StaticResource DefaultMargin}"></Button>
-        </Grid>
-        <Label Content="Organization" Grid.Row="2" Grid.Column="0"></Label>
-        <ComboBox Name="cbOrganization" SelectedValue="{Binding CFOrganization}" SelectedValuePath="Name" ItemsSource="{Binding Path=Orgs}" 
-                  DisplayMemberPath="Name" Grid.Row="2" Grid.Column="1" Margin="{StaticResource DefaultMargin}" SelectionChanged="cbOrganization_SelectionChanged"></ComboBox>
-        <Label VerticalAlignment="Center" Content="Space" Grid.Row="3" Grid.Column="0"></Label>
-        <ComboBox Name="cbSpace" Grid.Row="3" DisplayMemberPath="Name" Grid.Column="1" SelectedValue="{Binding CFSpace}" SelectedValuePath="Name"
-                  ItemsSource="{Binding Path=Spaces}" Margin="{StaticResource DefaultMargin}"></ComboBox>
 
+        <Label Grid.Row="0" Grid.Column="1" Content="Profile" />
+        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" Name="cbProfile" 
+                  Text="{Binding PublishProfile.Path, Mode=OneWay}" />
+
+        <Label Grid.Row="2" Grid.Column="1" Content="Target" />
+        <Grid Grid.Row="3" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Row="0" Grid.Column="0" Name="tbTarget" 
+                     Text="{Binding PublishProfile.ServerUri, Converter={StaticResource UriToString}}" />
+
+            <Button Grid.Row="0" Grid.Column="1" Content="..."  
+                    Width="30" HorizontalAlignment="Right" />
+        </Grid>
+
+        <Label Grid.Row="4" Grid.Column="1" Content="Organization" />
+        <ComboBox Grid.Row="5" Grid.Column="1" Name="cbOrganization" 
+                  ItemsSource="{Binding Path=Orgs}" 
+                  SelectedValue="{Binding PublishProfile.Organization}"
+                  DisplayMemberPath="Name" SelectedValuePath="Name" />
+
+        <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="Space" />
+        <ComboBox Grid.Row="7" Grid.Column="1" Name="cbSpace"  
+                  ItemsSource="{Binding Path=Spaces}"
+                  SelectedValue="{Binding PublishProfile.Space}" 
+                  DisplayMemberPath="Name" SelectedValuePath="Name" />
     </Grid>
 </UserControl>

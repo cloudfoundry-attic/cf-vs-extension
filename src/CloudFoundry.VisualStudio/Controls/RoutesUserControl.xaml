@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <DataGrid CanUserAddRows="False" HeadersVisibility="Column"  Margin="{StaticResource DefaultMargin}"
-                      AutoGenerateColumns="False" x:Name="dgRoutes" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  ItemsSource="{Binding CFAppManifest.Hosts}">
+                      AutoGenerateColumns="False" x:Name="dgRoutes" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  ItemsSource="{Binding PublishProfile.Application.Hosts}">
                 <DataGrid.Columns>
 
                     <DataGridTextColumn Width="*" Header="Host" IsReadOnly="True" Binding="{Binding}"/>
@@ -46,7 +46,7 @@
             <Button x:Name="btnAddRoute" Grid.Row="1" Grid.Column="2" Margin="{StaticResource DefaultMargin}" Content="Add"/>
         </Grid>
         <DataGrid CanUserAddRows="False" HeadersVisibility="Column" Margin="{StaticResource DefaultMargin}" 
-                  AutoGenerateColumns="False" x:Name="dgDomains" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding CFAppManifest.Domains}">
+                  AutoGenerateColumns="False" x:Name="dgDomains" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding PublishProfile.Application.Domains}">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn></DataGridCheckBoxColumn>
                 <DataGridTextColumn Width="*" Header="Domain" IsReadOnly="True" Binding="{Binding}"/>

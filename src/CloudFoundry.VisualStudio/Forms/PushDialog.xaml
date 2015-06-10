@@ -3,41 +3,50 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="PushDialog" Height="350" Width="600"  WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded" >
-    
-    <Grid>
-        <xctk:BusyIndicator IsBusy="{Binding BusyBox.IsBusy}" BusyContent="{Binding BusyBox.BusyMessage}">
-        <xctk:Wizard FinishButtonClosesWindow="True">
-            <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
+        xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
+        Title="PushDialog" Height="461" Width="522"  WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded" >
+
+    <Control.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
+    </Control.Resources>
+
+    <Grid IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
+        <xctk:BusyIndicator >
+            <!--IsBusy="{Binding BusyBox.IsBusy}"
+                            BusyContent="{Binding BusyBox.BusyMessage}"-->
+            <xctk:Wizard FinishButtonClosesWindow="True">
+                <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                                    Title="Target"
                                    Description="Target">
-             <Controls:TargetUserControl x:Name="ucTarget"/>
-            </xctk:WizardPage>
-            <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
+                    
+                    <Controls:TargetUserControl x:Name="ucTarget" />
+                </xctk:WizardPage>
+                <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
                                    Title="Application Settings"
                                    Description="Application Settings">
-            <Controls:AppSettingsUserControl x:Name="ucAppSeetings"></Controls:AppSettingsUserControl>
-            </xctk:WizardPage>
+                    
+                    <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
+                </xctk:WizardPage>
 
-            <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
+                <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
                                    Title="Routes"
                                    Description="Routes">
-                <Controls:RoutesUserControl x:Name="ucRoutes"></Controls:RoutesUserControl> 
-            </xctk:WizardPage>
-            <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
+                    <Controls:RoutesUserControl x:Name="ucRoutes" />
+                </xctk:WizardPage>
+                
+                <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
                                    Title="Services"
                                    Description="Services">
-                <Controls:ServicesUserControl x:Name="ucServices"></Controls:ServicesUserControl>
-            </xctk:WizardPage>
-            <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
+                    <Controls:ServicesUserControl x:Name="ucServices" />
+                </xctk:WizardPage>
+                
+                <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
                                    Title="Environment Variables"
                                    Description="Environment Variables"
                                    CanFinish="True">
-                <Controls:EnvVarsUserControl x:Name="ucEnvVars"></Controls:EnvVarsUserControl>
-               
-            </xctk:WizardPage>
-        </xctk:Wizard>
+                    <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
+                </xctk:WizardPage>
+            </xctk:Wizard>
         </xctk:BusyIndicator>
     </Grid>
-    
 </Window>

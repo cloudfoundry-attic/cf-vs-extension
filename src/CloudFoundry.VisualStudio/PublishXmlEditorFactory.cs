@@ -47,7 +47,7 @@
             PublishProfile packageFile;
             try
             {
-                packageFile = PublishProfile.Initialize(pszMkDocument);
+                packageFile = PublishProfile.Load(project, pszMkDocument);
             }
             catch (Exception ex)
             {
@@ -57,7 +57,7 @@
             }
 
             ////var dialog = new EditDialog(packageFile, project);
-            var dialog = new PushDialog(packageFile, project);
+            var dialog = new PushDialog(packageFile);
             dialog.ShowDialog();
 
             return VSConstants.S_OK;
