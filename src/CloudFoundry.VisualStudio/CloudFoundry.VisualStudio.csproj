@@ -259,6 +259,8 @@
       <DependentUpon>TargetUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\ImageConverter.cs" />
+    <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\XmlUriToStringConverter.cs" />
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="ErrorFormater.cs" />
