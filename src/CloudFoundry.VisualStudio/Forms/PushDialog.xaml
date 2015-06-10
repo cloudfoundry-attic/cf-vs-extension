@@ -11,13 +11,14 @@
     </Control.Resources>
 
     <Grid IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
-        <xctk:BusyIndicator >
+        <xctk:BusyIndicator>
             <!--IsBusy="{Binding BusyBox.IsBusy}"
                             BusyContent="{Binding BusyBox.BusyMessage}"-->
-            <xctk:Wizard FinishButtonClosesWindow="True">
+            <xctk:Wizard FinishButtonClosesWindow="True"  >
                 <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                                    Title="Target"
-                                   Description="Target">
+                                   Description="Target"
+                                   CanSelectNextPage="{Binding Path=HasErrors, Converter={StaticResource InverseBoolean}}">
                     
                     <Controls:TargetUserControl x:Name="ucTarget" />
                 </xctk:WizardPage>
