@@ -9,6 +9,7 @@
     <Control.Resources>
         <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
         <converters:XmlUriToStringConverter x:Key="UriToString"/>
+        <converters:VisiblityConverter x:Key="Visibility" />
     </Control.Resources>
     <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>
@@ -19,6 +20,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -56,5 +59,10 @@
                   ItemsSource="{Binding Path=Spaces}"
                   SelectedValue="{Binding PublishProfile.Space}" 
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
+
+        <TextBox Grid.Row="9" Grid.Column="1" IsReadOnly="True" BorderBrush="Transparent" 
+                 Foreground="Crimson" MinLines="3" Background="Transparent" TextWrapping="Wrap"
+                 Text="{Binding Path=ErrorMessage}" 
+                 Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
     </Grid>
 </UserControl>
