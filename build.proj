@@ -30,6 +30,7 @@
     <PackageOutputDir>$(BinariesFolder)\packages</PackageOutputDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <NugetRepo>https://www.nuget.org/api/v2/</NugetRepo>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -116,7 +117,7 @@
   
   <!-- Target for restoring nuget packages -->
   <Target Name="RestoreNugetPackages">
-    <Exec Command="$(NuGetCommand) restore $(VSExtensionSolution)"/>
+    <Exec Command="$(NuGetCommand) restore $(VSExtensionSolution) -source $(NugetRepo)"/>
   </Target>
 
   <!-- Target for automatically versioning the assemblies -->
