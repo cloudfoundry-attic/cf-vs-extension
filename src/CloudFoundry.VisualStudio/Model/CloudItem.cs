@@ -9,11 +9,12 @@
     using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
     using Microsoft.VisualStudio.Threading;
+    using System;
 
     internal abstract class CloudItem : INotifyPropertyChanged
     {
         private readonly CloudItemType cloudItemType = CloudItemType.Target;
-        private readonly AsyncObservableCollection<CloudItem> children = new AsyncObservableCollection<CloudItem>();
+        private readonly ObservableCollection<CloudItem> children = new ObservableCollection<CloudItem>();
         private readonly object childRefreshLock = new object();
         private volatile bool isExpanded = false;
         private volatile bool wasRefreshed = false;
@@ -189,19 +190,20 @@
                 {
                     if (antecedent.IsFaulted)
                     {
-                        children.Clear();
+                        OnUIThread(() => children.Clear());
 
                         CloudError error = new CloudError(antecedent.Exception);
 
-                        children.Add(error);
+                        OnUIThread(() => children.Add(error));
                     }
                     else
                     {
-                        children.Clear();
+                        
+                        OnUIThread(() => children.Clear());
 
                         foreach (var child in antecedent.Result)
                         {
-                            children.Add(child);
+                            OnUIThread(() => children.Add(child));
 
                             child.AttachToParent(this);
                         }
@@ -227,6 +229,11 @@
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private void OnUIThread(Action action)
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
         }
     }
 }
