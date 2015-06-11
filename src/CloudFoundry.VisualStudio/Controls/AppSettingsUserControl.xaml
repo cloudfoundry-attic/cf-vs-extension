@@ -2,13 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
     <Control.Resources>
         <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
+        <converters:VisiblityConverter x:Key="Visibility" />
     </Control.Resources>
-    <Grid VerticalAlignment="Center">
+    <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -17,6 +19,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -44,5 +48,11 @@
         <Label Grid.Row="6" Grid.Column="1" Content="Instances" />
         <TextBox Grid.Row="7" Grid.Column="1" Name="tbInstances"
                  Text="{Binding PublishProfile.Application.InstanceCount}" />
+
+        <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
+                 BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Foreground="Crimson" MinLines="4" MaxLines="4" Background="Transparent"
+                 Text="{Binding Path=ErrorMessage}" 
+                 Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
     </Grid>
 </UserControl>
