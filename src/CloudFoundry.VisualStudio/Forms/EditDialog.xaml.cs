@@ -22,6 +22,7 @@
     using Microsoft.VisualStudio.ComponentModelHost;
     using Microsoft.VisualStudio.PlatformUI;
     using NuGet.VisualStudio;
+    using CloudFoundry.VisualStudio.MSBuild;
 
     /// <summary>
     /// Interaction logic for EditDialog.xaml
@@ -747,112 +748,16 @@
             this.Platforms.IsEnabled = !(checkBox.IsChecked == null ? false : (bool)checkBox.IsChecked);
         }
 
-        private async void Push(AppPackage package)
+        private void Push(AppPackage package)
         {
-            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
+            MSBuildProcess pushProcess = new MSBuildProcess();
 
-            var window = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
-            var output = (OutputWindow)window.Object;
-            bool paneFound = false;
+            pushProcess.MSBuildProperties = new Dictionary<string, string>();
 
-            OutputWindowPane pane = null;
-            
-            try
-            {
-                foreach (OutputWindowPane item in output.OutputWindowPanes)
-                {
-                    if (item.Name == "Publish")
-                    {
-                        pane = output.OutputWindowPanes.Item("Publish");
-                        paneFound = true;
-                        break;
-                    }
-                }
+            pushProcess.MSBuildProperties.Add("DeployOnBuild", "true");
+            pushProcess.MSBuildProperties.Add("PublishProfile", package.ConfigFile);
 
-                if (paneFound == false)
-                {
-                    pane = output.OutputWindowPanes.Add("Publish");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.Message, ex);
-            }
- 
-            dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Activate();
-
-            if (this.currentProj != null)
-            {
-                string pathToMsBuild = Microsoft.Build.Utilities.ToolLocationHelper.GetPathToBuildToolsFile("msbuild.exe", "12.0");
-                string projectPath = this.currentProj.FullName;
-                string solutionPath = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
-                string projectName = this.currentProj.Name;
-                string profileName = this.PublishProfile;
-                bool localBuild = package.CFLocalBuild;
-
-                await System.Threading.Tasks.Task.Factory.StartNew(() =>
-                {
-                    string arguments = string.Empty;
-
-                    if (localBuild == true)
-                    {
-                        arguments = string.Format(
-                            CultureInfo.InvariantCulture,
-                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" ""{1}""",
-                            package.ConfigFile,
-                            projectPath);
-                    }
-                    else
-                    {
-                        arguments = string.Format(
-                            CultureInfo.InvariantCulture,
-                            @"/p:DeployOnBuild=true;PublishProfile=""{0}"" /p:PUBLISH_WEBSITE={1} /p:CFAppPath=""{2}"" ""{3}""",
-                            package.ConfigFile,
-                            projectName,
-                            solutionPath,
-                            projectPath);
-                    }
-
-                    var startInfo = new ProcessStartInfo(pathToMsBuild)
-                    {
-                        Arguments = arguments,
-                        WorkingDirectory = System.IO.Path.GetDirectoryName(projectPath),
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        CreateNoWindow = true,
-                        UseShellExecute = false
-                    };
-                    pane.OutputString("> msbuild " + startInfo.Arguments);
-
-                    using (var process = System.Diagnostics.Process.Start(startInfo))
-                    {
-                        process.OutputDataReceived += (s, e) =>
-                        {
-                            lock (pane)
-                            {
-                                pane.OutputString(string.Format(CultureInfo.InvariantCulture, "{0}{1}", e.Data, Environment.NewLine));
-                            }
-                        };
-
-                        process.ErrorDataReceived += (s, e) =>
-                        {
-                            lock (pane)
-                            {
-                                if (!string.IsNullOrWhiteSpace(e.Data))
-                                {
-                                    pane.OutputString(string.Format(CultureInfo.InvariantCulture, "ERROR: {0},{1}", e.Data, Environment.NewLine));
-                                }
-                            }
-                        };
-
-                        process.BeginErrorReadLine();
-                        process.BeginOutputReadLine();
-
-                        process.WaitForExit();
-                    }
-                });
-            }
+            pushProcess.Publish(currentProj.FullName);
         }
     }
 }
