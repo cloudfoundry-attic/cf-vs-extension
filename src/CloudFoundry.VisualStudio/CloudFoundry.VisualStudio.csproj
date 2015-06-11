@@ -289,7 +289,6 @@
     <Compile Include="Model\Service.cs" />
     <Compile Include="Model\ServicesCollection.cs" />
     <Compile Include="Model\Route.cs" />
-    <Compile Include="Model\AsyncObservableCollection.cs" />
     <Compile Include="Model\AppsCollection.cs" />
     <Compile Include="Model\CloudError.cs" />
     <Compile Include="Model\Space.cs" />
