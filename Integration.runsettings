@@ -14,6 +14,7 @@
                 <ModulePath>.*\.Client\..*</ModulePath>
                 <ModulePath>.*\.vssdk\..*</ModulePath>
                 <ModulePath>.*yamldotnet.*</ModulePath>
+                <ModulePath>.*cloudfoundry.manifests.dll</ModulePath>
               </Exclude>
             </ModulePaths>
             <!-- We recommend you do not change the following values: -->
