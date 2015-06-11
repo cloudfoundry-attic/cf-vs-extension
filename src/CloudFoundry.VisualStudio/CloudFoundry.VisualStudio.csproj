@@ -66,6 +66,8 @@
       <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.20\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\MSBuild\12.0\Bin\Microsoft.Build.Utilities.v12.0.dll</HintPath>
@@ -226,6 +228,8 @@
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemActionContinuation.cs" />
+    <Compile Include="MSBuild\MSBuildLogger.cs" />
+    <Compile Include="MSBuild\MSBuildProcess.cs" />
     <Compile Include="ProjectPush\AppPackage.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
