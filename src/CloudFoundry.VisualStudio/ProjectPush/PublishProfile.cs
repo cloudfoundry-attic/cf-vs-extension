@@ -239,10 +239,7 @@
 
             if (File.Exists(absoluteManifestPath))
             {
-                CloudFoundry.Manifests.ManifestDiskRepository manifestRepo = new ManifestDiskRepository();
-
-
-                var manifest = manifestRepo.ReadManifest(absoluteManifestPath);
+                var manifest = ManifestDiskRepository.ReadManifest(absoluteManifestPath);
 
                 if (manifest.Applications().Count() > 1)
                 {
@@ -262,20 +259,18 @@
                     BuildpackUrl = string.Empty,
                     Command = null,
                     DiskQuota = null,
-                    Domains = new string[0],
-                    EnvironmentVars = new Dictionary<string, string>(),
                     HealthCheckTimeout = null,
-                    Hosts = new string[] { project.Name.ToLowerInvariant() },
                     InstanceCount = 1,
                     Memory = 256,
                     Name = project.Name,
-                    NoHostname = false,
+                    NoHostName = false,
                     NoRoute = false,
                     Path = null,
-                    ServicesToBind = new string[0],
                     StackName = string.Empty,
-                    UseRandomHostname = false
+                    UseRandomHostName = false
                 };
+
+                this.Application.Hosts.Add(project.Name.ToLowerInvariant());
             }
         }
 
