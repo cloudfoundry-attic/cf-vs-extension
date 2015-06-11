@@ -42,25 +42,30 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Row="0" Grid.Column="0" Name="tbTarget" 
-                     Text="{Binding PublishProfile.ServerUri, Converter={StaticResource UriToString}}">
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}">
+
+            <ComboBox Grid.Row="0" Grid.Column="0" Name="cbTarget" IsEditable="True" IsReadOnly="True"
+                      SelectedValue="{Binding SelectedCloudTarget}"
+                      Text="{Binding SelectedCloudTarget.DisplayName, Mode=OneWay}"
+                      ItemsSource="{Binding Path=CloudTargets}"
+                      DisplayMemberPath="DisplayName">
+                <ComboBox.Style>
+                    <Style TargetType="{x:Type ComboBox}">
                         <Style.Triggers>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=LastRefreshTarget}" Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
+                                    <Condition Binding="{Binding Path=LastRefreshTarget}" 
+                                               Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
                                     <Condition Binding="{Binding Path=HasErrors}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="BorderBrush" Value="Crimson" />
                             </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>
-            </TextBox>
+                </ComboBox.Style>
+            </ComboBox>
 
-            <Button Grid.Row="0" Grid.Column="1" Content="..."  
-                    Width="30" HorizontalAlignment="Right" />
+            <Button x:Name="ButtonSetTarget" Grid.Row="0" Grid.Column="1" Content="..."  
+                    Width="30" HorizontalAlignment="Right" Click="ButtonSetTarget_Click" />
         </Grid>
 
         <Label Grid.Row="4" Grid.Column="1" Content="Organization" />
@@ -75,7 +80,7 @@
                   SelectedValue="{Binding PublishProfile.Space}" 
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
 
-        <TextBox Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
+        <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="4" MaxLines="4" Background="Transparent"
                  Text="{Binding Path=ErrorMessage}" 

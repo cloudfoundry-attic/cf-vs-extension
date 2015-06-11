@@ -1,4 +1,6 @@
+using CloudFoundry.VisualStudio.Forms;
 using CloudFoundry.VisualStudio.ProjectPush;
+using CloudFoundry.VisualStudio.TargetStore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,20 @@ namespace CloudFoundry.VisualStudio.Controls
         public TargetUserControl()
         {
             InitializeComponent();
+        }
+
+        private void ButtonSetTarget_Click(object sender, RoutedEventArgs e)
+        {
+            using (var loginForm = new LoginWizardForm())
+            {
+                var result = loginForm.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    var target = loginForm.CloudTarget;
+                    this.cbTarget.SelectedValue = target;
+                }
+            }
         }
     }
 }

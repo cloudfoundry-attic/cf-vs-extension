@@ -72,6 +72,37 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set { publishProfile = value; }
         }
 
+        public CloudTarget[] CloudTargets 
+        { 
+            get; 
+            set; 
+        }
+
+        public CloudTarget SelectedCloudTarget
+        {
+            get
+            {
+                return CloudTarget.CreateV2Target(
+                    this.PublishProfile.ServerUri,
+                    string.Empty,
+                    this.PublishProfile.User,
+                    this.PublishProfile.SkipSSLValidation,
+                    string.Empty);
+            }
+            set
+            {
+                this.PublishProfile.ServerUri = value.TargetUrl;
+                this.PublishProfile.User = value.Email;
+                this.PublishProfile.SkipSSLValidation = value.IgnoreSSLErrors;
+                this.PublishProfile.SavedPassword = true;
+                this.PublishProfile.Password = null;
+                this.PublishProfile.RefreshToken = null;
+
+                this.Refresh(PublishProfileRefreshTarget.Client);
+                this.RaisePropertyChangedEvent("SelectedCloudTarget");
+            }
+        }
+
         public PublishProfileRefreshTarget LastRefreshTarget
         {
             get
@@ -137,6 +168,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             this.publishProfile = publishProfile;
             this.publishProfile.PropertyChanged += publishProfile_PropertyChanged;
             this.cancellationToken = cancellationToken;
+
+            this.CloudTargets = CloudTargetManager.GetTargets();
         }
 
         private void publishProfile_PropertyChanged(object sender, PropertyChangedEventArgs e)
