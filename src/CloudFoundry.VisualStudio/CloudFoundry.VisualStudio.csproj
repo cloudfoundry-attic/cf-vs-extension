@@ -280,9 +280,6 @@
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemActionContinuation.cs" />
-    <Compile Include="ProjectPush\BusyBox.cs" />
-    <Compile Include="ProjectPush\CFProfile.cs" />
-    <Compile Include="ProjectPush\NotificationObject.cs" />
     <Compile Include="ProjectPush\PublishProfile.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
@@ -314,7 +311,6 @@
     <Compile Include="CloudFoundry.VisualStudioPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="SSLErrorsIgnorer.cs" />
     <Compile Include="TargetStore\CloudTarget.cs" />
     <Compile Include="TargetStore\CloudTargetManager.cs" />
     <Compile Include="TargetStore\CloudCredentialsManager.cs" />
