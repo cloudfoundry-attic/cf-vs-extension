@@ -72,20 +72,20 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual("cmd", publishProfile.Application.Command);
             Assert.AreEqual(null, publishProfile.Application.DiskQuota);
             Assert.AreEqual("app.example.com", publishProfile.Application.Domains[0]);
-            Assert.AreEqual("first", publishProfile.Application.EnvironmentVars["env1"]);
-            Assert.AreEqual("second", publishProfile.Application.EnvironmentVars["env2"]);
+            Assert.AreEqual("first", publishProfile.Application.EnvironmentVariables["env1"]);
+            Assert.AreEqual("second", publishProfile.Application.EnvironmentVariables["env2"]);
             Assert.AreEqual(500, publishProfile.Application.HealthCheckTimeout);
             Assert.AreEqual("home", publishProfile.Application.Hosts[0]);
             Assert.AreEqual(1, publishProfile.Application.InstanceCount);
             Assert.AreEqual(128, publishProfile.Application.Memory);
             Assert.AreEqual("app-name", publishProfile.Application.Name);
-            Assert.AreEqual(false, publishProfile.Application.NoHostname);
+            Assert.AreEqual(false, publishProfile.Application.NoHostName);
             Assert.AreEqual(false, publishProfile.Application.NoRoute);
             Assert.AreEqual(@"c:\path\to\app", publishProfile.Application.Path);
-            Assert.AreEqual("mysql", publishProfile.Application.ServicesToBind[0]);
-            Assert.AreEqual("mssql", publishProfile.Application.ServicesToBind[1]);
+            Assert.AreEqual("mysql", publishProfile.Application.Services[0]);
+            Assert.AreEqual("mssql", publishProfile.Application.Services[1]);
             Assert.AreEqual(null, publishProfile.Application.StackName);
-            Assert.AreEqual(false, publishProfile.Application.UseRandomHostname);
+            Assert.AreEqual(false, publishProfile.Application.UseRandomHostName);
         }
 
         [TestMethod()]
@@ -123,19 +123,19 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual(string.Empty, publishProfile.Application.BuildpackUrl);
             Assert.AreEqual(null, publishProfile.Application.Command);
             Assert.AreEqual(null, publishProfile.Application.DiskQuota);
-            Assert.AreEqual(0, publishProfile.Application.Domains.Length);
-            Assert.AreEqual(0, publishProfile.Application.EnvironmentVars.Count);
+            Assert.AreEqual(0, publishProfile.Application.Domains.Count);
+            Assert.AreEqual(0, publishProfile.Application.EnvironmentVariables.Count);
             Assert.AreEqual(null, publishProfile.Application.HealthCheckTimeout);
             Assert.AreEqual(project.Name.ToLowerInvariant(), publishProfile.Application.Hosts[0]);
             Assert.AreEqual(1, publishProfile.Application.InstanceCount);
             Assert.AreEqual(256, publishProfile.Application.Memory);
             Assert.AreEqual(project.Name, publishProfile.Application.Name);
-            Assert.AreEqual(false, publishProfile.Application.NoHostname);
+            Assert.AreEqual(false, publishProfile.Application.NoHostName);
             Assert.AreEqual(false, publishProfile.Application.NoRoute);
             Assert.AreEqual(null, publishProfile.Application.Path);
-            Assert.AreEqual(0, publishProfile.Application.ServicesToBind.Length);
+            Assert.AreEqual(0, publishProfile.Application.Services.Count);
             Assert.AreEqual(string.Empty, publishProfile.Application.StackName);
-            Assert.AreEqual(false, publishProfile.Application.UseRandomHostname);
+            Assert.AreEqual(false, publishProfile.Application.UseRandomHostName);
         }
 
         [TestMethod()]
@@ -161,19 +161,19 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             publishProfile.Application.BuildpackUrl = "https://my.buildpack.url";
             publishProfile.Application.Command = "ls";
             publishProfile.Application.DiskQuota = 1234;
-            publishProfile.Application.Domains = new string[] { "domain.com" };
-            publishProfile.Application.EnvironmentVars = new Dictionary<string, string> { { "my", "var" } };
+            publishProfile.Application.Domains.Add("domain.com");
+            publishProfile.Application.EnvironmentVariables.Add("my", "var");
             publishProfile.Application.HealthCheckTimeout = 54321;
-            publishProfile.Application.Hosts = new string[] { "one", "two" };
+            publishProfile.Application.Hosts.AddRange(new string[] { "one", "two" });
             publishProfile.Application.InstanceCount = 121;
             publishProfile.Application.Memory = 42;
             publishProfile.Application.Name = "myapp";
-            publishProfile.Application.NoHostname = true;
+            publishProfile.Application.NoHostName = true;
             publishProfile.Application.NoRoute = true;
             publishProfile.Application.Path = "/app/path";
-            publishProfile.Application.ServicesToBind = new string[] { "s1", "s2" };
+            publishProfile.Application.Services.AddRange(new string[] { "s1", "s2" });
             publishProfile.Application.StackName = "leo";
-            publishProfile.Application.UseRandomHostname = true;
+            publishProfile.Application.UseRandomHostName = true;
 
             // Act
             publishProfile.Save();
@@ -197,29 +197,22 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
 
             Assert.AreEqual(publishProfile.Application.BuildpackUrl, loadedProfile.Application.BuildpackUrl);
             Assert.AreEqual(publishProfile.Application.Command, loadedProfile.Application.Command);
-            // TODO: FIXME
-            //Assert.AreEqual(publishProfile.Application.DiskQuota, loadedProfile.Application.DiskQuota);
-            Assert.AreEqual(publishProfile.Application.Domains[0], loadedProfile.Application.Domains[0]);
-            Assert.AreEqual(publishProfile.Application.EnvironmentVars["my"], loadedProfile.Application.EnvironmentVars["my"]);
+            Assert.AreEqual(publishProfile.Application.DiskQuota, loadedProfile.Application.DiskQuota);
+            Assert.AreEqual(publishProfile.Application. Domains[0], loadedProfile.Application.Domains[0]);
+            Assert.AreEqual(publishProfile.Application.EnvironmentVariables["my"], loadedProfile.Application.EnvironmentVariables["my"]);
             Assert.AreEqual(publishProfile.Application.HealthCheckTimeout, loadedProfile.Application.HealthCheckTimeout);
             Assert.AreEqual(publishProfile.Application.Hosts[0], loadedProfile.Application.Hosts[0]);
-            // TODO: FIXME
-            //Assert.AreEqual(publishProfile.Application.Hosts[1], loadedProfile.Application.Hosts[1]);
+            Assert.AreEqual(publishProfile.Application.Hosts[1], loadedProfile.Application.Hosts[1]);
             Assert.AreEqual(publishProfile.Application.InstanceCount, loadedProfile.Application.InstanceCount);
             Assert.AreEqual(publishProfile.Application.Memory, loadedProfile.Application.Memory);
             Assert.AreEqual(publishProfile.Application.Name, loadedProfile.Application.Name);
-            // TODO: FIXME
-            //Assert.AreEqual(publishProfile.Application.NoHostname, loadedProfile.Application.NoHostname);
-            // TODO: FIXME
-            //Assert.AreEqual(publishProfile.Application.NoRoute, loadedProfile.Application.NoRoute);
-            // TODO: FIXME
-            //Assert.AreEqual(publishProfile.Application.Path, loadedProfile.Application.Path);
-            Assert.AreEqual(publishProfile.Application.ServicesToBind[0], loadedProfile.Application.ServicesToBind[0]);
-            Assert.AreEqual(publishProfile.Application.ServicesToBind[1], loadedProfile.Application.ServicesToBind[1]);
-            // TODO: FIXME
-            //Assert.AreEqual(publishProfile.Application.StackName, loadedProfile.Application.StackName);
-            // TODO: FIXME
-            //Assert.AreEqual(publishProfile.Application.UseRandomHostname, loadedProfile.Application.UseRandomHostname);
+            Assert.AreEqual(publishProfile.Application.NoHostName, loadedProfile.Application.NoHostName);
+            Assert.AreEqual(publishProfile.Application.NoRoute, loadedProfile.Application.NoRoute);
+            Assert.AreEqual(publishProfile.Application.Path, loadedProfile.Application.Path);
+            Assert.AreEqual(publishProfile.Application.Services[0], loadedProfile.Application.Services[0]);
+            Assert.AreEqual(publishProfile.Application.Services[1], loadedProfile.Application.Services[1]);
+            Assert.AreEqual(publishProfile.Application.StackName, loadedProfile.Application.StackName);
+            Assert.AreEqual(publishProfile.Application.UseRandomHostName, loadedProfile.Application.UseRandomHostName);
         }
     }
 }
