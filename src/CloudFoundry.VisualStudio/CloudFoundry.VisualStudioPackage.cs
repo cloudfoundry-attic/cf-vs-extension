@@ -56,6 +56,7 @@
     {
         public const string PackageId = "cf-msbuild-tasks";
         public const string Extension = ".cf.pubxml";
+        private static ErrorListProvider errorList;
 
         private DTE dte;
         
@@ -68,8 +69,13 @@
         /// </summary>
         public CloudFoundry_VisualStudioPackage()
         {
+            errorList = new ErrorListProvider(this);
             this.dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
-            Debug.WriteLine(string.Format(CultureInfo.InvariantCulture, "Entering constructor for: {0}", this.ToString()));
+        }
+
+        public static ErrorListProvider GetErrorListPane()
+        {
+            return errorList;
         }
 
         /////////////////////////////////////////////////////////////////////////////
