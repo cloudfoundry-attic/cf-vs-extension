@@ -178,13 +178,13 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 case "Organization":
                     {
-                        this.RefreshSpaces().Forget();
-                        this.RefreshPrivateDomains().Forget();
+                        this.Refresh(PublishProfileRefreshTarget.Spaces);
+                        this.Refresh(PublishProfileRefreshTarget.PrivateDomains);
                     }
                     break;
                 case "Space":
                     {
-                        this.RefreshServiceInstances().Forget();
+                        this.Refresh(PublishProfileRefreshTarget.ServiceInstances);
                     }
                     break;
             }

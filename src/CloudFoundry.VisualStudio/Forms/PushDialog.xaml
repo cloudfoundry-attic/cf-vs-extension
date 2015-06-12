@@ -7,7 +7,15 @@
         Title="PushDialog" Height="461" Width="522"  WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Loaded="Window_Loaded" >
 
     <Control.Resources>
-        <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Style\ListViewStyle.xaml" />
+                <ResourceDictionary Source="..\Style\ButtonStyle.xaml" />
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
+        </ResourceDictionary>
     </Control.Resources>
 
     <Grid IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
