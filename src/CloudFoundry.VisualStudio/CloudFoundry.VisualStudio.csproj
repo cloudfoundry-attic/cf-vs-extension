@@ -387,6 +387,7 @@
     <Resource Include="Resources\AppStarted.png" />
     <Resource Include="Resources\AppStopped.png" />
     <Resource Include="Resources\AppUnknown.png" />
+    <Resource Include="Resources\AddGeneric.png" />
     <Content Include="Resources\Cloud_32xLG.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

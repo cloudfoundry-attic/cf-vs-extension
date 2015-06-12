@@ -8,7 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
     <Control.Resources>
-        <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
         <converters:XmlUriToStringConverter x:Key="UriToString"/>
         <converters:VisiblityConverter x:Key="Visibility" />
     </Control.Resources>

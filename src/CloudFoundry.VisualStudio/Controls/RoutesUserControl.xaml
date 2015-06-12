@@ -3,56 +3,85 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="450">
-    <Control.Resources>
-        <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
-    </Control.Resources>
-    <Grid>
+             d:DesignHeight="350" d:DesignWidth="450">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Style\ListViewStyle.xaml" />
+                <ResourceDictionary Source="..\Style\ButtonStyle.xaml" />
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:VisiblityConverter x:Key="Visibility" />
+
+            <Style x:Key="HiddenListViewHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+                <Setter Property="Visibility" Value="Collapsed" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="20"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="0.75*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0" Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="auto"></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" ></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="auto"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <DataGrid CanUserAddRows="False" HeadersVisibility="Column"  Margin="{StaticResource DefaultMargin}"
-                      AutoGenerateColumns="False" x:Name="dgRoutes" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"  ItemsSource="{Binding PublishProfile.Application.Hosts}">
-                <DataGrid.Columns>
 
-                    <DataGridTextColumn Width="*" Header="Host" IsReadOnly="True" Binding="{Binding}"/>
-                    <DataGridTemplateColumn >
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Button Content="X" Height="15" Width="20" Command="Delete"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-            <Label Content="Host" Grid.Column="0" Grid.Row="1"/>
-            <TextBox x:Name="tbName" Grid.Column="1" Grid.Row="1" Margin="{StaticResource DefaultMargin}"/>
-            <Button x:Name="btnAddRoute" Grid.Row="1" Grid.Column="2" Margin="{StaticResource DefaultMargin}" Content="Add"/>
-        </Grid>
-        <DataGrid CanUserAddRows="False" HeadersVisibility="Column" Margin="{StaticResource DefaultMargin}" 
-                  AutoGenerateColumns="False" x:Name="dgDomains" Grid.Row="0" Grid.Column="1" ItemsSource="{Binding PublishProfile.Application.Domains}">
-            <DataGrid.Columns>
-                <DataGridCheckBoxColumn></DataGridCheckBoxColumn>
-                <DataGridTextColumn Width="*" Header="Domain" IsReadOnly="True" Binding="{Binding}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        
+        
+        <CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Content="Don't create any routes"
+                  IsChecked="{Binding CFAppManifest.NoRoute}" />
 
-        <CheckBox Grid.Row="1" IsChecked="{Binding CFAppManifest.NoRoute}" Content="Don't create any routes"></CheckBox>
+        <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Content="Hosts" />
+        <ListView Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="4" x:Name="dgRoutes" 
+                  ItemsSource="{Binding PublishProfile.Application.Hosts}" Focusable="False">
+        </ListView>
+
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="tbName" />
+        <Button Grid.Row="2" Grid.Column="3" x:Name="btnAddHost">
+            <Image Source="{StaticResource AddGenericImage}" />
+        </Button>
+        <Button Grid.Row="2" Grid.Column="4" x:Name="btnDeleteHost">
+            <Image Source="{StaticResource DeleteImage}" />
+        </Button>        
+
+        
+        
+        <Label Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="3" Content="Shared Domains" />
+        <ListView Grid.Row="2" Grid.Column="6" Grid.RowSpan="2" x:Name="dgSharedDomains" 
+                  ItemsSource="{Binding PublishProfile.Application.Domains}">
+        </ListView>
+
+        <Label Grid.Row="4" Grid.Column="6" Grid.ColumnSpan="3" Content="Private Domains" />
+        <ListView Grid.Row="5" Grid.Column="6" x:Name="dgPrivateDomains" 
+                  ItemsSource="{Binding PublishProfile.Application.Domains}">
+        </ListView>
+
+
+        <TextBox Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="7" IsReadOnly="True" TextWrapping="Wrap"
+                 BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
+                 Text="{Binding Path=ErrorMessage}" 
+                 Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
+
     </Grid>
 </UserControl>

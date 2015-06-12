@@ -7,6 +7,8 @@
     <BitmapImage x:Key="SSLDisabledImage" UriSource="../Resources/SSLDisabled.png" />
     <BitmapImage x:Key="RefreshImage" UriSource="../Resources/Refresh.png" />
     <BitmapImage x:Key="AddImage" UriSource="../Resources/Add.png" />
+    <BitmapImage x:Key="AddGenericImage" UriSource="../Resources/AddGeneric.png" />
     <BitmapImage x:Key="StatusUnknown" UriSource="../Resources/StatusUnknown.png" />
     <BitmapImage x:Key="SynchronizeSmallImage" UriSource="../Resources/SynchronizeSmall.png" />
+    <BitmapImage x:Key="DeleteImage" UriSource="../Resources/Delete.png" />
 </ResourceDictionary>

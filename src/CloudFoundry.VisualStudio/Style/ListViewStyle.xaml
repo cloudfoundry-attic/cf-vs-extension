@@ -123,7 +123,7 @@ PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
                                 </Grid.RowDefinitions>
 
                                 <DockPanel Margin="{TemplateBinding Padding}">
-                                    <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Focusable="false">
+                                    <ScrollViewer DockPanel.Dock="Top" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Focusable="True">
                                         <GridViewHeaderRowPresenter Margin="0" 
                                                                         Columns="{Binding Path=TemplatedParent.View.Columns, RelativeSource={RelativeSource TemplatedParent}}" 
                                                                         ColumnHeaderContainerStyle="{Binding Path=TemplatedParent.View.ColumnHeaderContainerStyle, RelativeSource={RelativeSource TemplatedParent}}"
