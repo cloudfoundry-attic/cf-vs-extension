@@ -17,33 +17,16 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
     [DeploymentItem("Assets")]
     public class PublishProfileTest
     {
-        private string PublishProfileProjectDir
-        {
-            get
-            {
-                string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                string projectPath = Path.Combine(assemblyPath, "project");
-                return projectPath;
-            }
-        }
-
-        private string PublishProfilePath
-        {
-            get
-            {
-                string profilePath = Path.Combine(this.PublishProfileProjectDir, "Properties", "PublishProfiles", "push.cf.pubxml");
-                return profilePath;
-            }
-        }
+       
 
         [TestMethod()]
         public void LoadExistingProfileTest()
         {
             // Arrange
-            Project project = new ProjectMock(PublishProfileProjectDir);
+            Project project = new ProjectMock(Util.PublishProfileProjectDir);
 
             // Act
-            PublishProfile publishProfile = PublishProfile.Load(project, this.PublishProfilePath);
+            PublishProfile publishProfile = PublishProfile.Load(project, Util.PublishProfilePath);
 
             // Assert
             Assert.AreEqual("user", publishProfile.User);
@@ -62,10 +45,10 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         public void LoadExistingManifestTest()
         {
             // Arrange
-            Project project = new ProjectMock(PublishProfileProjectDir);
+            Project project = new ProjectMock(Util.PublishProfileProjectDir);
 
             // Act
-            PublishProfile publishProfile = PublishProfile.Load(project, this.PublishProfilePath);
+            PublishProfile publishProfile = PublishProfile.Load(project, Util.PublishProfilePath);
 
             // Assert
             Assert.AreEqual("test-bp", publishProfile.Application.BuildpackUrl);

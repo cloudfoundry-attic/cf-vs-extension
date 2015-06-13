@@ -128,6 +128,7 @@
     <Compile Include="MyToolWindowTest\UIShellServiceMock.cs" />
     <Compile Include="PublishProfileTest\ProjectMock.cs" />
     <Compile Include="PublishProfileTest\PublishProfileTest.cs" />
+    <Compile Include="Util.cs" />
     <!---->
     <!---->
   </ItemGroup>

@@ -9,8 +9,8 @@
     <Control.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="..\Style\ListViewStyle.xaml" />
-                <ResourceDictionary Source="..\Style\ButtonStyle.xaml" />
+                <!--<ResourceDictionary Source="..\Style\ListViewStyle.xaml" />-->
+                <ResourceDictionary Source="..\Style\Controls.xaml" />
                 <ResourceDictionary Source="..\Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -22,7 +22,7 @@
         <xctk:BusyIndicator>
             <!--IsBusy="{Binding BusyBox.IsBusy}"
                             BusyContent="{Binding BusyBox.BusyMessage}"-->
-            <xctk:Wizard FinishButtonClosesWindow="True"  >
+            <xctk:Wizard FinishButtonClosesWindow="True">
                 <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                                    Title="Target"
                                    Description="Target"
