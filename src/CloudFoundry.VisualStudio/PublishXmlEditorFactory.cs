@@ -59,7 +59,6 @@
             ////var dialog = new EditDialog(packageFile, project);
             var dialog = new PushDialog(packageFile);
             dialog.ShowDialog();
-
             return VSConstants.S_OK;
         }
 

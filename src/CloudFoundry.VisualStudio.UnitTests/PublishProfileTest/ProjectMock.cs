@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
 {
-    class ProjectMock : Project
+    public class ProjectMock : Project
     {
         private string projectDir;
 

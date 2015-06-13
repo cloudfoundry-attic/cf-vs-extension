@@ -8,9 +8,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
     <Control.Resources>
-        <converters:XmlUriToStringConverter x:Key="UriToString"/>
-        <converters:VisiblityConverter x:Key="Visibility" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="..\Style\ListViewStyle.xaml" />-->
+                <ResourceDictionary Source="..\Style\Controls.xaml" />
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:XmlUriToStringConverter x:Key="UriToString"/>
+            <converters:VisiblityConverter x:Key="Visibility" />
+        </ResourceDictionary>
     </Control.Resources>
+    
     <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -27,61 +36,55 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="30"/>
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="1" Content="Profile" />
-        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True" Name="cbProfile" 
+        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEditable="True" Name="cbProfile" 
                   Text="{Binding PublishProfile.Path, Mode=OneWay}" />
 
+
         <Label Grid.Row="2" Grid.Column="1" Content="Target" />
-        <Grid Grid.Row="3" Grid.Column="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-
-
-            <ComboBox Grid.Row="0" Grid.Column="0" Name="cbTarget" IsEditable="True" IsReadOnly="True"
+        <ComboBox Grid.Row="3" Grid.Column="1" Name="cbTarget" IsEditable="True" IsReadOnly="True"
                       SelectedValue="{Binding SelectedCloudTarget}"
                       Text="{Binding SelectedCloudTarget.DisplayName, Mode=OneWay}"
                       ItemsSource="{Binding Path=CloudTargets}"
                       DisplayMemberPath="DisplayName">
-                <ComboBox.Style>
-                    <Style TargetType="{x:Type ComboBox}">
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=LastRefreshTarget}" 
+            <ComboBox.Style>
+                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=LastRefreshTarget}" 
                                                Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
-                                    <Condition Binding="{Binding Path=HasErrors}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="BorderBrush" Value="Crimson" />
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ComboBox.Style>
-            </ComboBox>
+                                <Condition Binding="{Binding Path=HasErrors}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush" Value="Crimson" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
+        </ComboBox>
+        <Button x:Name="ButtonSetTarget" Grid.Row="3" Grid.Column="2" Content="..."  
+                Width="30" HorizontalAlignment="Right" Click="ButtonSetTarget_Click" />
 
-            <Button x:Name="ButtonSetTarget" Grid.Row="0" Grid.Column="1" Content="..."  
-                    Width="30" HorizontalAlignment="Right" Click="ButtonSetTarget_Click" />
-        </Grid>
 
         <Label Grid.Row="4" Grid.Column="1" Content="Organization" />
-        <ComboBox Grid.Row="5" Grid.Column="1" Name="cbOrganization" 
+        <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="cbOrganization" 
                   ItemsSource="{Binding Path=Orgs}" 
                   SelectedValue="{Binding PublishProfile.Organization}"
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
 
         <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="Space" />
-        <ComboBox Grid.Row="7" Grid.Column="1" Name="cbSpace"  
+        <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
                   ItemsSource="{Binding Path=Spaces}"
                   SelectedValue="{Binding PublishProfile.Space}" 
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
 
-        <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
+        <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 Foreground="Crimson" MinLines="4" MaxLines="4" Background="Transparent"
+                 Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
                  Text="{Binding Path=ErrorMessage}" 
                  Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
     </Grid>
