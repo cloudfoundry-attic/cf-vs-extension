@@ -17,12 +17,13 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <DataGrid CanUserAddRows="False" HeadersVisibility="Column" Margin="{StaticResource DefaultMargin}" 
-                  AutoGenerateColumns="False" x:Name="dgServices" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding MyList}">
+                  AutoGenerateColumns="False" x:Name="dgServices" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ServiceInstances}">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn></DataGridCheckBoxColumn>
-                <DataGridTextColumn Header="Service Name" Width="*"></DataGridTextColumn>
-                <DataGridTextColumn Header="Type"></DataGridTextColumn>
-                <DataGridTextColumn Header="Plan"></DataGridTextColumn>
+                <DataGridCheckBoxColumn Binding="{Binding Used}" ></DataGridCheckBoxColumn>
+                <DataGridTextColumn Header="Service Name" Width="*" Binding="{Binding ServiceInstance.Name}">
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding Service.Label}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Plan"  Binding="{Binding ServicePlan.Name}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Button Content="New Service ..." Grid.Column="0" Grid.Row="1" Width="100" HorizontalAlignment="Right" Margin="{StaticResource DefaultMargin}" Click="Button_Click"></Button>

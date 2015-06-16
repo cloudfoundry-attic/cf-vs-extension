@@ -68,12 +68,12 @@
         
         <Label Grid.Row="1" Grid.Column="6" Grid.ColumnSpan="3" Content="Shared Domains" />
         <ListView Grid.Row="2" Grid.Column="6" Grid.RowSpan="2" x:Name="dgSharedDomains" 
-                  ItemsSource="{Binding PublishProfile.Application.Domains}">
+                  ItemsSource="{Binding SharedDomains}" DisplayMemberPath="Name">
         </ListView>
 
         <Label Grid.Row="4" Grid.Column="6" Grid.ColumnSpan="3" Content="Private Domains" />
         <ListView Grid.Row="5" Grid.Column="6" x:Name="dgPrivateDomains" 
-                  ItemsSource="{Binding PublishProfile.Application.Domains}">
+                  ItemsSource="{Binding PrivateDomains}" DisplayMemberPath="Name">
         </ListView>
 
 

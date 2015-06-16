@@ -302,6 +302,7 @@
     <Compile Include="Guids.cs" />
     <Compile Include="ProjectPush\PublishProfileEditorResources.cs" />
     <Compile Include="ProjectPush\PublishProfileRefreshTarget.cs" />
+    <Compile Include="ProjectPush\ServiceProfile.cs" />
     <Compile Include="PublishXmlEditorFactory.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
