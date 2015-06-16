@@ -6,7 +6,9 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"  x:Class="CloudFoundry.VisualStudio.Forms.PushDialog"
-        Title="PushDialog" MinHeight="470" MinWidth="530"  WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" Loaded="Window_Loaded" d:DesignWidth="530" d:DesignHeight="470" >
+        Title="PushDialog" MinHeight="470" MinWidth="530"  
+                 WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" 
+                 Loaded="Window_Loaded" Width="640" Height="480" >
 
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
@@ -29,28 +31,26 @@
             <Controls:TargetUserControl x:Name="ucTarget" />
         </xctk:WizardPage>
         <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
-                    Title="Application Settings"
-                    Description="Application Settings">
+                         Title="Application Settings"
+                         Description="Application Settings">
 
             <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
-                    Title="Routes"
-                    Description="Routes">
+                         Title="Routes" Description="Routes" CanFinish="True">
             <Controls:RoutesUserControl x:Name="ucRoutes" />
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
-                    Title="Services"
-                    Description="Services">
+                         Title="Services" Description="Services" CanFinish="True">
             <Controls:ServicesUserControl x:Name="ucServices" />
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
-                    Title="Environment Variables"
-                    Description="Environment Variables"
-                    CanFinish="True">
+                         Title="Environment Variables"
+                         Description="Environment Variables"
+                         CanFinish="True">
             <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
         </xctk:WizardPage>
     </xctk:Wizard>

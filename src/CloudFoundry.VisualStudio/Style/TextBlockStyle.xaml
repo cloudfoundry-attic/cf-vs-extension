@@ -7,17 +7,16 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Control.xaml"/>
-        <ResourceDictionary Source="ComboBox.xaml" />
-        <ResourceDictionary Source="ListViewStyle.xaml" />
-        <ResourceDictionary Source="WizardStyle.xaml" />
-        <ResourceDictionary Source="ButtonStyle.xaml" />
-        <ResourceDictionary Source="CheckBoxStyle.xaml" />
-        <ResourceDictionary Source="GroupBoxStyle.xaml" />
-        <ResourceDictionary Source="LabelStyle.xaml" />
-        <ResourceDictionary Source="ProgressBarStyle.xaml" />
-        <ResourceDictionary Source="ScrollStyle.xaml" />
-        <ResourceDictionary Source="TextBoxStyle.xaml" />
-        <ResourceDictionary Source="TextBlockStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
+        <Setter Property="Margin" Value="3 0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="HelpText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.GrayTextKey}}" />
+        <Setter Property="Padding" Value="8 0 0 5" />
+    </Style>
 </ResourceDictionary>

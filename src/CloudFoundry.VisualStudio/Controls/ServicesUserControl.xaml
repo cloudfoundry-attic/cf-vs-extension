@@ -5,27 +5,66 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
-    <Control.Resources>
-        <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
-    </Control.Resources>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <DataGrid CanUserAddRows="False" HeadersVisibility="Column" Margin="{StaticResource DefaultMargin}" 
-                  AutoGenerateColumns="False" x:Name="dgServices" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ServiceInstances}">
-            <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding Used}" ></DataGridCheckBoxColumn>
-                <DataGridTextColumn Header="Service Name" Width="*" Binding="{Binding ServiceInstance.Name}">
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Type" Binding="{Binding Service.Label}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Plan"  Binding="{Binding ServicePlan.Name}"></DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <Button Content="New Service ..." Grid.Column="0" Grid.Row="1" Width="100" HorizontalAlignment="Right" Margin="{StaticResource DefaultMargin}" Click="Button_Click"></Button>
+
+        <Label Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="0,0,0,10">
+            <TextBlock TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">Select services to bind to the application</TextBlock>
+        </Label>
+
+        <Button Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" 
+                Margin="0,0,0,10" Click="Button_Click">
+            <StackPanel Orientation="Horizontal">
+                <Image Margin="5,0,0,0" Stretch="None" Source="{StaticResource AddGenericImage}" />
+                <Label Margin="0,0,5,0" Content="Add New Service ..."/>
+            </StackPanel>
+        </Button>
+
+        
+        <ListView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                  x:Name="dgServices" ItemsSource="{Binding ServiceInstances}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn x:Name="ColumnUsed" Header="">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Focusable="False" IsChecked="{Binding Used}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn x:Name="ColumnName" Header="Name"  Width="{Binding ElementName=ColumNameFillHelper, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding ServiceInstance.Name}" />
+                    <GridViewColumn x:Name="ColumnType" Header="Type" DisplayMemberBinding="{Binding Service.Label}" />
+                    <GridViewColumn x:Name="ColumnPlan" Header="Plan" DisplayMemberBinding="{Binding ServicePlan.Name}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <!--Hidden helper Grid for resizing -->
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding ElementName=ColumnUsed, Path=ActualWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="{Binding ElementName=ColumnType, Path=ActualWidth}"/>
+                <ColumnDefinition Width="{Binding ElementName=ColumnPlan, Path=ActualWidth}"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1" x:Name="ColumNameFillHelper"/>
+        </Grid>
     </Grid>
 </UserControl>
