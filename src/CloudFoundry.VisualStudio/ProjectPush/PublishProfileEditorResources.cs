@@ -22,7 +22,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private ObservableCollection<ListAllBuildpacksResponse> buildpacks = new ObservableCollection<ListAllBuildpacksResponse>();
         private ObservableCollection<ListAllSharedDomainsResponse> sharedDomains = new ObservableCollection<ListAllSharedDomainsResponse>();
         private ObservableCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomains = new ObservableCollection<ListAllPrivateDomainsForOrganizationResponse>();
-        private ObservableCollection<ListAllServiceInstancesForSpaceResponse> serviceInstances = new ObservableCollection<ListAllServiceInstancesForSpaceResponse>();
+        private ObservableCollection<ServiceProfile> serviceInstances = new ObservableCollection<ServiceProfile>();
 
         public ObservableCollection<ListAllOrganizationsResponse> Orgs
         {
@@ -60,7 +60,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set { privateDomains = value; }
         }
 
-        public ObservableCollection<ListAllServiceInstancesForSpaceResponse> ServiceInstances
+        public ObservableCollection<ServiceProfile> ServiceInstances
         {
             get { return serviceInstances; }
             set { serviceInstances = value; }
@@ -72,10 +72,10 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set { publishProfile = value; }
         }
 
-        public CloudTarget[] CloudTargets 
-        { 
-            get; 
-            set; 
+        public CloudTarget[] CloudTargets
+        {
+            get;
+            set;
         }
 
         public CloudTarget SelectedCloudTarget
@@ -118,7 +118,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 this.PublishProfile.SavedPassword = true;
                 this.PublishProfile.Password = null;
                 this.PublishProfile.RefreshToken = null;
-                
+
                 this.Refresh(PublishProfileRefreshTarget.Client);
                 this.RaisePropertyChangedEvent("SelectedCloudTarget");
             }
@@ -412,9 +412,25 @@ Please note that credentials are saved automatically in the Windows Credential M
 
             while (serviceInstances != null && serviceInstances.Properties.TotalResults != 0)
             {
-                foreach (var privateDomain in serviceInstances)
+                foreach (var serviceInstance in serviceInstances)
                 {
-                    OnUIThread(() => this.serviceInstances.Add(privateDomain));
+                    var servicePlan = await this.client.ServicePlans.RetrieveServicePlan(serviceInstance.ServicePlanGuid);
+                    var systemService = await this.client.Services.RetrieveService(servicePlan.ServiceGuid);
+
+                    ServiceProfile serviceProfile = new ServiceProfile();
+
+                    serviceProfile.ServiceInstance = serviceInstance;
+                    serviceProfile.Service = systemService;
+                    serviceProfile.ServicePlan = servicePlan;
+
+                    foreach (string serviceInstanceName in publishProfile.Application.Services)
+                    {
+                        if (serviceInstanceName == serviceInstance.Name)
+                        {
+                            serviceProfile.Used = true;
+                        }
+                    }
+                    OnUIThread(() => this.serviceInstances.Add(serviceProfile));
                 }
 
                 serviceInstances = await serviceInstances.GetNextPage();

@@ -21,7 +21,7 @@
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <DataGrid CanUserAddRows="False" Grid.ColumnSpan="5" HeadersVisibility="Column" Margin="{StaticResource DefaultMargin}"
-                  AutoGenerateColumns="False" x:Name="dgEnvVars" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding CFAppManifest.EnvironmentVars}">
+                  AutoGenerateColumns="False" x:Name="dgEnvVars" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding PublishProfile.Application.EnvironmentVariables}">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="*" Header="Environment Variable" IsReadOnly="True">
                     <DataGridTextColumn.Binding>
