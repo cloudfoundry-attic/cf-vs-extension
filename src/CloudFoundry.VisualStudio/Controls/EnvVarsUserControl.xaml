@@ -5,45 +5,77 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
-    <Control.Resources>
-        <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
-    </Control.Resources>
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="20"></ColumnDefinition>
+            <ColumnDefinition Width="0.3*"></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <DataGrid CanUserAddRows="False" Grid.ColumnSpan="5" HeadersVisibility="Column" Margin="{StaticResource DefaultMargin}"
-                  AutoGenerateColumns="False" x:Name="dgEnvVars" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding PublishProfile.Application.EnvironmentVariables}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Environment Variable" IsReadOnly="True">
-                    <DataGridTextColumn.Binding>
-                        <MultiBinding StringFormat=" {0}: {1}">
-                            <Binding Path="Key" />
-                            <Binding Path="Value" />
-                        </MultiBinding>
-                    </DataGridTextColumn.Binding>
-                </DataGridTextColumn>
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="X" Height="15" Width="20" Click="Delete_Click"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <Label Content="Key" Grid.Column="0" Grid.Row="1" ></Label>
-        <TextBox Name="tbEnvVarKey" Grid.Column="1" Grid.Row="1" Margin="{StaticResource DefaultMargin}"></TextBox>
-        <Label Content="Value" Grid.Column="2" Grid.Row="1"></Label>
-        <TextBox Name="tbEnvVarValue" Grid.Column="3" Grid.Row="1" Margin="{StaticResource DefaultMargin}"></TextBox>
-        <Button Content="Add" Name="btnAddEnvVar" Grid.Column="4" Grid.Row="1" Margin="{StaticResource DefaultMargin}" Click="btnAddEnvVar_Click"></Button>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Environment Variables" />
+        <Button Grid.Row="0" Grid.Column="1" Name="btnEditEnvVar" Margin="0,0,0,5"
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+            <Image Stretch="None" Source="{StaticResource EditImage}" />
+        </Button>
+        <Button Grid.Row="0" Grid.Column="2" Name="btnRemoveEnvVar" Margin="5,0,0,5"
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+            <Image Stretch="None" Source="{StaticResource DeleteImage}" />
+        </Button>
+
+        <ListView Grid.Row="1" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" x:Name="dgEnvVars" 
+                  ItemsSource="{Binding PublishProfile.Application.EnvironmentVariables}">
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn x:Name="ColumnKey" Header="Key"  Width="100" 
+                                    DisplayMemberBinding="{Binding Key}" />
+                    <GridViewColumn x:Name="ColumnValue" Header="Value" Width="{Binding ElementName=ColumValueFillHelper, Path=ActualWidth}"
+                                    DisplayMemberBinding="{Binding Value}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <!--Hidden helper Grid for resizing -->
+        <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="{Binding ElementName=ColumnKey, Path=ActualWidth}"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1" x:Name="ColumValueFillHelper"/>
+        </Grid>
+
+        <Label Grid.Row="0" Grid.Column="4" Content="Key" />
+        <TextBox Grid.Row="1" Grid.Column="4" Name="tbEnvVarKey" Grid.ColumnSpan="2" />
+
+        <Label Grid.Row="2" Grid.Column="4" Content="Value" />
+        <TextBox Grid.Row="3" Grid.Column="4" Grid.ColumnSpan="2" AcceptsReturn="True"
+                 Name="tbEnvVarValue" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 MinLines="4" VerticalContentAlignment="Top" />
+
+        <Button Grid.Row="4" Grid.Column="5" Name="btnAddEnvVar" Click="btnAddEnvVar_Click" Margin="0,5,0,0">
+            <StackPanel Orientation="Horizontal">
+                <Image Margin="5,0,0,0" Stretch="None" Source="{StaticResource AddGenericImage}" />
+                <Label Margin="0,0,5,0" Content="Save Variable"/>
+            </StackPanel>
+        </Button>
     </Grid>
 </UserControl>

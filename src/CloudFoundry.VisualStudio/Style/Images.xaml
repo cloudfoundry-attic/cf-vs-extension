@@ -11,4 +11,5 @@
     <BitmapImage x:Key="StatusUnknown" UriSource="../Resources/StatusUnknown.png" />
     <BitmapImage x:Key="SynchronizeSmallImage" UriSource="../Resources/SynchronizeSmall.png" />
     <BitmapImage x:Key="DeleteImage" UriSource="../Resources/Delete.png" />
+    <BitmapImage x:Key="EditImage" UriSource="../Resources/Edit.png" />
 </ResourceDictionary>

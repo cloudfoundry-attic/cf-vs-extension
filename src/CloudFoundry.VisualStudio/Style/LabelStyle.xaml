@@ -7,17 +7,10 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Control.xaml"/>
-        <ResourceDictionary Source="ComboBox.xaml" />
-        <ResourceDictionary Source="ListViewStyle.xaml" />
-        <ResourceDictionary Source="WizardStyle.xaml" />
-        <ResourceDictionary Source="ButtonStyle.xaml" />
-        <ResourceDictionary Source="CheckBoxStyle.xaml" />
-        <ResourceDictionary Source="GroupBoxStyle.xaml" />
-        <ResourceDictionary Source="LabelStyle.xaml" />
-        <ResourceDictionary Source="ProgressBarStyle.xaml" />
-        <ResourceDictionary Source="ScrollStyle.xaml" />
-        <ResourceDictionary Source="TextBoxStyle.xaml" />
-        <ResourceDictionary Source="TextBlockStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
 </ResourceDictionary>
