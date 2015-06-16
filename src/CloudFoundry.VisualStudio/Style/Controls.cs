@@ -76,5 +76,12 @@ namespace CloudFoundry.VisualStudio.Style
         public static readonly object ScrollBarArrowBackgroundHoverKey = VsBrushes.ScrollBarArrowMouseOverBackgroundKey;
         public static readonly object ScrollBarArrowBackgroundPressedKey = VsBrushes.ScrollBarArrowPressedBackgroundKey;
         public static readonly object ScrollBarArrowBackgroundDisabledKey = VsBrushes.ScrollBarArrowDisabledBackgroundKey;
+
+
+        public static readonly dynamic ListItemSelectedBackgroundKey =  TreeViewColors.SelectedItemActiveBrushKey;
+        public static readonly dynamic ListItemSelectedForegroundKey = TreeViewColors.SelectedItemActiveTextBrushKey;
+        public static readonly object ListItemHoverBackgroundKey = VsBrushes.ComboBoxMouseOverBackgroundGradientKey;
+        public static readonly object ListItemHoverForegroundKey = VsBrushes.WindowTextKey;
+
     }
 }

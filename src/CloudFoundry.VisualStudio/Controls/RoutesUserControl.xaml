@@ -15,7 +15,7 @@
                 <ResourceDictionary Source="..\Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <converters:VisiblityConverter x:Key="Visibility" />
+            <converters:VisibilityConverter x:Key="Visibility" />
 
             <Style x:Key="HiddenListViewHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
                 <Setter Property="Visibility" Value="Collapsed" />

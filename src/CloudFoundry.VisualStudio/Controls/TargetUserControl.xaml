@@ -16,7 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:XmlUriToStringConverter x:Key="UriToString"/>
-            <converters:VisiblityConverter x:Key="Visibility" />
+            <converters:VisibilityConverter x:Key="Visibility" />
         </ResourceDictionary>
     </Control.Resources>
     
@@ -47,17 +47,17 @@
 
         <Label Grid.Row="2" Grid.Column="1" Content="Target" />
         <ComboBox Grid.Row="3" Grid.Column="1" Name="cbTarget" IsEditable="True" IsReadOnly="True"
-                      SelectedValue="{Binding SelectedCloudTarget}"
-                      Text="{Binding SelectedCloudTarget.DisplayName, Mode=OneWay}"
-                      ItemsSource="{Binding Path=CloudTargets}"
-                      DisplayMemberPath="DisplayName">
+                  SelectedValue="{Binding SelectedCloudTarget, Mode=OneWayToSource }"
+                  ItemsSource="{Binding Path=CloudTargets}"
+                  Text="{Binding SelectedCloudTarget.DisplayName, Mode=OneWay}"
+                  DisplayMemberPath="DisplayName">
             <ComboBox.Style>
                 <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=LastRefreshTarget}" 
-                                               Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
+                                           Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
                                 <Condition Binding="{Binding Path=HasErrors}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush" Value="Crimson" />
@@ -69,7 +69,6 @@
         <Button x:Name="ButtonSetTarget" Grid.Row="3" Grid.Column="2" Content="..."  
                 Width="30" HorizontalAlignment="Right" Click="ButtonSetTarget_Click" />
 
-
         <Label Grid.Row="4" Grid.Column="1" Content="Organization" />
         <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="cbOrganization" 
                   ItemsSource="{Binding Path=Orgs}" 
@@ -80,7 +79,7 @@
         <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
                   ItemsSource="{Binding Path=Spaces}"
                   SelectedValue="{Binding PublishProfile.Space}" 
-                  DisplayMemberPath="Name" SelectedValuePath="Name" />
+                  DisplayMemberPath="Name" SelectedValuePath="Name"/>
 
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
