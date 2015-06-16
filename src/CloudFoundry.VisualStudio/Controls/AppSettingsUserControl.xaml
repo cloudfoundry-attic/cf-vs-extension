@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="450">
     <Control.Resources>
         <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
-        <converters:VisiblityConverter x:Key="Visibility" />
+        <converters:VisibilityConverter x:Key="Visibility" />
     </Control.Resources>
     <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>

@@ -24,7 +24,7 @@
                 <ResourceDictionary Source="Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:IsNullConverter x:Key="IsNull"/>
-            <converters:VisiblityConverter x:Key="Visible" Reversed="False"/>
+            <converters:VisibilityConverter x:Key="Visible" Reversed="False"/>
             
             <Style TargetType="MenuItem" x:Key="MenuItemEventStyle" >
                 <EventSetter Event="Click" Handler="TreeMenuItem_Click" />

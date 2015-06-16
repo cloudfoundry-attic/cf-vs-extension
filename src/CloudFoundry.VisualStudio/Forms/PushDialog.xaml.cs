@@ -15,20 +15,23 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.VisualStudio.Threading;
+using Microsoft.VisualStudio.PlatformUI;
 
 namespace CloudFoundry.VisualStudio.Forms
 {
     /// <summary>
     /// Interaction logic for PushDialog.xaml
     /// </summary>
-    public partial class PushDialog : Window
+    public partial class PushDialog : DialogWindow
     {
         private CancellationToken cancellationToken;
 
         public PushDialog(PublishProfile package)
         {
             this.cancellationToken = new CancellationToken();
-            this.DataContext = new PublishProfileEditorResources(package, this.cancellationToken);
+            var publishProfileResources = new PublishProfileEditorResources(package, this.cancellationToken);
+
+            this.DataContext = publishProfileResources;
             InitializeComponent();
         }
 

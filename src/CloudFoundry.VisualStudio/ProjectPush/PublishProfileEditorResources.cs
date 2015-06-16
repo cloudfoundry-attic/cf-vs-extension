@@ -82,22 +82,43 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
+                string description = string.Empty;
+
+                // If this is a 'vanila' publish profile, we can display it the same way; note that password can be a series of whitespaces
+                if (!string.IsNullOrWhiteSpace(this.PublishProfile.RefreshToken))
+                {
+                    description = string.Format("Using explicit refresh token - {0}", this.PublishProfile.ServerUri);
+                }
+                else if (!string.IsNullOrEmpty(this.PublishProfile.Password))
+                {
+                    description = string.Format("Using clear-text password - {0}", this.PublishProfile.ServerUri);
+                }
+                else if (!this.PublishProfile.SavedPassword)
+                {
+                    description = string.Format("Invalid credential configuration - {0}", this.PublishProfile.ServerUri);
+                }
+
                 return CloudTarget.CreateV2Target(
                     this.PublishProfile.ServerUri,
-                    string.Empty,
+                    description,
                     this.PublishProfile.User,
                     this.PublishProfile.SkipSSLValidation,
                     string.Empty);
             }
             set
             {
+                if (value == null)
+                {
+                    return;
+                }
+
                 this.PublishProfile.ServerUri = value.TargetUrl;
                 this.PublishProfile.User = value.Email;
                 this.PublishProfile.SkipSSLValidation = value.IgnoreSSLErrors;
                 this.PublishProfile.SavedPassword = true;
                 this.PublishProfile.Password = null;
                 this.PublishProfile.RefreshToken = null;
-
+                
                 this.Refresh(PublishProfileRefreshTarget.Client);
                 this.RaisePropertyChangedEvent("SelectedCloudTarget");
             }

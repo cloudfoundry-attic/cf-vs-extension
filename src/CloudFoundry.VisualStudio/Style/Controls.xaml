@@ -30,14 +30,12 @@
 
     <Style TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="Margin" Value="3 0" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style TargetType="{x:Type Label}">
         <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="Margin" Value="0" />
     </Style>
 
