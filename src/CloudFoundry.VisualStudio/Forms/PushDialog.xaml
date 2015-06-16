@@ -20,42 +20,38 @@
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
 
-        <xctk:BusyIndicator>
-            <!--IsBusy="{Binding BusyBox.IsBusy}"
-                            BusyContent="{Binding BusyBox.BusyMessage}"-->
-            <xctk:Wizard FinishButtonClosesWindow="True">
-                <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
-                    Title="Target"
-                    Description="Target"
-                    CanSelectNextPage="{Binding HasErrors, Converter={StaticResource InverseBoolean}}">
-
-                    <Controls:TargetUserControl x:Name="ucTarget" />
-                </xctk:WizardPage>
-                <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
+    <xctk:Wizard FinishButtonClosesWindow="True">
+        <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
+                         Title="Target"
+                         Description="Target"
+                         CanSelectNextPage="{Binding HasErrors, Converter={StaticResource InverseBoolean}}"
+                         IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
+            <Controls:TargetUserControl x:Name="ucTarget" />
+        </xctk:WizardPage>
+        <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
                     Title="Application Settings"
                     Description="Application Settings">
 
-                    <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
-                </xctk:WizardPage>
+            <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
+        </xctk:WizardPage>
 
-                <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
+        <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
                     Title="Routes"
                     Description="Routes">
-                    <Controls:RoutesUserControl x:Name="ucRoutes" />
-                </xctk:WizardPage>
+            <Controls:RoutesUserControl x:Name="ucRoutes" />
+        </xctk:WizardPage>
 
-                <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
+        <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
                     Title="Services"
                     Description="Services">
-                    <Controls:ServicesUserControl x:Name="ucServices" />
-                </xctk:WizardPage>
+            <Controls:ServicesUserControl x:Name="ucServices" />
+        </xctk:WizardPage>
 
-                <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
+        <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
                     Title="Environment Variables"
                     Description="Environment Variables"
                     CanFinish="True">
-                    <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
-                </xctk:WizardPage>
-            </xctk:Wizard>
-        </xctk:BusyIndicator>
+            <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
+        </xctk:WizardPage>
+    </xctk:Wizard>
 </ui:DialogWindow>
