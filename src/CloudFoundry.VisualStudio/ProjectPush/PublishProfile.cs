@@ -46,6 +46,13 @@
         private string manifest;
 
         [XmlIgnore]
+        public Project Project
+        {
+            get { return project; }
+            set { project = value; }
+        }
+
+        [XmlIgnore]
         public string Path
         {
             get
