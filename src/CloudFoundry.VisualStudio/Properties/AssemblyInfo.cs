@@ -33,4 +33,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.2.0.1")]
 
 [assembly: InternalsVisibleTo("CloudFoundry.VisualStudio.IntegrationTests")]
-[assembly: InternalsVisibleTo("CloudFoundry.VisualStudio.UnitTestss")]
+[assembly: InternalsVisibleTo("CloudFoundry.VisualStudio.UnitTests")]
+[assembly: InternalsVisibleTo("CloudFoundry.VisualStudio.TestApp")]
+[assembly: System.Windows.ThemeInfo(System.Windows.ResourceDictionaryLocation.None, System.Windows.ResourceDictionaryLocation.SourceAssembly)]
