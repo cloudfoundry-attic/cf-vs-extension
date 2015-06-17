@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="CloudFoundry.VisualStudio.Controls.TargetUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
+             xmlns:profile="clr-namespace:CloudFoundry.VisualStudio.ProjectPush"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="450">
+    <Control.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="..\Style\ListViewStyle.xaml" />-->
+                <ResourceDictionary Source="..\Style\Controls.xaml" />
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:XmlUriToStringConverter x:Key="UriToString"/>
+            <converters:VisibilityConverter x:Key="Visibility" />
+        </ResourceDictionary>
+    </Control.Resources>
+    
+    <Grid VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="1" Content="Profile" />
+        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEditable="True" Name="cbProfile" 
+                  Text="{Binding PublishProfile.Path, Mode=OneWay}" />
+
+
+        <Label Grid.Row="2" Grid.Column="1" Content="Target" />
+        <ComboBox Grid.Row="3" Grid.Column="1" Name="cbTarget" IsEditable="True" IsReadOnly="True"
+                  SelectedValue="{Binding SelectedCloudTarget, Mode=OneWayToSource }"
+                  ItemsSource="{Binding Path=CloudTargets}"
+                  Text="{Binding SelectedCloudTarget.DisplayName, Mode=OneWay}"
+                  DisplayMemberPath="DisplayName">
+            <ComboBox.Style>
+                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=LastRefreshTarget}" 
+                                           Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
+                                <Condition Binding="{Binding Path=HasErrors}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush" Value="Crimson" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
+        </ComboBox>
+        <Button x:Name="ButtonSetTarget" Grid.Row="3" Grid.Column="2" Content="..."  
+                Width="30" HorizontalAlignment="Right" Click="ButtonSetTarget_Click" />
+
+        <Label Grid.Row="4" Grid.Column="1" Content="Organization" />
+        <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="cbOrganization" 
+                  ItemsSource="{Binding Path=Orgs}" 
+                  SelectedValue="{Binding PublishProfile.Organization}"
+                  DisplayMemberPath="Name" SelectedValuePath="Name" />
+
+        <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="Space" />
+        <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
+                  ItemsSource="{Binding Path=Spaces}"
+                  SelectedValue="{Binding PublishProfile.Space}" 
+                  DisplayMemberPath="Name" SelectedValuePath="Name"/>
+
+        <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
+                 BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
+                 Text="{Binding Path=ErrorMessage}" 
+                 Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
+    </Grid>
+</UserControl>

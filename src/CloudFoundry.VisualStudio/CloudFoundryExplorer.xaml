@@ -14,7 +14,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Style/ListViewStyle.xaml" />
+                <ResourceDictionary Source="Style\ListViewStyle.xaml" />
                 <ResourceDictionary Source="Style\TreeViewStyle.xaml" />
                 <ResourceDictionary Source="Style\ButtonStyle.xaml" />
                 <ResourceDictionary Source="Style\ToggleButtonStyle.xaml" />
@@ -24,7 +24,7 @@
                 <ResourceDictionary Source="Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converters:IsNullConverter x:Key="IsNull"/>
-            <converters:VisiblityConverter x:Key="Visible" Reversed="False"/>
+            <converters:VisibilityConverter x:Key="Visible" Reversed="False"/>
             
             <Style TargetType="MenuItem" x:Key="MenuItemEventStyle" >
                 <EventSetter Event="Click" Handler="TreeMenuItem_Click" />
@@ -42,12 +42,14 @@
 
 
         <StackPanel Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Orientation="Horizontal">
-            <Button Name="RefreshButton" Height="22" Width="22" Click="RefreshButton_Click">
-                <Image Source="{StaticResource RefreshImage}" />
+            <Button Name="RefreshButton" Height="22" Width="22" Click="RefreshButton_Click"
+                    BorderThickness="0">
+                <Image Stretch="None" Source="{StaticResource RefreshImage}" />
             </Button>
 
-            <Button Name="AddTargetButton" Height="22" Width="22" Click="AddTargetButton_Click">
-                <Image Source="{StaticResource AddImage}" />
+            <Button Name="AddTargetButton" Height="22" Width="22" Click="AddTargetButton_Click"
+                    BorderThickness="0" Margin="3,0,0,0">
+                <Image Stretch="None" Source="{StaticResource AddImage}" />
             </Button>
         </StackPanel>
 

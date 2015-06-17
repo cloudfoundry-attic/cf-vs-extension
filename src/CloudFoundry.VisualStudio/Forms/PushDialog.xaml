@@ -1,0 +1,57 @@
+﻿<ui:DialogWindow xmlns:Controls="clr-namespace:CloudFoundry.VisualStudio.Controls"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"  x:Class="CloudFoundry.VisualStudio.Forms.PushDialog"
+        Title="PushDialog" MinHeight="470" MinWidth="530"  
+                 WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" 
+                 Loaded="Window_Loaded" Width="640" Height="480" >
+
+    <ui:DialogWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--<ResourceDictionary Source="..\Style\ListViewStyle.xaml" />-->
+                <ResourceDictionary Source="..\Style\Controls.xaml" />
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
+        </ResourceDictionary>
+    </ui:DialogWindow.Resources>
+
+    <xctk:Wizard FinishButtonClosesWindow="True">
+        <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
+                         Title="Target"
+                         Description="Target"
+                         CanSelectNextPage="{Binding HasErrors, Converter={StaticResource InverseBoolean}}"
+                         IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
+            <Controls:TargetUserControl x:Name="ucTarget" />
+        </xctk:WizardPage>
+        <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
+                         Title="Application Settings"
+                         Description="Application Settings">
+
+            <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
+        </xctk:WizardPage>
+
+        <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
+                         Title="Routes" Description="Routes" CanFinish="True">
+            <Controls:RoutesUserControl x:Name="ucRoutes" />
+        </xctk:WizardPage>
+
+        <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
+                         Title="Services" Description="Services" CanFinish="True">
+            <Controls:ServicesUserControl x:Name="ucServices" />
+        </xctk:WizardPage>
+
+        <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
+                         Title="Environment Variables"
+                         Description="Environment Variables"
+                         CanFinish="True">
+            <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
+        </xctk:WizardPage>
+    </xctk:Wizard>
+</ui:DialogWindow>

@@ -13,6 +13,8 @@
                 <ModulePath>.*\.Test*\..*</ModulePath>
                 <ModulePath>.*\.Client\..*</ModulePath>
                 <ModulePath>.*\.vssdk\..*</ModulePath>
+                <ModulePath>.*yamldotnet.*</ModulePath>
+                <ModulePath>.*cloudfoundry.manifests.dll</ModulePath>
               </Exclude>
             </ModulePaths>
             <!-- We recommend you do not change the following values: -->
@@ -25,9 +27,4 @@
       </DataCollector>
     </DataCollectors>
   </DataCollectionRunSettings>
-  
-  <MSTest>
-    <SettingsFile>IntegrationTests.testsettings</SettingsFile> 
-    <ForcedLegacyMode>true</ForcedLegacyMode> 
-  </MSTest>
 </RunSettings>

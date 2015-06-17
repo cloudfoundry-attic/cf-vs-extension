@@ -9,7 +9,7 @@
     using System.Windows;
     using System.Windows.Data;
 
-    public class VisiblityConverter : IValueConverter
+    public class VisibilityConverter : IValueConverter
     {
         public bool Reversed { get; set; }
 
@@ -27,7 +27,7 @@
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new InvalidOperationException("VisiblityConverter can only be used OneWay.");
+            throw new InvalidOperationException("VisibilityConverter can only be used OneWay.");
         }
     }
 }

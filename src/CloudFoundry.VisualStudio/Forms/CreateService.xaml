@@ -1,0 +1,33 @@
+﻿<Window x:Class="CloudFoundry.VisualStudio.Forms.CreateService"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Create Service Instance" Height="180" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+    
+    <Window.Resources>
+        <Thickness x:Key="DefaultMargin" Top="5" Bottom="5" Left="5" Right="5"></Thickness>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+    
+        <Label Content="Service Name" Grid.Row="0" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
+        <TextBox Name="ServiceName" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Width="auto" Margin="{StaticResource DefaultMargin}"></TextBox>
+
+        <Label Content="Service Type" Grid.Row="1" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
+        <ComboBox Name="ServiceType" Grid.Row="1" Grid.Column="1" Margin="{StaticResource DefaultMargin}" SelectionChanged="ServiceType_SelectionChanged"></ComboBox>
+
+        <Label Content="Service Plan" Grid.Row="2" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
+        <ComboBox Name="ServicePlan" Grid.Row="2" Grid.Column="1" Width="auto" Margin="{StaticResource DefaultMargin}"></ComboBox>
+
+        <Button Grid.Row="3" Grid.ColumnSpan="2" Margin="{StaticResource DefaultMargin}" Click="Button_Click">Create service</Button>
+    </Grid>
+</Window>
