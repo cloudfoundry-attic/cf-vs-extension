@@ -25,26 +25,29 @@ namespace CloudFoundry.VisualStudio.Forms
     public partial class PushDialog : DialogWindow
     {
         private CancellationToken cancellationToken;
+        private PublishProfileEditorResources publishProfileResources;
 
         public PushDialog(PublishProfile package)
         {
             this.cancellationToken = new CancellationToken();
-            var publishProfileResources = new PublishProfileEditorResources(package, this.cancellationToken);
-
+            this.publishProfileResources = new PublishProfileEditorResources(package, this.cancellationToken);
             this.DataContext = publishProfileResources;
+
             InitializeComponent();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var publishResources = this.DataContext as PublishProfileEditorResources;
+            this.publishProfileResources.Refresh(PublishProfileRefreshTarget.Client);
+        }
 
-            if (publishResources == null)
-            {
-                return;
-            }
+        private void wizardPush_Finish(object sender, RoutedEventArgs e)
+        {
+            this.publishProfileResources.PublishProfile.Save();
 
-            publishResources.Refresh(PublishProfileRefreshTarget.Client);
+            // this.publishProfileResources.PublishProfile.Project
+            // this.publishProfileResources.PublishProfile.Path
+            // BUILD
         }
     }
 }
