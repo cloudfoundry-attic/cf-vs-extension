@@ -22,7 +22,7 @@
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
 
-    <xctk:Wizard FinishButtonClosesWindow="True">
+    <xctk:Wizard x:Name="wizardPush" FinishButtonClosesWindow="True" Finish="wizardPush_Finish">
         <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Target"
                          Description="Target"
