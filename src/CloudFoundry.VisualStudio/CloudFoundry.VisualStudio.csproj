@@ -47,29 +47,20 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CloudFoundry.CloudController.Common, Version=1.0.0.211, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.211-alpha\lib\Net45\CloudFoundry.CloudController.Common.dll</HintPath>
+    <Reference Include="CloudFoundry.CloudController.Common">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.20\lib\Net45\CloudFoundry.CloudController.Common.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.CloudController.V2.Client, Version=1.0.0.211, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.211-alpha\lib\Net45\CloudFoundry.CloudController.V2.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.CloudController.V2.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.20\lib\Net45\CloudFoundry.CloudController.V2.Client.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.Loggregator.Client, Version=1.0.0.211, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.211-alpha\lib\Net45\CloudFoundry.Loggregator.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.Loggregator.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.20\lib\Net45\CloudFoundry.Loggregator.Client.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.Logyard.Client, Version=1.0.0.211, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.211-alpha\lib\Net45\CloudFoundry.Logyard.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.Logyard.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.20\lib\Net45\CloudFoundry.Logyard.Client.dll</HintPath>
     </Reference>
-    <Reference Include="CloudFoundry.Manifests, Version=1.0.0.211, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.211-alpha\lib\Net45\CloudFoundry.Manifests.XML\CloudFoundry.Manifests.dll</HintPath>
-    </Reference>
-    <Reference Include="CloudFoundry.UAA.Client, Version=1.0.0.211, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.211-alpha\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
+    <Reference Include="CloudFoundry.UAA.Client">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.20\lib\Net45\CloudFoundry.UAA.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Utilities.v12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -145,9 +136,8 @@
     <Reference Include="WebSocket4Net">
       <HintPath>..\..\packages\WebSocket4Net.0.12\lib\net45\WebSocket4Net.dll</HintPath>
     </Reference>
-    <Reference Include="WebSocket4Net.ProxyUtilities, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cf-dotnet-sdk.1.0.0.211-alpha\lib\Net45\WebSocket4Net.ProxyUtilities.dll</HintPath>
+    <Reference Include="WebSocket4Net.ProxyUtilities">
+      <HintPath>..\..\packages\cf-dotnet-sdk.1.2.0.20\lib\Net45\WebSocket4Net.ProxyUtilities.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
@@ -173,10 +163,6 @@
     </Reference>
     <Reference Include="Xceed.Wpf.Toolkit, Version=2.4.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.4\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="YamlDotNet, Version=3.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\YamlDotNet.3.6.0\lib\net35\YamlDotNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
