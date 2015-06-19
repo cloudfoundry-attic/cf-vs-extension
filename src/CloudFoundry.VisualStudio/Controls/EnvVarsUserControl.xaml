@@ -33,15 +33,15 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="Environment Variables" />
         <Button Grid.Row="0" Grid.Column="1" Name="btnEditEnvVar" Margin="0,0,0,5"
-                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnEditEnvVar_Click">
             <Image Stretch="None" Source="{StaticResource EditImage}" />
         </Button>
         <Button Grid.Row="0" Grid.Column="2" Name="btnRemoveEnvVar" Margin="5,0,0,5"
-                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnRemoveEnvVar_Click">
             <Image Stretch="None" Source="{StaticResource DeleteImage}" />
         </Button>
 
-        <ListView Grid.Row="1" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" x:Name="dgEnvVars" 
+        <ListView Grid.Row="1" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" x:Name="lvEnvVars" 
                   ItemsSource="{Binding PublishProfile.Application.EnvironmentVariables}">
 
             <ListView.View>

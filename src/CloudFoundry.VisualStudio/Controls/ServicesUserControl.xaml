@@ -43,7 +43,7 @@
                     <GridViewColumn x:Name="ColumnUsed" Header="">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox Focusable="False" IsChecked="{Binding Used}"/>
+                                <CheckBox Focusable="False" IsChecked="{Binding Selected}"></CheckBox>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

@@ -28,42 +28,48 @@ namespace CloudFoundry.VisualStudio.Controls
         }
 
         private void btnAddEnvVar_Click(object sender, RoutedEventArgs e)
-        {  
-            //var profile = (this.DataContext as PublishProfile);
-
-            //if (!profile.CFAppManifest.EnvironmentVars.ContainsKey(tbEnvVarKey.Text))
-            //{
-            //    profile.CFAppManifest.EnvironmentVars.Add(tbEnvVarKey.Text, tbEnvVarValue.Text);
-
-            //    tbEnvVarValue.Clear();
-            //    tbEnvVarKey.Clear();
-            //    dgEnvVars.Items.Refresh();
-            //}
-            //else
-            //{
-            //    MessageBoxHelper.DisplayError("An environment variable with the same key has already been added!");
-            //}
-        }
-
-        private void Delete_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgEnvVars.SelectedItem != null)
-            //{
-            //    try
-            //    {
-            //        KeyValuePair<string, string> selectedEnvVar = (KeyValuePair<string, string>)dgEnvVars.SelectedItem;
-            //        var profile = (this.DataContext as PublishProfile);
-            //        if (profile != null)
-            //        {
-            //            profile.CFAppManifest.EnvironmentVars.Remove(selectedEnvVar.Key);
-            //        }
-            //        dgEnvVars.Items.Refresh();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBoxHelper.DisplayError(ex);
-            //    }
-            //}
+            var dataContext = (this.DataContext as PublishProfileEditorResources);
+
+            if (dataContext == null)
+            {
+                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+            }
+
+            dataContext.PublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
+
+            tbEnvVarValue.Clear();
+            tbEnvVarKey.Clear();
+            lvEnvVars.Items.Refresh();
         }
+
+
+        private void btnRemoveEnvVar_Click(object sender, RoutedEventArgs e)
+        {
+            var dataContext = (this.DataContext as PublishProfileEditorResources);
+
+            if (dataContext == null)
+            {
+                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+            }
+
+            foreach (var item in lvEnvVars.SelectedItems)
+            {
+                var envVar = (KeyValuePair<string, string>)item;
+                dataContext.PublishProfile.Application.EnvironmentVariables.Remove(envVar.Key);
+            }
+            lvEnvVars.Items.Refresh();
+        }
+
+        private void btnEditEnvVar_Click(object sender, RoutedEventArgs e)
+        {
+            if (lvEnvVars.SelectedItem != null)
+            {
+                var envVar = (KeyValuePair<string, string>)lvEnvVars.SelectedItem;
+                tbEnvVarKey.Text = envVar.Key;
+                tbEnvVarValue.Text = envVar.Value;
+            }
+        }
+
     }
 }

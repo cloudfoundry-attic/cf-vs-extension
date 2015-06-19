@@ -22,7 +22,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private ObservableCollection<ListAllBuildpacksResponse> buildpacks = new ObservableCollection<ListAllBuildpacksResponse>();
         private ObservableCollection<ListAllSharedDomainsResponse> sharedDomains = new ObservableCollection<ListAllSharedDomainsResponse>();
         private ObservableCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomains = new ObservableCollection<ListAllPrivateDomainsForOrganizationResponse>();
-        private ObservableCollection<ServiceProfile> serviceInstances = new ObservableCollection<ServiceProfile>();
+        private ObservableCollection<ServiceInstanceSelection> serviceInstances = new ObservableCollection<ServiceInstanceSelection>();
 
         public ObservableCollection<ListAllOrganizationsResponse> Orgs
         {
@@ -48,23 +48,36 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set { buildpacks = value; }
         }
 
-        public ObservableCollection<ListAllSharedDomainsResponse> SharedDomains
+        public IEnumerable<SharedDomainWithSelection> SharedDomains
         {
-            get { return sharedDomains; }
-            set { sharedDomains = value; }
+            get
+            {
+                return this.sharedDomains.Select(d => new SharedDomainWithSelection(this)
+                {
+                    SharedDomain = d
+                });
+            }
         }
 
-        public ObservableCollection<ListAllPrivateDomainsForOrganizationResponse> PrivateDomains
+        public IEnumerable<PrivateDomainsWithSelection> PrivateDomains
         {
-            get { return privateDomains; }
-            set { privateDomains = value; }
+            get
+            {
+                return this.privateDomains.Select(d => new PrivateDomainsWithSelection(this)
+                {
+                    PrivateDomain = d
+                });
+            }
         }
 
-        public ObservableCollection<ServiceProfile> ServiceInstances
+        public ObservableCollection<ServiceInstanceSelection> ServiceInstances
         {
-            get { return serviceInstances; }
-            set { serviceInstances = value; }
+            get
+            {
+                return this.serviceInstances;
+            }
         }
+
 
         public PublishProfile PublishProfile
         {
@@ -241,7 +254,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
-        private void OnUIThread(Action action)
+        public void OnUIThread(Action action)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
         }
@@ -417,24 +430,18 @@ Please note that credentials are saved automatically in the Windows Credential M
                     var servicePlan = await this.client.ServicePlans.RetrieveServicePlan(serviceInstance.ServicePlanGuid);
                     var systemService = await this.client.Services.RetrieveService(servicePlan.ServiceGuid);
 
-                    ServiceProfile serviceProfile = new ServiceProfile();
+                    ServiceInstanceSelection serviceProfile = new ServiceInstanceSelection(this);
 
                     serviceProfile.ServiceInstance = serviceInstance;
                     serviceProfile.Service = systemService;
                     serviceProfile.ServicePlan = servicePlan;
 
-                    foreach (string serviceInstanceName in publishProfile.Application.Services)
-                    {
-                        if (serviceInstanceName == serviceInstance.Name)
-                        {
-                            serviceProfile.Used = true;
-                        }
-                    }
                     OnUIThread(() => this.serviceInstances.Add(serviceProfile));
                 }
 
                 serviceInstances = await serviceInstances.GetNextPage();
             }
+            RaisePropertyChangedEvent("ServiceInstances");
         }
 
         private async Task RefreshStacks()
@@ -492,6 +499,8 @@ Please note that credentials are saved automatically in the Windows Credential M
 
                 sharedDomains = await sharedDomains.GetNextPage();
             }
+
+            RaisePropertyChangedEvent("SharedDomains");
         }
 
         private async Task RefreshPrivateDomains()
@@ -518,6 +527,8 @@ Please note that credentials are saved automatically in the Windows Credential M
 
                 privateDomains = await privateDomains.GetNextPage();
             }
+
+            RaisePropertyChangedEvent("PrivateDomains");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

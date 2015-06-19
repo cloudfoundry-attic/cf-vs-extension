@@ -22,7 +22,7 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -45,40 +45,66 @@
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
 
-        
-        
+
+
         <CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Content="Don't create any routes"
-                  IsChecked="{Binding CFAppManifest.NoRoute}" Focusable="False" />
+                  IsChecked="{Binding PublishProfile.Application.NoRoute}" Focusable="False" />
 
         <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Content="Hosts" />
-        <ListView Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="3" x:Name="dgRoutes" 
-                  ItemsSource="{Binding PublishProfile.Application.Hosts}" Focusable="False">
+        <ListView Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="3" x:Name="lvRoutes" 
+                  ItemsSource="{Binding PublishProfile.Application.Hosts}" Focusable="False" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
             <ListView.View>
                 <GridView ColumnHeaderContainerStyle="{StaticResource CollapsedHeaderStyle}">
-                    <GridViewColumn DisplayMemberBinding="{Binding}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding}" Width="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType=ListView}, Path=ActualWidth}" />
                 </GridView>
             </ListView.View>
         </ListView>
 
         <TextBox Grid.Row="2" Grid.Column="1" x:Name="tbName" Margin="0,0,0,3"/>
         <Button Grid.Row="2" Grid.Column="2" x:Name="btnAddHost" Margin="3,0,0,3" 
-                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnAddHost_Click">
             <Image Stretch="None" Source="{StaticResource AddGenericImage}" />
         </Button>
-        <Button Grid.Row="2" Grid.Column="3" x:Name="btnDeleteHost" Margin="3,0,0,3" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+        <Button Grid.Row="2" Grid.Column="3" x:Name="btnDeleteHost" Margin="3,0,0,3" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnDeleteHost_Click">
             <Image Stretch="None" Source="{StaticResource DeleteImage}" />
-        </Button>        
-
-        
+        </Button>
         
         <Label Grid.Row="1" Grid.Column="5" Grid.ColumnSpan="3" Content="Shared Domains" />
-        <ListView Grid.Row="2" Grid.Column="5" Grid.RowSpan="2" x:Name="dgSharedDomains" 
-                  ItemsSource="{Binding SharedDomains}" DisplayMemberPath="Name">
+        <ListView Grid.Row="2" Grid.Column="5" Grid.RowSpan="2" x:Name="lvSharedDomains" 
+                  ItemsSource="{Binding SharedDomains}" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Focusable="False" IsChecked="{Binding Selected}"></CheckBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding SharedDomain.Name}" Width="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType=ListView}, Path=ActualWidth}" ></GridViewColumn>
+                </GridView>     
+            </ListView.View>
         </ListView>
 
         <Label Grid.Row="4" Grid.Column="5" Grid.ColumnSpan="3" Content="Private Domains" />
-        <ListView Grid.Row="5" Grid.Column="5" x:Name="dgPrivateDomains" 
-                  ItemsSource="{Binding PrivateDomains}" DisplayMemberPath="Name">
+        <ListView Grid.Row="5" Grid.Column="5" x:Name="lvPrivateDomains" 
+                  ItemsSource="{Binding PrivateDomains}" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Focusable="False" IsChecked="{Binding Selected}"></CheckBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding PrivateDomain.Name}" 
+                                    Width="{Binding RelativeSource={RelativeSource FindAncestor, 
+                                    AncestorType=ListView}, Path=ActualWidth}" ></GridViewColumn>
+                </GridView>
+            </ListView.View>
         </ListView>
 
 
