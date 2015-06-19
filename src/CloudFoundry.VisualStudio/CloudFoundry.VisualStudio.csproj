@@ -280,6 +280,7 @@
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemActionContinuation.cs" />
+    <Compile Include="ProjectPush\PrivateDomainsWithSelection.cs" />
     <Compile Include="ProjectPush\PublishProfile.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
     <Compile Include="Model\RoutesCollection.cs" />
@@ -302,7 +303,8 @@
     <Compile Include="Guids.cs" />
     <Compile Include="ProjectPush\PublishProfileEditorResources.cs" />
     <Compile Include="ProjectPush\PublishProfileRefreshTarget.cs" />
-    <Compile Include="ProjectPush\ServiceProfile.cs" />
+    <Compile Include="ProjectPush\ServiceInstanceSelection.cs" />
+    <Compile Include="ProjectPush\SharedDomainWithSelection.cs" />
     <Compile Include="PublishXmlEditorFactory.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
