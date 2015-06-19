@@ -28,7 +28,7 @@ namespace CloudFoundry.VisualStudio.Controls
         }
 
         private void btnAddEnvVar_Click(object sender, RoutedEventArgs e)
-        {  
+        {
             //var profile = (this.DataContext as PublishProfile);
 
             //if (!profile.CFAppManifest.EnvironmentVars.ContainsKey(tbEnvVarKey.Text))
@@ -45,25 +45,28 @@ namespace CloudFoundry.VisualStudio.Controls
             //}
         }
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
+
+        private void btnRemoveEnvVar_Click(object sender, RoutedEventArgs e)
         {
-            //if (dgEnvVars.SelectedItem != null)
+            foreach (var item in lvEnvVars.SelectedItems)
+            {
+                //var envVar = item as KeyValuePair<string, string>;
+            }
+            //try
             //{
-            //    try
+            //    KeyValuePair<string, string> selectedEnvVar = (KeyValuePair<string, string>)dgEnvVars.SelectedItem;
+            //    var dataContext = (this.DataContext as PublishProfileEditorResources);
+            //    if (dataContext != null)
             //    {
-            //        KeyValuePair<string, string> selectedEnvVar = (KeyValuePair<string, string>)dgEnvVars.SelectedItem;
-            //        var profile = (this.DataContext as PublishProfile);
-            //        if (profile != null)
-            //        {
-            //            profile.CFAppManifest.EnvironmentVars.Remove(selectedEnvVar.Key);
-            //        }
-            //        dgEnvVars.Items.Refresh();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBoxHelper.DisplayError(ex);
+            //        dataContext.PublishProfile.Application.EnvironmentVariables.Remove(selectedEnvVar.Key);
             //    }
             //}
+            //catch (Exception ex)
+            //{
+            //    MessageBoxHelper.DisplayError(ex);
+            //}
+            //lvEnvVars.Items.Refresh();
         }
+
     }
 }
