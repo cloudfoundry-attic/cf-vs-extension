@@ -33,7 +33,7 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="Environment Variables" />
         <Button Grid.Row="0" Grid.Column="1" Name="btnEditEnvVar" Margin="0,0,0,5"
-                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnEditEnvVar_Click">
             <Image Stretch="None" Source="{StaticResource EditImage}" />
         </Button>
         <Button Grid.Row="0" Grid.Column="2" Name="btnRemoveEnvVar" Margin="5,0,0,5"

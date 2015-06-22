@@ -44,10 +44,6 @@ namespace CloudFoundry.VisualStudio.Forms
         private void wizardPush_Finish(object sender, RoutedEventArgs e)
         {
             this.publishProfileResources.PublishProfile.Save();
-
-            // this.publishProfileResources.PublishProfile.Project
-            // this.publishProfileResources.PublishProfile.Path
-            // BUILD
         }
     }
 }

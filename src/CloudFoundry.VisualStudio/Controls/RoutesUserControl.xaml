@@ -48,7 +48,7 @@
 
 
         <CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Content="Don't create any routes"
-                  IsChecked="{Binding CFAppManifest.NoRoute}" Focusable="False" />
+                  IsChecked="{Binding PublishProfile.Application.NoRoute}" Focusable="False" />
 
         <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Content="Hosts" />
         <ListView Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" Grid.ColumnSpan="3" x:Name="lvRoutes" 
