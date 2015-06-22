@@ -21,35 +21,34 @@
             <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-
     <xctk:Wizard x:Name="wizardPush" FinishButtonClosesWindow="True" Finish="wizardPush_Finish">
         <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Target"
-                         Description="Target"
+                         Description="Cloud Foundry target."
                          CanSelectNextPage="{Binding HasErrors, Converter={StaticResource InverseBoolean}}"
                          IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
             <Controls:TargetUserControl x:Name="ucTarget" />
         </xctk:WizardPage>
         <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
-                         Title="Application Settings"
-                         Description="Application Settings">
+                         Title="Application"
+                         Description="Application settings.">
 
             <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
-                         Title="Routes" Description="Routes" CanFinish="True">
+                         Title="Routes" Description="Application routes settings." CanFinish="True">
             <Controls:RoutesUserControl x:Name="ucRoutes" />
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
-                         Title="Services" Description="Services" CanFinish="True">
+                         Title="Services" Description="Application services settings." CanFinish="True">
             <Controls:ServicesUserControl x:Name="ucServices" />
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
                          Title="Environment Variables"
-                         Description="Environment Variables"
+                         Description="Application environment variables settings."
                          CanFinish="True">
             <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
         </xctk:WizardPage>

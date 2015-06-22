@@ -436,13 +436,6 @@ Please note that credentials are saved automatically in the Windows Credential M
                     serviceProfile.Service = systemService;
                     serviceProfile.ServicePlan = servicePlan;
 
-                    foreach (string serviceInstanceName in publishProfile.Application.Services)
-                    {
-                        if (serviceInstanceName == serviceInstance.Name)
-                        {
-                            serviceProfile.Selected = true;
-                        }
-                    }
                     OnUIThread(() => this.serviceInstances.Add(serviceProfile));
                 }
 

@@ -45,11 +45,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 if (value && !this.Selected)
                 {
-                    this.publishProfileResources.PublishProfile.Application.Domains.Add(this.ServiceInstance.Name);
+                    this.publishProfileResources.PublishProfile.Application.Services.Add(this.ServiceInstance.Name);
                 }
                 else if (this.Selected)
                 {
-                    this.publishProfileResources.PublishProfile.Application.Domains.Remove(this.ServiceInstance.Name);
+                    this.publishProfileResources.PublishProfile.Application.Services.Remove(this.ServiceInstance.Name);
                 }
 
                 RaisePropertyChangedEvent("Selected");
