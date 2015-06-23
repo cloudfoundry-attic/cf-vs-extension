@@ -47,7 +47,7 @@
             PublishProfile packageFile;
             try
             {
-                packageFile = PublishProfile.Load(project, pszMkDocument);
+                packageFile = PublishProfile.Load(project, pszMkDocument, CloudFoundry_VisualStudioPackage.GetTargetFile());
             }
             catch (Exception ex)
             {

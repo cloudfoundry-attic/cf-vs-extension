@@ -23,6 +23,8 @@
     using CloudFoundry.UAA;
     using System.Threading;
     using Microsoft.VisualStudio.Threading;
+    using Microsoft.VisualStudio.ComponentModelHost;
+    using NuGet.VisualStudio;
 
 
     [ComVisible(true)]
@@ -32,7 +34,7 @@
         private Project project;
         private string path;
         private XmlSerializerNamespaces namespaces = null;
-
+      
         private string user;
         private string password;
         private bool savedPassword;
@@ -231,6 +233,13 @@
             }
         }
 
+        [XmlIgnore]
+        public string TargetFile 
+        { 
+            get; 
+            set; 
+        }
+
         private PublishProfile()
         {
             this.namespaces = new XmlSerializerNamespaces(new XmlQualifiedName[] {
@@ -298,7 +307,7 @@
         /// <param name="path">Absolute path to the publish profile to load. If the file does not exist, defaults will be loaded for the object.</param>
         /// <returns>A new PublishProfile.</returns>
         /// <exception cref="System.ArgumentNullException">project</exception>
-        public static PublishProfile Load(Project project, string path)
+        public static PublishProfile Load(Project project, string path, string targetFile)
         {
             if (project == null)
             {
@@ -337,6 +346,7 @@
                 };
             }
 
+            publishProfile.TargetFile = targetFile;
             publishProfile.path = path;
             publishProfile.project = project;
             publishProfile.LoadManifest();
@@ -367,6 +377,10 @@
                 {
                     xmlWriter.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
                     xmlWriter.WriteAttributeString("ToolsVersion", "4.0");
+
+                    xmlWriter.WriteStartElement("Import");
+                    xmlWriter.WriteAttributeString("Project", this.TargetFile);
+                    xmlWriter.WriteEndElement();
 
                     serializer.Serialize(xmlWriter, this, this.Namespaces);
 

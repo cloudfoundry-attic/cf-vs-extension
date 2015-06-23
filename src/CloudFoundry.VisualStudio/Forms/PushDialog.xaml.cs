@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.PlatformUI;
+using CloudFoundry.VisualStudio.MSBuild;
 
 namespace CloudFoundry.VisualStudio.Forms
 {
@@ -44,6 +45,13 @@ namespace CloudFoundry.VisualStudio.Forms
         private void wizardPush_Finish(object sender, RoutedEventArgs e)
         {
             this.publishProfileResources.PublishProfile.Save();
+
+            MSBuildProcess process = new MSBuildProcess();
+            process.MSBuildProperties = new Dictionary<string, string>();
+            process.MSBuildProperties.Add("DeployOnBuild", "true");
+            process.MSBuildProperties.Add("PublishProfile", this.publishProfileResources.PublishProfile.Path);
+
+            process.Publish(this.publishProfileResources.PublishProfile.Project);
         }
     }
 }
