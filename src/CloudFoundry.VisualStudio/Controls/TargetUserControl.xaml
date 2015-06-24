@@ -58,7 +58,7 @@
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding Path=LastRefreshTarget}" 
                                            Value="{x:Static profile:PublishProfileRefreshTarget.Client}"/>
-                                <Condition Binding="{Binding Path=HasErrors}" Value="True" />
+                                <Condition Binding="{Binding Path=Error.HasErrors}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush" Value="Crimson" />
                         </MultiDataTrigger>
@@ -84,7 +84,7 @@
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
-                 Text="{Binding Path=ErrorMessage}" 
-                 Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
+                 Text="{Binding Path=Error.ErrorMessage}" 
+                 Visibility="{Binding Path=Error.HasErrors, Converter={StaticResource Visibility}}"/>
     </Grid>
 </UserControl>

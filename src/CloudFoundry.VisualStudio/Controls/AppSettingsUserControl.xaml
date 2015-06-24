@@ -52,7 +52,7 @@
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="4" MaxLines="4" Background="Transparent"
-                 Text="{Binding Path=ErrorMessage}" 
-                 Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
+                 Text="{Binding Path=Error.ErrorMessage}" 
+                 Visibility="{Binding Path=Error.HasErrors, Converter={StaticResource Visibility}}"/>
     </Grid>
 </UserControl>

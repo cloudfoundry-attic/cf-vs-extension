@@ -30,15 +30,22 @@ namespace CloudFoundry.VisualStudio.Controls
 
         private void ButtonSetTarget_Click(object sender, RoutedEventArgs e)
         {
-            using (var loginForm = new LoginWizardForm())
-            {
-                var result = loginForm.ShowDialog();
+            var dataContext = (this.DataContext as PublishProfileEditorResources);
 
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                    var target = loginForm.CloudTarget;
-                    this.cbTarget.SelectedValue = target;
-                }
+            if (dataContext == null)
+            {
+                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+            }
+
+            var loginForm = new LoginForm();
+
+            var result = loginForm.ShowDialog();
+
+            if (result == true)
+            {
+                dataContext.PublishProfile.Password = loginForm.Password;
+                var target = loginForm.CloudTarget;
+                this.cbTarget.SelectedValue = target;
             }
         }
     }

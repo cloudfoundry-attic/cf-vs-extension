@@ -55,19 +55,6 @@
             get { return this.loginControl.Password; }
         }
 
-        public void SetLoginUrl(Uri newLoginUrl)
-        {
-            if (this.loginControl != null)
-            {
-                this.loginControl.TargetUrl = newLoginUrl.ToString();
-            }
-        }
-
-        public void SetReloginTarget(CloudTarget cloudTarget)
-        {
-            this.reloginTarget = cloudTarget;
-        }
-
         private void LoginWizardForm_Load(object sender, EventArgs e)
         {
             this.LoginTargetLinkLabel_Click(sender, e);

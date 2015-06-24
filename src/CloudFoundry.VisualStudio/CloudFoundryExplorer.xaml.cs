@@ -98,20 +98,19 @@
 
         private void AddTargetButton_Click(object sender, RoutedEventArgs e)
         {
-            using (var loginForm = new LoginWizardForm())
+            var loginForm = new LoginForm();
+
+            var result = loginForm.ShowDialog();
+
+            if (result == true)
             {
-                var result = loginForm.ShowDialog();
+                var target = loginForm.CloudTarget;
 
-                if (result == System.Windows.Forms.DialogResult.OK)
+                if (target != null)
                 {
-                    var target = loginForm.CloudTarget;
-
-                    if (target != null)
-                    {
-                        CloudTargetManager.SaveTarget(target);
-                        CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Password);
-                        this.ReloadTargets();
-                    }
+                    CloudTargetManager.SaveTarget(target);
+                    CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Password);
+                    this.ReloadTargets();
                 }
             }
         }
