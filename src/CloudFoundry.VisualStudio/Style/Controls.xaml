@@ -18,6 +18,7 @@
         <ResourceDictionary Source="ScrollStyle.xaml" />
         <ResourceDictionary Source="TextBoxStyle.xaml" />
         <ResourceDictionary Source="TextBlockStyle.xaml" />
+        <ResourceDictionary Source="PasswordBoxStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

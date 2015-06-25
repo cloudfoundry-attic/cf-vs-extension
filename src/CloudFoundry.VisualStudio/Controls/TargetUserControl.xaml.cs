@@ -43,7 +43,6 @@ namespace CloudFoundry.VisualStudio.Controls
 
             if (result == true)
             {
-                dataContext.PublishProfile.Password = loginForm.Password;
                 var target = loginForm.CloudTarget;
                 this.cbTarget.SelectedValue = target;
             }

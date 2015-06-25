@@ -26,7 +26,7 @@ namespace CloudFoundry.VisualStudio.Forms
     public partial class LoginForm : DialogWindow
     {
         private string version = string.Empty;
-        private string password = string.Empty;
+        private CloudTarget cloudTarget = null;
 
         public LoginForm()
         {
@@ -38,25 +38,14 @@ namespace CloudFoundry.VisualStudio.Forms
         {
             get
             {
-                return CloudTarget.CreateV2Target(
-                            new Uri(this.tbUrl.Text),
-                            this.tbDescription.Text,
-                            this.tbUsername.Text,
-                            (bool)this.cbIgnoreSSK.IsChecked,
-                            this.version);
+                return cloudTarget;
             }
-        }
-
-        internal string Password
-        {
-            get { return this.password; }
         }
 
         private async void btnOk_Click(object sender, RoutedEventArgs e)
         {
             this.IsEnabled = false;
             var targetUrl = this.tbUrl.Text;
-            this.password = pbPassword.Password;
 
             var errorResource = this.DataContext as ErrorResource;
             if (errorResource == null)
@@ -75,6 +64,17 @@ namespace CloudFoundry.VisualStudio.Forms
                 var authContext = await client.Login(creds);
                 var info = await client.Info.GetInfo();
                 this.version = info.ApiVersion;
+
+                cloudTarget = CloudTarget.CreateV2Target(
+                            new Uri(this.tbUrl.Text),
+                            this.tbDescription.Text,
+                            this.tbUsername.Text,
+                            (bool)this.cbIgnoreSSK.IsChecked,
+                            this.version);
+
+                CloudTargetManager.SaveTarget(cloudTarget);
+                CloudCredentialsManager.Save(cloudTarget.TargetUrl, cloudTarget.Email, this.pbPassword.Password);
+
                 this.DialogResult = true;
                 this.Close();
             }

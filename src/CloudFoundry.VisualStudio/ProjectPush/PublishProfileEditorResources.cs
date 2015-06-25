@@ -297,13 +297,13 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 this.publishProfile.SkipSSLValidation);
 
             AuthenticationContext authenticationContext = null;
-            if (!string.IsNullOrWhiteSpace(this.publishProfile.RefreshToken))
+            if (!string.IsNullOrWhiteSpace(this.PublishProfile.RefreshToken))
             {
-                authenticationContext = await client.Login(this.publishProfile.RefreshToken);
+                authenticationContext = await client.Login(this.PublishProfile.RefreshToken);
             }
             else
             {
-                if (!string.IsNullOrWhiteSpace(this.publishProfile.Password))
+                if (!string.IsNullOrWhiteSpace(this.PublishProfile.Password))
                 {
                     authenticationContext = await client.Login(new CloudCredentials()
                     {
