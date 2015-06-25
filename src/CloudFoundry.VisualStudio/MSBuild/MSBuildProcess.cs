@@ -5,20 +5,20 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Microsoft.Build.Evaluation;
     using EnvDTE;
+    using Microsoft.Build.Evaluation;
     using Microsoft.VisualStudio.Shell;
 
     public class MSBuildProcess
     {
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
-        public void Publish(string projectFullPath)
+        public void Publish(EnvDTE.Project projectInfo)
         {
-            this.Publish(projectFullPath, Microsoft.Build.Framework.LoggerVerbosity.Normal);
+            this.Publish(projectInfo, Microsoft.Build.Framework.LoggerVerbosity.Normal);
         }
 
-        public void Publish(string projectFullPath, Microsoft.Build.Framework.LoggerVerbosity verbosity)
+        public void Publish(EnvDTE.Project projectInfo, Microsoft.Build.Framework.LoggerVerbosity verbosity)
         {
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
@@ -59,13 +59,10 @@
                     engine.SetGlobalProperty(parameter.Key, parameter.Value);
                 }
 
-                foreach (var projectItem in engine.LoadedProjects)
-                {
-                    if (projectItem.FullPath.Equals(projectFullPath))
-                    {
-                        projectItem.Build(new string[] { "Build", "WebCloudFoundryPublish" });
-                    }
-                }
+                pane.OutputString("Starting build...");
+
+                Microsoft.Build.Evaluation.Project websiteProject = engine.LoadProject(MSBuildProperties["PublishProfile"]);
+                websiteProject.Build("WebCloudFoundryPublish");
 
                 if (errorList.Tasks.Count > 0)
                 {

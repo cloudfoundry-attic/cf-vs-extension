@@ -6,6 +6,7 @@
     using System.Diagnostics;
     using System.Globalization;
     using System.IO;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using CloudFoundry.VisualStudio.Forms;
@@ -76,6 +77,26 @@
         public static ErrorListProvider GetErrorListPane()
         {
             return errorList;
+        }
+
+        public static string GetTargetFile()
+        {
+            string targetFile = string.Empty;
+            try
+            {
+                var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
+
+                IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
+
+                var packageDir = installerServices.GetInstalledPackages().Where(o => o.Id == CloudFoundry_VisualStudioPackage.PackageId).FirstOrDefault().InstallPath;
+
+                targetFile = System.IO.Path.Combine(packageDir, "cf-msbuild-tasks.targets");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("Error retrieving target file", ex);
+            }
+            return targetFile;
         }
 
         /////////////////////////////////////////////////////////////////////////////
