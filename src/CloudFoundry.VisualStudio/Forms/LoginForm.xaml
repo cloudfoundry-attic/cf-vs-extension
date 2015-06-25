@@ -34,7 +34,7 @@
         <TextBox Name="tbDescription" Grid.Row="0" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto"></TextBox>
 
         <Label Content="Target URL" Grid.Row="1" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-        <TextBox Name="tbUrl" Grid.Row="1" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto"></TextBox>
+        <TextBox Name="tbUrl" Grid.Row="1" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto" LostFocus="tbUrl_LostFocus"></TextBox>
 
         <Label Content="Username" Grid.Row="2" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
         <TextBox Name="tbUsername" Grid.Row="2" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto"></TextBox>

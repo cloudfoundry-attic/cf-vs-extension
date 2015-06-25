@@ -5,6 +5,7 @@ using CloudFoundry.VisualStudio.TargetStore;
 using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -114,6 +115,21 @@ namespace CloudFoundry.VisualStudio.Forms
                 }
             }
             return message;
+        }
+
+        private void tbUrl_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+            if (string.IsNullOrWhiteSpace(this.tbUrl.Text))
+            {
+                return;
+            }
+
+            if (!this.tbUrl.Text.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) &&
+                !this.tbUrl.Text.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.tbUrl.Text = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.tbUrl.Text);
+            }
         }
     }
 }
