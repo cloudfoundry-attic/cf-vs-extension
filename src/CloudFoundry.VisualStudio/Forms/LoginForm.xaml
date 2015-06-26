@@ -6,10 +6,10 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"  x:Class="CloudFoundry.VisualStudio.Forms.LoginForm"
-        Title="Cloud Foundry target login" Height="300" Width="500" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        Title="Cloud Foundry target login" Style="{DynamicResource DialogWindowStyle}" Height="450" Width="500" WindowStartupLocation="CenterScreen">
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
-            <Thickness x:Key="DefaultMargin" Top="5" Bottom="5" Left="5" Right="5"></Thickness>
+
             <converters:VisibilityConverter x:Key="Visibility" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Style\Controls.xaml" />
@@ -19,38 +19,59 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Label Content="Description" Grid.Row="0" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-        <TextBox Name="tbDescription" Grid.Row="0" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto"></TextBox>
+        <Grid Grid.Row="0" Grid.Column="0" Style="{DynamicResource HeaderFooterGridStyle}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label FontWeight="Bold" Content="Add Cloud Foundry Target" VerticalAlignment="Center" Margin="10"></Label>
+        </Grid>
+        <Grid Margin="60,10,60,0" Grid.Row="1" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Content="Description" Grid.Row="0" Grid.Column="0"></Label>
+            <TextBox Name="tbDescription" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Width="auto"></TextBox>
 
-        <Label Content="Target URL" Grid.Row="1" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-        <TextBox Name="tbUrl" Grid.Row="1" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto" LostFocus="tbUrl_LostFocus"></TextBox>
+            <Label Content="Target URL" Grid.Row="2" Grid.Column="0"></Label>
+            <TextBox Name="tbUrl" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto" LostFocus="tbUrl_LostFocus"></TextBox>
 
-        <Label Content="Username" Grid.Row="2" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-        <TextBox Name="tbUsername" Grid.Row="2" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto"></TextBox>
+            <Label Content="Username" Grid.Row="4" Grid.Column="0"></Label>
+            <TextBox Name="tbUsername" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></TextBox>
 
-        <Label Content="Password" Grid.Row="3" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-        <PasswordBox Name="pbPassword" Grid.Row="3" Grid.Column="1" Margin="{StaticResource DefaultMargin}" HorizontalAlignment="Stretch" Width="auto"></PasswordBox>
-        <CheckBox Name="cbIgnoreSSK" Grid.Row="4" Grid.Column="1" Content="Skip SSL validation" Margin="{StaticResource DefaultMargin}"></CheckBox>
-        
-        
-        <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
+            <Label Content="Password" Grid.Row="6" Grid.Column="0" ></Label>
+            <PasswordBox Name="pbPassword" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></PasswordBox>
+            <CheckBox Name="cbIgnoreSSK" Grid.Row="8" Grid.Column="1" Content="Skip SSL validation"></CheckBox>
+
+
+            <TextBox Grid.Row="10" Grid.Column="0"  IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
                  Text="{Binding Path=ErrorMessage}" 
                  Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
 
-        <Grid Grid.Row="6" Grid.Column="1">
+           
+        </Grid>
+        <Grid Grid.Row="2" Grid.Column="0" Style="{DynamicResource HeaderFooterGridStyle}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
@@ -58,8 +79,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
-            <Button Name="btnOk" Content="OK" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="60" Height="25" Margin="{StaticResource DefaultMargin}" Click="btnOk_Click"></Button>
-            <Button Name="btnCancel" Content="Cancel" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Height="25" Width="60" Margin="{StaticResource DefaultMargin}" Click="btnCancel_Click"></Button>
+            <Button Name="btnOk" Content="OK" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" Width="75" Height="25" Click="btnOk_Click" Margin="10,10,5,10"></Button>
+            <Button Name="btnCancel" Content="Cancel" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Height="25" Width="75" Margin="5,10,10,10" Click="btnCancel_Click"></Button>
         </Grid>
     </Grid>
 </ui:DialogWindow>

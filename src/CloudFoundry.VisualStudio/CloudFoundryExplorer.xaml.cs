@@ -13,6 +13,7 @@
     using CloudFoundry.VisualStudio.TargetStore;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Threading;
+    using Xceed.Wpf.Toolkit;
 
     /// <summary>
     /// Interaction logic for MyControl.xaml

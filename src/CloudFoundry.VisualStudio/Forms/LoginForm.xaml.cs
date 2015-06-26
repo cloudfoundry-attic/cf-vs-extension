@@ -81,8 +81,9 @@ namespace CloudFoundry.VisualStudio.Forms
             }
             catch (Exception ex)
             {
-                var exceptions = FormatExceptionMessage(ex);
-                errorResource.ErrorMessage = string.Join(Environment.NewLine, exceptions.ToArray());
+                var errorMessages = new List<string>();
+                ErrorFormatter.FormatExceptionMessage(ex, errorMessages);
+                errorResource.ErrorMessage = string.Join(Environment.NewLine, errorMessages.ToArray());
                 errorResource.HasErrors = true;
 
             }
@@ -93,28 +94,6 @@ namespace CloudFoundry.VisualStudio.Forms
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
-        }
-
-        private List<string> FormatExceptionMessage(Exception ex)
-        {
-            var message = new List<string>();
-            if (ex is AggregateException)
-            {
-                foreach (Exception iex in (ex as AggregateException).Flatten().InnerExceptions)
-                {
-                    message.AddRange(FormatExceptionMessage(iex));
-                }
-            }
-            else
-            {
-                message.Add(ex.Message);
-                Logger.Error(ex.Message, ex);
-                if (ex.InnerException != null)
-                {
-                    message.AddRange(FormatExceptionMessage(ex.InnerException));
-                }
-            }
-            return message;
         }
 
         private void tbUrl_LostFocus(object sender, RoutedEventArgs e)
@@ -128,7 +107,7 @@ namespace CloudFoundry.VisualStudio.Forms
             if (!this.tbUrl.Text.StartsWith("http://", StringComparison.InvariantCultureIgnoreCase) &&
                 !this.tbUrl.Text.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
             {
-                this.tbUrl.Text = string.Format(CultureInfo.InvariantCulture, "http://{0}", this.tbUrl.Text);
+                this.tbUrl.Text = string.Format(CultureInfo.InvariantCulture, "https://{0}", this.tbUrl.Text);
             }
         }
     }
