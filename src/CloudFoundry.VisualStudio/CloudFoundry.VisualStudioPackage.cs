@@ -70,6 +70,10 @@
         /// </summary>
         public CloudFoundry_VisualStudioPackage()
         {
+            // we need to force load an object from the Xceed assembly, otherwise the types don't get loaded on time
+            var hackObject = new Xceed.Wpf.Toolkit.AutoSelectTextBox();
+            hackObject = null;
+
             errorList = new ErrorListProvider(this);
             this.dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
         }

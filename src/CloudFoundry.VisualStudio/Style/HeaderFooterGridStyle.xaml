@@ -4,13 +4,7 @@
                     xmlns:wpf="clr-namespace:CloudFoundry.VisualStudio.Style"
                     xmlns:cf="clr-namespace:CloudFoundry.VisualStudio">
 
-    <Style TargetType="GridSplitter">
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsp:HeaderColors.SeparatorLineBrushKey}}" />
-        <Setter Property="Height" Value="5" />
-        <Setter Property="Focusable" Value="False" />
-    </Style>
-    
-    <Style TargetType="Grid">
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.BackgroundKey}}"/>
+    <Style  x:Key="HeaderFooterGridStyle" TargetType="Grid">
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.BackgroundAccentKey}}" />
     </Style>
 </ResourceDictionary>

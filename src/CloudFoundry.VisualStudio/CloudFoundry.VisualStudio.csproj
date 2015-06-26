@@ -245,12 +245,6 @@
     <Compile Include="Controls\EnvVarsUserControl.xaml.cs">
       <DependentUpon>EnvVarsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\LoginUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\LoginUserControl.Designer.cs">
-      <DependentUpon>LoginUserControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\RoutesUserControl.xaml.cs">
       <DependentUpon>RoutesUserControl.xaml</DependentUpon>
     </Compile>
@@ -269,21 +263,19 @@
     <Compile Include="Forms\CreateService.xaml.cs">
       <DependentUpon>CreateService.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\LoginForm.xaml.cs">
+      <DependentUpon>LoginForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PushDialog.xaml.cs">
       <DependentUpon>PushDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
-    <Compile Include="Forms\LoginWizardForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\LoginWizardForm.Designer.cs">
-      <DependentUpon>LoginWizardForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\MessageBoxHelper.cs" />
     <Compile Include="Model\App.cs" />
     <Compile Include="Model\CloudItemActionContinuation.cs" />
     <Compile Include="MSBuild\MSBuildLogger.cs" />
     <Compile Include="MSBuild\MSBuildProcess.cs" />
+    <Compile Include="ProjectPush\ErrorResource.cs" />
     <Compile Include="ProjectPush\PrivateDomainsWithSelection.cs" />
     <Compile Include="ProjectPush\PublishProfile.cs" />
     <Compile Include="Model\CloudItemAction.cs" />
@@ -325,12 +317,6 @@
     <Compile Include="XmlUri.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\LoginUserControl.resx">
-      <DependentUpon>LoginUserControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\LoginWizardForm.resx">
-      <DependentUpon>LoginWizardForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -441,9 +427,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\LoginForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\PushDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\DialogWindowStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\HeaderFooterGridStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Style\PasswordBoxStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Style\TextBlockStyle.xaml">
       <Generator>MSBuild:Compile</Generator>

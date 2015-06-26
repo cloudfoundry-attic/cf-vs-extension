@@ -24,6 +24,13 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private ObservableCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomains = new ObservableCollection<ListAllPrivateDomainsForOrganizationResponse>();
         private ObservableCollection<ServiceInstanceSelection> serviceInstances = new ObservableCollection<ServiceInstanceSelection>();
 
+        private ErrorResource errorResource = new ErrorResource();
+
+        public ErrorResource Error
+        {
+            get { return errorResource; }
+        }
+
         public ObservableCollection<ListAllOrganizationsResponse> Orgs
         {
             get { return orgs; }
@@ -152,37 +159,9 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private PublishProfile publishProfile;
 
-        private bool hasErrors = false;
-        private string errorMessage = string.Empty;
         private bool refreshing = false;
         private CancellationToken cancellationToken;
         private CloudFoundryClient client;
-
-        public bool HasErrors
-        {
-            get
-            {
-                return hasErrors;
-            }
-            set
-            {
-                hasErrors = value;
-                this.RaisePropertyChangedEvent("HasErrors");
-            }
-        }
-
-        public string ErrorMessage
-        {
-            get
-            {
-                return errorMessage;
-            }
-            set
-            {
-                errorMessage = value;
-                this.RaisePropertyChangedEvent("ErrorMessage");
-            }
-        }
 
         public bool Refreshing
         {
@@ -227,8 +206,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private void EnterRefresh()
         {
             this.Refreshing = true;
-            this.HasErrors = false;
-            this.ErrorMessage = string.Empty;
+            this.Error.HasErrors = false;
+            this.Error.ErrorMessage = string.Empty;
         }
 
         private void ExitRefresh()
@@ -239,8 +218,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private void ExitRefresh(Exception error)
         {
             this.Refreshing = false;
-            this.HasErrors = error != null;
-            if (this.hasErrors)
+            this.Error.HasErrors = error != null;
+            if (this.Error.HasErrors)
             {
                 List<string> errors = new List<string>();
                 ErrorFormatter.FormatExceptionMessage(error, errors);
@@ -250,7 +229,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     sb.AppendLine(errorLine);
                 }
 
-                this.ErrorMessage = sb.ToString();
+                this.Error.ErrorMessage = sb.ToString();
             }
         }
 
@@ -318,13 +297,13 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 this.publishProfile.SkipSSLValidation);
 
             AuthenticationContext authenticationContext = null;
-            if (!string.IsNullOrWhiteSpace(this.publishProfile.RefreshToken))
+            if (!string.IsNullOrWhiteSpace(this.PublishProfile.RefreshToken))
             {
-                authenticationContext = await client.Login(this.publishProfile.RefreshToken);
+                authenticationContext = await client.Login(this.PublishProfile.RefreshToken);
             }
             else
             {
-                if (!string.IsNullOrWhiteSpace(this.publishProfile.Password))
+                if (!string.IsNullOrWhiteSpace(this.PublishProfile.Password))
                 {
                     authenticationContext = await client.Login(new CloudCredentials()
                     {

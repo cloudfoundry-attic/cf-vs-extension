@@ -25,7 +25,7 @@
         <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Target"
                          Description="Cloud Foundry target."
-                         CanSelectNextPage="{Binding HasErrors, Converter={StaticResource InverseBoolean}}"
+                         CanSelectNextPage="{Binding Error.HasErrors, Converter={StaticResource InverseBoolean}}"
                          IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
             <Controls:TargetUserControl x:Name="ucTarget" />
         </xctk:WizardPage>
