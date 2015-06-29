@@ -43,7 +43,7 @@ namespace CloudFoundry.VisualStudio.Forms
             }
         }
 
-        private async void btnOk_Click(object sender, RoutedEventArgs e)
+        private async void btnFinish_Click(object sender, RoutedEventArgs e)
         {
             this.IsEnabled = false;
             var targetUrl = this.tbUrl.Text;
@@ -89,11 +89,6 @@ namespace CloudFoundry.VisualStudio.Forms
             }
             this.IsEnabled = true;
 
-        }
-
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = false;
         }
 
         private void tbUrl_LostFocus(object sender, RoutedEventArgs e)

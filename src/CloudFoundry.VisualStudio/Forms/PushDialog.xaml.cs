@@ -44,6 +44,8 @@ namespace CloudFoundry.VisualStudio.Forms
 
         private void wizardPush_Finish(object sender, RoutedEventArgs e)
         {
+
+            this.publishProfileResources.CleanManifest();
             this.publishProfileResources.PublishProfile.Save();
 
             MSBuildProcess process = new MSBuildProcess();
