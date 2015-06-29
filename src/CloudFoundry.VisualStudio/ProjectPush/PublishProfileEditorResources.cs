@@ -335,6 +335,8 @@ Please note that credentials are saved automatically in the Windows Credential M
             await this.RefreshStacks();
             await this.RefreshBuildpacks();
             await this.RefreshSharedDomains();
+            await this.RefreshPrivateDomains();
+            await this.RefreshServiceInstances();
         }
 
         private async Task RefreshOrganizations()
@@ -508,6 +510,42 @@ Please note that credentials are saved automatically in the Windows Credential M
             }
 
             RaisePropertyChangedEvent("PrivateDomains");
+        }
+
+        internal void CleanManifest()
+        {
+            List<string> selectedDomains = new List<string>();
+            foreach (var privateDomain in this.PrivateDomains)
+            {
+                if (privateDomain.Selected)
+                {
+                    selectedDomains.Add(privateDomain.PrivateDomain.Name);
+                }
+            }
+
+            foreach (var sharedDomain in this.SharedDomains)
+            {
+                if (sharedDomain.Selected)
+                {
+                    selectedDomains.Add(sharedDomain.SharedDomain.Name);
+                }
+            }
+
+            this.publishProfile.Application.Domains.Clear();
+            this.publishProfile.Application.Domains.AddRange(selectedDomains);
+
+            List<string> selectedServices = new List<string>();
+            foreach (var servInstance in this.serviceInstances)
+            {
+                if (servInstance.Selected)
+                {
+                    selectedServices.Add(servInstance.ServiceInstance.Name);
+                }
+            }
+
+            this.publishProfile.Application.Services.Clear();
+            this.publishProfile.Application.Services.AddRange(selectedServices);
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
