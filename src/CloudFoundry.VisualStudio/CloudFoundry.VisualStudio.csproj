@@ -260,8 +260,8 @@
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="ErrorFormater.cs" />
-    <Compile Include="Forms\CreateService.xaml.cs">
-      <DependentUpon>CreateService.xaml</DependentUpon>
+    <Compile Include="Forms\CreateServiceForm.xaml.cs">
+      <DependentUpon>CreateServiceForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\LoginForm.xaml.cs">
       <DependentUpon>LoginForm.xaml</DependentUpon>
@@ -299,6 +299,7 @@
     <Compile Include="Guids.cs" />
     <Compile Include="ProjectPush\PublishProfileEditorResources.cs" />
     <Compile Include="ProjectPush\PublishProfileRefreshTarget.cs" />
+    <Compile Include="ProjectPush\ServiceInstanceEditorResource.cs" />
     <Compile Include="ProjectPush\ServiceInstanceSelection.cs" />
     <Compile Include="ProjectPush\SharedDomainWithSelection.cs" />
     <Compile Include="PublishXmlEditorFactory.cs" />
@@ -423,7 +424,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Forms\CreateService.xaml">
+    <Page Include="Forms\CreateServiceForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

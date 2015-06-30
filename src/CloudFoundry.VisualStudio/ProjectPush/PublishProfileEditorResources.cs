@@ -163,6 +163,14 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private CancellationToken cancellationToken;
         private CloudFoundryClient client;
 
+        public CloudFoundryClient Client 
+        {
+            get 
+            { 
+                return client; 
+            } 
+        }
+        
         public bool Refreshing
         {
             get
