@@ -8,6 +8,7 @@
     using EnvDTE;
     using Microsoft.Build.Evaluation;
     using Microsoft.VisualStudio.Shell;
+    using Microsoft.Build.Framework;
 
     public class MSBuildProcess
     {
@@ -51,25 +52,37 @@
                 MSBuildLogger customLogger = new MSBuildLogger(pane, errorList);
 
                 customLogger.Verbosity = verbosity;
+                pane.Clear();
 
-                engine.RegisterLogger(customLogger);
+                pane.OutputString("Starting push...");
 
-                foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
+                Microsoft.Build.Evaluation.Project websiteProject = null;
+
+                try
                 {
-                    engine.SetGlobalProperty(parameter.Key, parameter.Value);
+                    websiteProject = engine.LoadProject(MSBuildProperties["PublishProfile"]);
+                    var websiteProjectInstance = websiteProject.CreateProjectInstance();
+
+                    foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
+                    {
+                        websiteProject.SetProperty(parameter.Key, parameter.Value);
+                    }
+
+                    websiteProjectInstance.Build("WebCloudFoundryPublish", new List<ILogger>() { customLogger });
+
+                    if (errorList.Tasks.Count > 0)
+                    {
+                        errorList.Show();
+                    }
+                    pane.OutputString("Push operation finished!");
                 }
-
-                pane.OutputString("Starting build...");
-
-                Microsoft.Build.Evaluation.Project websiteProject = engine.LoadProject(MSBuildProperties["PublishProfile"]);
-                websiteProject.Build("WebCloudFoundryPublish");
-
-                if (errorList.Tasks.Count > 0)
+                finally
                 {
-                    errorList.Show();
+                    if (websiteProject != null)
+                    {
+                        engine.UnloadProject(websiteProject);
+                    }
                 }
-
-                engine.UnregisterAllLoggers();
             });
         }
     }

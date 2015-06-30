@@ -34,7 +34,7 @@
         private Project project;
         private string path;
         private XmlSerializerNamespaces namespaces = null;
-      
+
         private string user;
         private string password;
         private bool savedPassword;
@@ -46,6 +46,7 @@
         private string deployTargetFile;
         private string webPublishMethod;
         private string manifest;
+        private string name;
 
         [XmlIgnore]
         public Project Project
@@ -60,6 +61,24 @@
             get
             {
                 return this.path;
+            }
+        }
+
+        [XmlIgnore]
+        public string Name
+        {
+            get
+            {
+                this.name = this.GetProfileName();
+
+                return this.name;
+            }
+            set
+            {
+                var publishProfilePath = CloudFoundry_VisualStudioPackage.GetPublishProfilePath(this.project);
+
+                var fileName = string.Format(CultureInfo.InvariantCulture, "{0}.cf.pubxml", value);
+                this.path = System.IO.Path.Combine(publishProfilePath, fileName);
             }
         }
 
@@ -208,6 +227,8 @@
         {
             get
             {
+
+                this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}.yaml", this.GetProfileName());
                 return this.manifest;
             }
             set
@@ -234,10 +255,10 @@
         }
 
         [XmlIgnore]
-        public string TargetFile 
-        { 
-            get; 
-            set; 
+        public string TargetFile
+        {
+            get;
+            set;
         }
 
         private PublishProfile()
@@ -249,7 +270,7 @@
 
         private void LoadManifest()
         {
-            string projectDir = CloudFoundry_VisualStudioPackage.GetProjectDirectory(project);
+            string projectDir = CloudFoundry_VisualStudioPackage.GetPublishProfilePath(project);
             string absoluteManifestPath = System.IO.Path.Combine(projectDir, this.Manifest);
 
 
@@ -292,12 +313,15 @@
 
         private void SaveManifest()
         {
-            string projectDir = CloudFoundry_VisualStudioPackage.GetProjectDirectory(project);
+            string projectDir = CloudFoundry_VisualStudioPackage.GetProjectDirectory(this.project);
             Directory.CreateDirectory(projectDir);
 
-            string absoluteManifestPath = System.IO.Path.Combine(projectDir, this.Manifest);
-
             this.Application.Path = projectDir;
+
+            string profilePath = CloudFoundry_VisualStudioPackage.GetPublishProfilePath(this.project);
+            Directory.CreateDirectory(profilePath);
+            string absoluteManifestPath = System.IO.Path.Combine(profilePath, this.Manifest);
+
             this.Manifest = absoluteManifestPath;
 
             CloudFoundry.Manifests.Manifest.Save(new Application[] { this.Application }, absoluteManifestPath);
@@ -404,6 +428,22 @@
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private string GetProfileName()
+        {
+            if (string.IsNullOrWhiteSpace(this.path))
+            {
+                return string.Empty;
+            }
+
+            string fullFileName = System.IO.Path.GetFileName(this.path);
+            if (!fullFileName.EndsWith(CloudFoundry_VisualStudioPackage.Extension, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return string.Empty;
+            }
+
+            return fullFileName.Substring(0, fullFileName.Length - CloudFoundry_VisualStudioPackage.Extension.Length);
         }
     }
 }

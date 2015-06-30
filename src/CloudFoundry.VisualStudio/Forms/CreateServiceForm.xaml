@@ -7,12 +7,11 @@
                  xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
-                 Title="Create Service Instance" Style="{DynamicResource DialogWindowStyle}" Height="300" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow">
+                 Title="Create Service Instance" Style="{DynamicResource DialogWindowStyle}" Height="400" Width="500" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
 
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
             <converters:VisibilityConverter x:Key="Visibility" />
-            <Thickness x:Key="DefaultMargin" Top="5" Bottom="5" Left="5" Right="5"></Thickness>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Style\Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -24,28 +23,30 @@
 
         <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Create Cloud Foundry Service Instance" CanFinish="True">
-            <Grid>
+            <Grid Margin="50,0,50,0">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Label Content="Service Name" Grid.Row="0" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-                <TextBox Name="tbServiceName" HorizontalAlignment="Stretch" Grid.Row="0" Grid.Column="1" Width="auto" Margin="{StaticResource DefaultMargin}"></TextBox>
+                <Label Content="Service Name" Grid.Row="0" Grid.Column="0"></Label>
+                <TextBox Name="tbServiceName" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Width="auto"></TextBox>
 
-                <Label Content="Service Type" Grid.Row="1" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-                <ComboBox Name="cbServiceType" Grid.Row="1" Grid.Column="1" Margin="{StaticResource DefaultMargin}" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectionChanged="ServiceType_SelectionChanged"></ComboBox>
+                <Label Content="Service Type" Grid.Row="2" Grid.Column="0" ></Label>
+                <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectionChanged="ServiceType_SelectionChanged"></ComboBox>
 
-                <Label Content="Service Plan" Grid.Row="2" Grid.Column="0" Margin="{StaticResource DefaultMargin}"></Label>
-                <ComboBox Name="cbServicePlan" Grid.Row="2" Grid.Column="1" Width="auto" Margin="{StaticResource DefaultMargin}" DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid"></ComboBox>
+                <Label Content="Service Plan" Grid.Row="4" Grid.Column="0" ></Label>
+                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto"  DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid"></ComboBox>
 
-                <TextBox Grid.Row="3" Grid.ColumnSpan="2"  IsReadOnly="True" TextWrapping="Wrap" Margin="{StaticResource DefaultMargin}"
+                <TextBox Grid.Row="6" IsReadOnly="True" TextWrapping="Wrap" 
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
                  Text="{Binding Path=Error.ErrorMessage}" 

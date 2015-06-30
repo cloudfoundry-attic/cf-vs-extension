@@ -42,7 +42,7 @@
 
         <Label Grid.Row="0" Grid.Column="1" Content="Profile" />
         <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEditable="True" Name="cbProfile" 
-                  Text="{Binding PublishProfile.Path, Mode=OneWay}" />
+                  Text="{Binding PublishProfile.Name}" />
 
 
         <Label Grid.Row="2" Grid.Column="1" Content="Target" />
