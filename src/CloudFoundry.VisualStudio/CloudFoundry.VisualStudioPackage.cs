@@ -132,6 +132,11 @@
                 OleMenuCommand menuItem = new OleMenuCommand(this.ButtonBuildAndPushProjectExecuteHandler, this.ButtonBuildAndPushProjectChangeHandler, this.MenuItem_BeforeQueryStatus, commandId);
 
                 mcs.AddCommand(menuItem);
+
+                CommandID websiteId = new CommandID(GuidList.GuidCloudFoundryVisualStudioCmdSet, (int)PkgCmdIDList.CmdidButtonPublishWebSite);
+                OleMenuCommand menuWebSite = new OleMenuCommand(this.ButtonBuildAndPushProjectExecuteHandler, this.ButtonBuildAndPushProjectChangeHandler, this.MenuItem_BeforeQueryStatus, websiteId);
+
+                mcs.AddCommand(menuWebSite);
             }
         }
 
@@ -146,23 +151,17 @@
                 var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
 
                 IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
-                IVsPackageInstaller installer = componentModel.GetService<IVsPackageInstaller>();
 
                 dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Activate();
 
-                Project currentProject = this.GetSelectedProject(dte);
-
-                if (currentProject != null)
+                if (installerServices.GetInstalledPackages().Where(o => o.Id == PackageId).FirstOrDefault() == null)
                 {
-                    if (installerServices.IsPackageInstalled(currentProject, PackageId) == false)
-                    {
-                        commandInfo.Visible = false;
-                    }
-                    else
-                    {
-                        commandInfo.Visible = true;
-                        commandInfo.Text = "Publish to Cloud Foundry";
-                    }
+                    commandInfo.Visible = false;
+                }
+                else
+                {
+                    commandInfo.Visible = true;
+                    commandInfo.Text = "Publish to Cloud Foundry";
                 }
             }
         }
@@ -176,21 +175,51 @@
             DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
             Project currentProject = this.GetSelectedProject(dte);
 
-            PublishProfile projectPackage;
-
             try
             {
-                //projectPackage.Initialize(currentProject);
+                var package = PublishProfile.Load(currentProject, Path.Combine(GetPublishProfilePath(currentProject),"push.cf.pubxml") , GetTargetFile());
+
+                var dialog = new PushDialog(package);
+                dialog.ShowDialog();
             }
             catch (Exception ex)
             {
                 MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Cannot load default profile. File is corrupt."));
                 Logger.Error("Error loading default profile", ex);
             }
+        }
 
-            //var dialog = new PushDialog(projectPackage, currentProject);
-            //dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            //dialog.ShowDialog();
+        public static string GetPublishProfilePath(Project project)
+        {
+            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
+
+            IVsSolution solution = (IVsSolution)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(IVsSolution));
+
+            var solutionDirectory = Path.GetDirectoryName(dte.Solution.FullName);
+            var projectFileFullPath = Path.Combine(solutionDirectory, project.UniqueName);
+
+            string projectFolder = Path.GetDirectoryName(projectFileFullPath);
+
+            IVsHierarchy hierarchy;
+
+            solution.GetProjectOfUniqueName(project.UniqueName, out hierarchy);
+
+            IVsAggregatableProject aggregatable = (IVsAggregatableProject)hierarchy;
+
+            string projectTypes = string.Empty;
+            aggregatable.GetAggregateProjectTypeGuids(out projectTypes);
+
+            if (projectTypes.ToUpperInvariant().Contains("{E24C65DC-7377-472B-9ABA-BC803B73C61A}"))
+            {
+                return System.IO.Path.Combine(projectFolder, "AppData", "PublishProfiles");
+            }
+
+            if (projectTypes.ToUpperInvariant().Contains("{349C5851-65DF-11DA-9384-00065B846F21}"))
+            {
+                return System.IO.Path.Combine(projectFolder, "Properties", "PublishProfiles");
+            }
+
+            return System.IO.Path.Combine(projectFolder, "PublishProfiles");
         }
 
         private Project GetSelectedProject(DTE dte)

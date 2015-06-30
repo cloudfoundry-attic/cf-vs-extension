@@ -297,6 +297,9 @@
 
             string absoluteManifestPath = System.IO.Path.Combine(projectDir, this.Manifest);
 
+            this.Application.Path = projectDir;
+            this.Manifest = absoluteManifestPath;
+
             CloudFoundry.Manifests.Manifest.Save(new Application[] { this.Application }, absoluteManifestPath);
         }
 
