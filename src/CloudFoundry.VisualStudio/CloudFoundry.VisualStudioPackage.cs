@@ -130,12 +130,12 @@
                 // Create the command for button ButtonBuildAndPushProject
                 CommandID commandId = new CommandID(GuidList.GuidCloudFoundryVisualStudioCmdSet, (int)PkgCmdIDList.CmdidButtonPublishProject);
                 OleMenuCommand menuItem = new OleMenuCommand(this.ButtonBuildAndPushProjectExecuteHandler, this.ButtonBuildAndPushProjectChangeHandler, this.MenuItem_BeforeQueryStatus, commandId);
-
+                menuItem.Visible = false;
                 mcs.AddCommand(menuItem);
 
                 CommandID websiteId = new CommandID(GuidList.GuidCloudFoundryVisualStudioCmdSet, (int)PkgCmdIDList.CmdidButtonPublishWebSite);
                 OleMenuCommand menuWebSite = new OleMenuCommand(this.ButtonBuildAndPushProjectExecuteHandler, this.ButtonBuildAndPushProjectChangeHandler, this.MenuItem_BeforeQueryStatus, websiteId);
-
+                menuWebSite.Visible = false;
                 mcs.AddCommand(menuWebSite);
             }
         }
