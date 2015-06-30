@@ -191,14 +191,9 @@
 
         public static string GetPublishProfilePath(Project project)
         {
-            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
-
             IVsSolution solution = (IVsSolution)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(IVsSolution));
 
-            var solutionDirectory = Path.GetDirectoryName(dte.Solution.FullName);
-            var projectFileFullPath = Path.Combine(solutionDirectory, project.UniqueName);
-
-            string projectFolder = Path.GetDirectoryName(projectFileFullPath);
+            string projectFolder = GetProjectDirectory(project);
 
             IVsHierarchy hierarchy;
 
@@ -211,7 +206,7 @@
 
             if (projectTypes.ToUpperInvariant().Contains("{E24C65DC-7377-472B-9ABA-BC803B73C61A}"))
             {
-                return System.IO.Path.Combine(projectFolder, "AppData", "PublishProfiles");
+                return System.IO.Path.Combine(projectFolder, "App_Data", "PublishProfiles");
             }
 
             if (projectTypes.ToUpperInvariant().Contains("{349C5851-65DF-11DA-9384-00065B846F21}"))
@@ -220,6 +215,25 @@
             }
 
             return System.IO.Path.Combine(projectFolder, "PublishProfiles");
+        }
+
+        public static string GetProjectDirectory(Project project)
+        {
+            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
+
+            var solutionDirectory = Path.GetDirectoryName(dte.Solution.FullName);
+
+            string projectFolder = solutionDirectory;
+
+            foreach (Property prop in project.Properties)
+            {
+                if (prop.Name == "FullPath" || prop.Name == "ProjectDirectory")
+                {
+                    projectFolder = prop.Value.ToString();
+                    break;
+                }
+            }
+            return projectFolder;
         }
 
         private Project GetSelectedProject(DTE dte)

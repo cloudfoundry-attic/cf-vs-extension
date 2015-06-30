@@ -249,7 +249,7 @@
 
         private void LoadManifest()
         {
-            string projectDir = System.IO.Path.GetDirectoryName(project.FullName);
+            string projectDir = CloudFoundry_VisualStudioPackage.GetProjectDirectory(project);
             string absoluteManifestPath = System.IO.Path.Combine(projectDir, this.Manifest);
 
 
@@ -292,7 +292,7 @@
 
         private void SaveManifest()
         {
-            string projectDir = System.IO.Path.GetDirectoryName(project.FullName);
+            string projectDir = CloudFoundry_VisualStudioPackage.GetProjectDirectory(project);
             Directory.CreateDirectory(projectDir);
 
             string absoluteManifestPath = System.IO.Path.Combine(projectDir, this.Manifest);
