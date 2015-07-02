@@ -31,7 +31,6 @@
     [Serializable, XmlRoot("PropertyGroup", Namespace = "http://schemas.microsoft.com/developer/msbuild/2003")]
     public class PublishProfile : INotifyPropertyChanged
     {
-        private Project project;
         private string path;
         private XmlSerializerNamespaces namespaces = null;
 
@@ -47,13 +46,8 @@
         private string webPublishMethod;
         private string manifest;
         private string name;
+        private PushEnvironment environment;
 
-        [XmlIgnore]
-        public Project Project
-        {
-            get { return project; }
-            set { project = value; }
-        }
 
         [XmlIgnore]
         public string Path
@@ -75,10 +69,10 @@
             }
             set
             {
-                var publishProfilePath = CloudFoundry_VisualStudioPackage.GetPublishProfilePath(this.project);
+                var profileDir = System.IO.Directory.GetParent(this.environment.ProfileFilePath).FullName;
 
                 var fileName = string.Format(CultureInfo.InvariantCulture, "{0}.cf.pubxml", value);
-                this.path = System.IO.Path.Combine(publishProfilePath, fileName);
+                this.path = System.IO.Path.Combine(profileDir, fileName);
             }
         }
 
@@ -228,7 +222,7 @@
             get
             {
 
-                this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}.yaml", this.GetProfileName());
+                this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}.yml", this.GetProfileName());
                 return this.manifest;
             }
             set
@@ -270,7 +264,7 @@
 
         private void LoadManifest()
         {
-            string projectDir = CloudFoundry_VisualStudioPackage.GetPublishProfilePath(project);
+            string projectDir = this.environment.ProjectDirectory;
             string absoluteManifestPath = System.IO.Path.Combine(projectDir, this.Manifest);
 
 
@@ -299,7 +293,7 @@
                     HealthCheckTimeout = null,
                     InstanceCount = 1,
                     Memory = 256,
-                    Name = project.Name,
+                    Name = this.environment.ProjectName,
                     NoHostName = false,
                     NoRoute = false,
                     Path = null,
@@ -307,20 +301,18 @@
                     UseRandomHostName = false
                 };
 
-                this.Application.Hosts.Add(project.Name.ToLowerInvariant());
+                this.Application.Hosts.Add(this.environment.ProjectName.ToLowerInvariant());
             }
         }
 
         private void SaveManifest()
         {
-            string projectDir = CloudFoundry_VisualStudioPackage.GetProjectDirectory(this.project);
+            string projectDir = this.environment.ProjectDirectory;
             Directory.CreateDirectory(projectDir);
 
             this.Application.Path = projectDir;
 
-            string profilePath = CloudFoundry_VisualStudioPackage.GetPublishProfilePath(this.project);
-            Directory.CreateDirectory(profilePath);
-            string absoluteManifestPath = System.IO.Path.Combine(profilePath, this.Manifest);
+            string absoluteManifestPath = System.IO.Path.Combine(projectDir, this.Manifest);
 
             this.Manifest = absoluteManifestPath;
 
@@ -334,21 +326,17 @@
         /// <param name="path">Absolute path to the publish profile to load. If the file does not exist, defaults will be loaded for the object.</param>
         /// <returns>A new PublishProfile.</returns>
         /// <exception cref="System.ArgumentNullException">project</exception>
-        public static PublishProfile Load(Project project, string path, string targetFile)
+        public static PublishProfile Load(PushEnvironment pushEnvironment)
         {
-            if (project == null)
-            {
-                throw new ArgumentNullException("project");
-            }
 
             PublishProfile publishProfile = null;
 
-            if (File.Exists(path))
+            if (File.Exists(pushEnvironment.ProfileFilePath))
             {
                 // If the file exists, we load it
                 XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile));
 
-                using (XmlReader xmlReader = XmlReader.Create(path))
+                using (XmlReader xmlReader = XmlReader.Create(pushEnvironment.ProfileFilePath))
                 {
                     xmlReader.ReadToDescendant("PropertyGroup");
                     publishProfile = (PublishProfile)serializer.Deserialize(xmlReader.ReadSubtree());
@@ -373,9 +361,9 @@
                 };
             }
 
-            publishProfile.TargetFile = targetFile;
-            publishProfile.path = path;
-            publishProfile.project = project;
+            publishProfile.TargetFile = pushEnvironment.TargetFilePath;
+            publishProfile.path = pushEnvironment.ProfileFilePath;
+            publishProfile.environment = pushEnvironment;
             publishProfile.LoadManifest();
 
             return publishProfile;

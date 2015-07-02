@@ -59,7 +59,6 @@
         public const string Extension = ".cf.pubxml";
         private static ErrorListProvider errorList;
 
-        private DTE dte;
 
         /// <summary>
         /// Default constructor of the package.
@@ -75,32 +74,11 @@
             hackObject = null;
 
             errorList = new ErrorListProvider(this);
-            this.dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
         }
 
         public static ErrorListProvider GetErrorListPane()
         {
             return errorList;
-        }
-
-        public static string GetTargetFile()
-        {
-            string targetFile = string.Empty;
-            try
-            {
-                var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
-
-                IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
-
-                var packageDir = installerServices.GetInstalledPackages().Where(o => o.Id == CloudFoundry_VisualStudioPackage.PackageId).FirstOrDefault().InstallPath;
-
-                targetFile = System.IO.Path.Combine(packageDir, "cf-msbuild-tasks.targets");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Error retrieving target file", ex);
-            }
-            return targetFile;
         }
 
         /////////////////////////////////////////////////////////////////////////////
@@ -146,9 +124,9 @@
 
             if (commandInfo != null)
             {
-                DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
+                DTE dte = (DTE)GetService(typeof(DTE));
 
-                var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
+                var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
 
                 IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 
@@ -172,12 +150,13 @@
 
         private void ButtonBuildAndPushProjectExecuteHandler(object sender, EventArgs e)
         {
-            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
-            Project currentProject = this.GetSelectedProject(dte);
+            Project currentProject = VsUtils.GetSelectedProject();
 
             try
             {
-                var package = PublishProfile.Load(currentProject, Path.Combine(GetPublishProfilePath(currentProject),"push.cf.pubxml") , GetTargetFile());
+                PushEnvironment environment = new PushEnvironment();
+                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(), "push.cf.pubxml");
+                var package = PublishProfile.Load(environment);
 
                 var dialog = new PushDialog(package);
                 dialog.ShowDialog();
@@ -187,67 +166,6 @@
                 MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Cannot load default profile. File is corrupt."));
                 Logger.Error("Error loading default profile", ex);
             }
-        }
-
-        public static string GetPublishProfilePath(Project project)
-        {
-            IVsSolution solution = (IVsSolution)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(IVsSolution));
-
-            string projectFolder = GetProjectDirectory(project);
-
-            IVsHierarchy hierarchy;
-
-            solution.GetProjectOfUniqueName(project.UniqueName, out hierarchy);
-
-            IVsAggregatableProject aggregatable = (IVsAggregatableProject)hierarchy;
-
-            string projectTypes = string.Empty;
-            aggregatable.GetAggregateProjectTypeGuids(out projectTypes);
-
-            if (projectTypes.ToUpperInvariant().Contains("{E24C65DC-7377-472B-9ABA-BC803B73C61A}"))
-            {
-                return System.IO.Path.Combine(projectFolder, "App_Data", "PublishProfiles");
-            }
-
-            if (projectTypes.ToUpperInvariant().Contains("{349C5851-65DF-11DA-9384-00065B846F21}"))
-            {
-                return System.IO.Path.Combine(projectFolder, "Properties", "PublishProfiles");
-            }
-
-            return System.IO.Path.Combine(projectFolder, "PublishProfiles");
-        }
-
-        public static string GetProjectDirectory(Project project)
-        {
-            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
-
-            var solutionDirectory = Path.GetDirectoryName(dte.Solution.FullName);
-
-            string projectFolder = solutionDirectory;
-
-            foreach (Property prop in project.Properties)
-            {
-                if (prop.Name == "FullPath" || prop.Name == "ProjectDirectory")
-                {
-                    projectFolder = prop.Value.ToString();
-                    break;
-                }
-            }
-            return projectFolder;
-        }
-
-        private Project GetSelectedProject(DTE dte)
-        {
-            foreach (EnvDTE.SelectedItem item in dte.SelectedItems)
-            {
-                Project current = item.Project as Project;
-                if (current != null)
-                {
-                    return current;
-                }
-            }
-
-            return null;
         }
         #endregion
 

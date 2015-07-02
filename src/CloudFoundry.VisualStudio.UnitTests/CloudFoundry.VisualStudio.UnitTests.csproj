@@ -126,14 +126,13 @@
     <Compile Include="MyToolWindowTest\ShowToolWindow.cs" />
     <Compile Include="MyToolWindowTest\WindowFrameMock.cs" />
     <Compile Include="MyToolWindowTest\UIShellServiceMock.cs" />
-    <Compile Include="PublishProfileTest\ProjectMock.cs" />
     <Compile Include="PublishProfileTest\PublishProfileTest.cs" />
     <Compile Include="Util.cs" />
     <!---->
     <!---->
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\project\manifest.yml">
+    <None Include="Assets\project\push.yml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Assets\project\Properties\PublishProfiles\push.cf.pubxml">

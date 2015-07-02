@@ -47,7 +47,10 @@
             PublishProfile packageFile;
             try
             {
-                packageFile = PublishProfile.Load(project, pszMkDocument, CloudFoundry_VisualStudioPackage.GetTargetFile());
+                PushEnvironment environment = new PushEnvironment();
+                environment.ProfileFilePath = pszMkDocument;
+
+                packageFile = PublishProfile.Load(environment);
             }
             catch (Exception ex)
             {

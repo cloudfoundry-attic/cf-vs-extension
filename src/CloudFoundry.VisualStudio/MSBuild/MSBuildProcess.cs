@@ -14,12 +14,12 @@
     {
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
-        public void Publish(EnvDTE.Project projectInfo)
+        public void Publish()
         {
-            this.Publish(projectInfo, Microsoft.Build.Framework.LoggerVerbosity.Normal);
+            this.Publish(Microsoft.Build.Framework.LoggerVerbosity.Normal);
         }
 
-        public void Publish(EnvDTE.Project projectInfo, Microsoft.Build.Framework.LoggerVerbosity verbosity)
+        public void Publish(Microsoft.Build.Framework.LoggerVerbosity verbosity)
         {
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
