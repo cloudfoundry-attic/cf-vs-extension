@@ -37,36 +37,13 @@
         </ComboBox>
 
         <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto Detect&gt;&gt;" IsHitTestVisible="False">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Visibility" Value="Hidden"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=cbBuildpack, Path=SelectedItem}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
-
-        <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" FontStyle="Italic" Text="&lt;&lt;Auto Detect&gt;&gt;" IsHitTestVisible="False">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Visibility" Value="Hidden"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=cbBuildpack,Path=SelectedItem}" Value="{x:Null}">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
         </TextBlock>
 
         <Label Grid.Row="2" Grid.Column="1" Content="Stack" />
         <ComboBox Grid.Row="3" Grid.Column="1" Name="cbStack" 
                   ItemsSource="{Binding Path=Stacks}"
                   SelectedValue="{Binding PublishProfile.Application.StackName}"
-                  SelectedValuePath="Name" DisplayMemberPath="Name" SelectedIndex="0" />
+                  SelectedValuePath="Name" DisplayMemberPath="Name" />
 
         <Label Grid.Row="4" Grid.Column="1" Content="Memory (MB)" />
         <TextBox Grid.Row="5" Grid.Column="1" Name="tbMemory" 

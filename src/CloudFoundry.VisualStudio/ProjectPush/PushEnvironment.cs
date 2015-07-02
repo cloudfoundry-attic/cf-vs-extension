@@ -17,16 +17,14 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         public PushEnvironment()
         {
             this.targetFilePath = VsUtils.GetTargetFile();
+
             var project = VsUtils.GetSelectedProject();
+            this.profileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(), "push.cf.pubxml");
+            this.projectDirectory = VsUtils.GetProjectDirectory();
             if (project != null)
             {
-
-                this.profileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(project), "push.cf.pubxml");
-                this.projectDirectory = VsUtils.GetProjectDirectory(project);
                 this.projectName = project.Name;
             }
-
-
         }
 
         public string ProjectDirectory

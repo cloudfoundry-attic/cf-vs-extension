@@ -150,12 +150,10 @@
 
         private void ButtonBuildAndPushProjectExecuteHandler(object sender, EventArgs e)
         {
-            Project currentProject = VsUtils.GetSelectedProject();
-
             try
             {
                 PushEnvironment environment = new PushEnvironment();
-                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(currentProject), "push.cf.pubxml");
+                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(), "push.cf.pubxml");
                 var package = PublishProfile.Load(environment);
 
                 var dialog = new PushDialog(package);

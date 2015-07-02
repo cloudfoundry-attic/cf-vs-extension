@@ -23,9 +23,7 @@
             pgrfCDW = 0;
             pbstrEditorCaption = "Cloud Foundry Publish Profile";
 
-            object objProj;
-            ppvHier.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out objProj);
-            var project = objProj as EnvDTE.Project;
+            var project = VsUtils.GetSelectedProject();
 
             var fileInfo = new FileInfo(pszMkDocument);
 
@@ -49,7 +47,7 @@
             {
                 PushEnvironment environment = new PushEnvironment();
                 environment.ProjectName = project.Name;
-                environment.ProjectDirectory = VsUtils.GetProjectDirectory(project);
+                environment.ProjectDirectory = VsUtils.GetProjectDirectory();
                 environment.ProfileFilePath = pszMkDocument;
 
                 packageFile = PublishProfile.Load(environment);
@@ -60,8 +58,6 @@
                 Logger.Error("Exception loading package file", ex);
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
             }
-
-            ////var dialog = new EditDialog(packageFile, project);
             var dialog = new PushDialog(packageFile);
             dialog.ShowDialog();
             return VSConstants.S_OK;

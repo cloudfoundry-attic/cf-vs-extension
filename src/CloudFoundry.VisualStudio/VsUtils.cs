@@ -1,4 +1,5 @@
 ﻿using EnvDTE;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell.Interop;
 using NuGet.VisualStudio;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,15 +16,16 @@ namespace CloudFoundry.VisualStudio
 {
     internal class VsUtils
     {
-        public static string GetPublishProfilePath(Project project)
+        public static string GetPublishProfilePath()
         {
+            var project = GetSelectedProject();
             IVsSolution solution = (IVsSolution)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(IVsSolution));
             if (solution == null)
             {
                 return string.Empty;
             }
 
-            string projectFolder = GetProjectDirectory(project);
+            string projectFolder = GetProjectDirectory();
 
             IVsHierarchy hierarchy;
 
@@ -46,8 +49,9 @@ namespace CloudFoundry.VisualStudio
             return System.IO.Path.Combine(projectFolder, "PublishProfiles");
         }
 
-        public static string GetProjectDirectory(Project project)
+        public static string GetProjectDirectory()
         {
+            var project = GetSelectedProject();
             DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
             if (dte == null)
             {
@@ -89,7 +93,7 @@ namespace CloudFoundry.VisualStudio
                 }
             }
 
-            return null;
+            return GetProjectFromSelection();
         }
 
         public static string GetTargetFile()
@@ -114,6 +118,32 @@ namespace CloudFoundry.VisualStudio
                 Logger.Error("Error retrieving target file", ex);
             }
             return targetFile;
+        }
+
+        private static Project GetProjectFromSelection()
+        {
+            IntPtr hierarchyPointer, selectionContainerPointer;
+            uint projectItemId;
+            IVsMultiItemSelect multiItemSelect;
+
+            IVsMonitorSelection monitorSelection = (IVsMonitorSelection)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SVsShellMonitorSelection));
+
+            monitorSelection.GetCurrentSelection(out hierarchyPointer,
+                                     out projectItemId,
+                                     out multiItemSelect,
+                                     out selectionContainerPointer);
+
+            IVsHierarchy selectedHierarchy = Marshal.GetTypedObjectForIUnknown(
+                                     hierarchyPointer,
+                                     typeof(IVsHierarchy)) as IVsHierarchy;
+
+            object objProj;
+
+
+            selectedHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out objProj);
+            var project = objProj as EnvDTE.Project;
+
+            return project;
         }
     }
 

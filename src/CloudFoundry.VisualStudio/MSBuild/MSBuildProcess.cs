@@ -38,7 +38,7 @@
 
                 pane.Activate();
 
-                var engine = ProjectCollection.GlobalProjectCollection;
+
 
                 ErrorListProvider errorList = CloudFoundry_VisualStudioPackage.GetErrorListPane();
 
@@ -58,30 +58,23 @@
 
                 Microsoft.Build.Evaluation.Project websiteProject = null;
 
-                try
+                using (var projectCollection = new ProjectCollection())
                 {
-                    websiteProject = engine.LoadProject(MSBuildProperties["PublishProfile"]);
-                    var websiteProjectInstance = websiteProject.CreateProjectInstance();
+                    websiteProject = projectCollection.LoadProject(MSBuildProperties["PublishProfile"]);
 
                     foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
                     {
                         websiteProject.SetProperty(parameter.Key, parameter.Value);
                     }
 
-                    websiteProjectInstance.Build("WebCloudFoundryPublish", new List<ILogger>() { customLogger });
+                    websiteProject.Build("WebCloudFoundryPublish", new List<ILogger>() { customLogger });
 
                     if (errorList.Tasks.Count > 0)
                     {
                         errorList.Show();
                     }
                     pane.OutputString("Push operation finished!");
-                }
-                finally
-                {
-                    if (websiteProject != null)
-                    {
-                        engine.UnloadProject(websiteProject);
-                    }
+                    projectCollection.UnregisterAllLoggers();
                 }
             });
         }
