@@ -41,10 +41,10 @@
                 <TextBox Name="tbServiceName" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Width="auto"></TextBox>
 
                 <Label Content="Service Type" Grid.Row="2" Grid.Column="0" ></Label>
-                <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectionChanged="ServiceType_SelectionChanged"></ComboBox>
+                <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectedIndex="0" SelectionChanged="ServiceType_SelectionChanged"></ComboBox>
 
                 <Label Content="Service Plan" Grid.Row="4" Grid.Column="0" ></Label>
-                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto"  DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid"></ComboBox>
+                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto"  DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid" SelectedIndex="0"></ComboBox>
 
                 <TextBox Grid.Row="6" IsReadOnly="True" TextWrapping="Wrap" 
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"

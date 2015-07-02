@@ -78,7 +78,7 @@
         <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="Space" />
         <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
                   ItemsSource="{Binding Path=Spaces}"
-                  SelectedValue="{Binding PublishProfile.Space}" 
+                  SelectedValue="{Binding PublishProfile.Space}"
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
 
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
