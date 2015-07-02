@@ -23,10 +23,13 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         public void LoadExistingProfileTest()
         {
             // Arrange
-            Project project = new ProjectMock(Util.PublishProfileProjectDir);
+            PushEnvironment environment = new PushEnvironment();
+            environment.ProjectDirectory = Util.PublishProfileProjectDir;
+            environment.ProfileFilePath = Util.PublishProfilePath;
+            environment.ProjectName = "foobar-project";
 
             // Act
-            PublishProfile publishProfile = PublishProfile.Load(project, Util.PublishProfilePath ,string.Empty);
+            PublishProfile publishProfile = PublishProfile.Load(environment);
 
             // Assert
             Assert.AreEqual("user", publishProfile.User);
@@ -38,17 +41,20 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual("arandor", publishProfile.Space);
             Assert.AreEqual(string.Empty, publishProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
-            Assert.AreEqual("manifest.yml", publishProfile.Manifest);
+            Assert.AreEqual("push.yml", publishProfile.Manifest);
         }
 
         [TestMethod()]
         public void LoadExistingManifestTest()
         {
             // Arrange
-            Project project = new ProjectMock(Util.PublishProfileProjectDir);
+            PushEnvironment environment = new PushEnvironment();
+            environment.ProjectDirectory = Util.PublishProfileProjectDir;
+            environment.ProfileFilePath = Util.PublishProfilePath;
+            environment.ProjectName = "foobar-project";
 
             // Act
-            PublishProfile publishProfile = PublishProfile.Load(project, Util.PublishProfilePath, string.Empty);
+            PublishProfile publishProfile = PublishProfile.Load(environment);
 
             // Assert
             Assert.AreEqual("test-bp", publishProfile.Application.BuildpackUrl);
@@ -75,10 +81,13 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         public void LoadNonExistingProfile()
         {
             // Arrange
-            Project project = new ProjectMock(@"c:\somedirthatdoesntexist");
+            PushEnvironment environment = new PushEnvironment();
+            environment.ProjectDirectory = @"c:\somedirthatdoesntexist";
+            environment.ProfileFilePath = @"c:\foo-bar.cf.pubxml";
+            environment.ProjectName = "foo-bar";
 
             // Act
-            PublishProfile publishProfile = PublishProfile.Load(project, @"c:\foo-bar.cf.pubxml", string.Empty);
+            PublishProfile publishProfile = PublishProfile.Load(environment);
 
             // Assert
             Assert.AreEqual(string.Empty, publishProfile.User);
@@ -90,17 +99,20 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual(string.Empty, publishProfile.Space);
             Assert.AreEqual(null, publishProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
-            Assert.AreEqual("manifest.yml", publishProfile.Manifest);
+            Assert.AreEqual("foo-bar.yml", publishProfile.Manifest);
         }
 
         [TestMethod()]
         public void LoadNonExistingManifest()
         {
             // Arrange
-            Project project = new ProjectMock(@"c:\somedirthatdoesntexist");
+            PushEnvironment environment = new PushEnvironment();
+            environment.ProjectDirectory = @"c:\somedirthatdoesntexist";
+            environment.ProfileFilePath = @"c:\foo-bar.cf.pubxml";
+            environment.ProjectName = "foo-bar";
 
             // Act
-            PublishProfile publishProfile = PublishProfile.Load(project, @"c:\foo-bar.cf.pubxml", string.Empty);
+            PublishProfile publishProfile = PublishProfile.Load(environment);
 
             // Assert
             Assert.AreEqual(string.Empty, publishProfile.Application.BuildpackUrl);
@@ -109,10 +121,10 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual(0, publishProfile.Application.Domains.Count);
             Assert.AreEqual(0, publishProfile.Application.EnvironmentVariables.Count);
             Assert.AreEqual(null, publishProfile.Application.HealthCheckTimeout);
-            Assert.AreEqual(project.Name.ToLowerInvariant(), publishProfile.Application.Hosts[0]);
+            Assert.AreEqual(environment.ProjectName.ToLowerInvariant(), publishProfile.Application.Hosts[0]);
             Assert.AreEqual(1, publishProfile.Application.InstanceCount);
             Assert.AreEqual(256, publishProfile.Application.Memory);
-            Assert.AreEqual(project.Name, publishProfile.Application.Name);
+            Assert.AreEqual(environment.ProjectName, publishProfile.Application.Name);
             Assert.AreEqual(false, publishProfile.Application.NoHostName);
             Assert.AreEqual(false, publishProfile.Application.NoRoute);
             Assert.AreEqual(null, publishProfile.Application.Path);
@@ -129,11 +141,17 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             // Arrange
             string testProjectDir = Path.Combine(Path.GetTempPath(), string.Format("savetest-{0}", Guid.NewGuid().ToString("N")));
             Directory.CreateDirectory(testProjectDir);
-            Project project = new ProjectMock(testProjectDir);
-            string publishProfilePath = Path.Combine(testProjectDir, "Properties", "PublishProfiles", "mypush.cf.pubxml");
-            string manifestPath = Path.Combine(testProjectDir, "manifest.yml");
+            PushEnvironment environment = new PushEnvironment();
+            environment.ProjectDirectory = testProjectDir;
 
-            PublishProfile publishProfile = PublishProfile.Load(project, publishProfilePath, string.Empty);
+
+            string publishProfilePath = Path.Combine(testProjectDir, "Properties", "PublishProfiles", "mypush.cf.pubxml");
+            environment.ProfileFilePath = publishProfilePath;
+            environment.ProjectName = "mypush";
+
+            string manifestPath = Path.Combine(testProjectDir, "mypush.yml");
+
+            PublishProfile publishProfile = PublishProfile.Load(environment);
             publishProfile.Organization = "doriath";
             publishProfile.Space = "menegroth";
             publishProfile.User = "beren";
@@ -160,7 +178,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             publishProfile.Application.StackName = "leo";
             publishProfile.Application.UseRandomHostName = true;
 
-         
+
             // Act
             publishProfile.Save();
 
@@ -168,7 +186,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.IsTrue(File.Exists(publishProfilePath));
             Assert.IsTrue(File.Exists(manifestPath));
 
-            var loadedProfile = PublishProfile.Load(project, publishProfilePath, string.Empty);
+            var loadedProfile = PublishProfile.Load(environment);
             Assert.AreEqual(publishProfile.Manifest, loadedProfile.Manifest);
             Assert.AreEqual(publishProfile.Organization, loadedProfile.Organization);
             Assert.AreEqual(publishProfile.Password, loadedProfile.Password);

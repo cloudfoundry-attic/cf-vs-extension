@@ -33,7 +33,11 @@
         <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
                   ItemsSource="{Binding Buildpacks}" 
                   SelectedValue="{Binding PublishProfile.Application.BuildpackUrl}" 
-                  SelectedValuePath="Name" DisplayMemberPath="Name"/>
+                  SelectedValuePath="Name" DisplayMemberPath="Name" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
+        </ComboBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto Detect&gt;&gt;" IsHitTestVisible="False">
+        </TextBlock>
 
         <Label Grid.Row="2" Grid.Column="1" Content="Stack" />
         <ComboBox Grid.Row="3" Grid.Column="1" Name="cbStack" 
@@ -41,7 +45,7 @@
                   SelectedValue="{Binding PublishProfile.Application.StackName}"
                   SelectedValuePath="Name" DisplayMemberPath="Name" />
 
-        <Label Grid.Row="4" Grid.Column="1" Content="Memory" />
+        <Label Grid.Row="4" Grid.Column="1" Content="Memory (MB)" />
         <TextBox Grid.Row="5" Grid.Column="1" Name="tbMemory" 
                  Text="{Binding PublishProfile.Application.Memory}" />
 

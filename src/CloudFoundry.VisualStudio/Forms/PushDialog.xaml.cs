@@ -53,7 +53,7 @@ namespace CloudFoundry.VisualStudio.Forms
             process.MSBuildProperties.Add("DeployOnBuild", "true");
             process.MSBuildProperties.Add("PublishProfile", this.publishProfileResources.PublishProfile.Path);
 
-            process.Publish(this.publishProfileResources.PublishProfile.Project);
+            process.Publish();
         }
     }
 }

@@ -49,7 +49,7 @@
 
                 <Label Content="Password" Grid.Row="6" Grid.Column="0" ></Label>
                 <PasswordBox Name="pbPassword" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></PasswordBox>
-                <CheckBox Name="cbIgnoreSSK" Grid.Row="8" Grid.Column="1" Content="Skip SSL validation"></CheckBox>
+                <CheckBox Name="cbIgnoreSSK" Grid.Row="8" Grid.Column="1" Content="Skip SSL validation" Margin="0,5,5,5" ></CheckBox>
 
 
                 <TextBox Grid.Row="10" Grid.Column="0"  IsReadOnly="True" TextWrapping="Wrap"

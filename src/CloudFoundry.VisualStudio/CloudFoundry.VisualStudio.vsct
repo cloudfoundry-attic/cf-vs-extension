@@ -39,8 +39,12 @@
          must be a menu. -->
     <Groups>
 
-		<Group guid="guidCloudFoundry_VisualStudioCmdSet" id="MyMenuGroup" priority="0x0600">
+		<Group guid="guidCloudFoundry_VisualStudioCmdSet" id="ProjectMenuGroup" priority="0x0600">
 			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+		</Group>
+
+		<Group guid="guidCloudFoundry_VisualStudioCmdSet" id="WebMenuGroup" priority="0x0050">
+			<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_WEBPROJECT"/>
 		</Group>
 
 	</Groups>
@@ -66,7 +70,7 @@
         </Strings>
       </Button>
 		<Button guid="guidCloudFoundry_VisualStudioCmdSet" id="cmdidButtonPublishProject" priority="0x0100" type="Button">
-			<Parent guid="guidCloudFoundry_VisualStudioCmdSet" id="MyMenuGroup" />
+			<Parent guid="guidCloudFoundry_VisualStudioCmdSet" id="ProjectMenuGroup" />
 			<Icon guid="guidImages" id="pngPic1" />
 			<CommandFlag>TextChanges</CommandFlag>
 			<CommandFlag>DynamicVisibility</CommandFlag>
@@ -76,7 +80,19 @@
 			</Strings>
 		</Button>
 
-    </Buttons>
+		<Button guid="guidCloudFoundry_VisualStudioCmdSet" id="cmdidButtonPublishWebSite" priority="0x0100" type="Button">
+			<Parent guid="guidCloudFoundry_VisualStudioCmdSet" id="WebMenuGroup" />
+			<Icon guid="guidImages" id="pngPic1" />
+			<CommandFlag>TextChanges</CommandFlag>
+			<CommandFlag>DynamicVisibility</CommandFlag>
+			<Strings>
+				<CommandName>cmdidButtonBuildAndPushProject</CommandName>
+				<ButtonText>Publish to Cloud Foundry</ButtonText>
+			</Strings>
+		</Button>
+
+
+	</Buttons>
    
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
@@ -109,9 +125,11 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidCloudFoundry_VisualStudioCmdSet" value="{0771f788-56bf-431d-ac6f-ae8057b022a0}">
 
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="ProjectMenuGroup" value="0x1020" />
+      <IDSymbol name="WebMenuGroup" value="0x1021"/>
       <IDSymbol name="cmdidCloudFoundryExplorer" value="0x0101" />
-		<IDSymbol name="cmdidButtonPublishProject" value="0x000C"/>
+	  <IDSymbol name="cmdidButtonPublishProject" value="0x000C"/>
+		<IDSymbol name="cmdidButtonPublishWebSite" value="0x001C"/>
     </GuidSymbol>
     
     

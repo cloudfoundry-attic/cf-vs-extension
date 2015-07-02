@@ -42,7 +42,7 @@
 
         <Label Grid.Row="0" Grid.Column="1" Content="Profile" />
         <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEditable="True" Name="cbProfile" 
-                  Text="{Binding PublishProfile.Path, Mode=OneWay}" />
+                  Text="{Binding PublishProfile.Name}" />
 
 
         <Label Grid.Row="2" Grid.Column="1" Content="Target" />
@@ -78,8 +78,8 @@
         <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="Space" />
         <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
                   ItemsSource="{Binding Path=Spaces}"
-                  SelectedValue="{Binding PublishProfile.Space}" 
-                  DisplayMemberPath="Name" SelectedValuePath="Name"/>
+                  SelectedValue="{Binding PublishProfile.Space}"
+                  DisplayMemberPath="Name" SelectedValuePath="Name" />
 
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"

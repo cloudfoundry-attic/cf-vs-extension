@@ -24,5 +24,17 @@ namespace CloudFoundry.VisualStudio.Controls
         {
             InitializeComponent();
         }
+
+        private void cbBuildpack_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (cbBuildpack.Text.Length > 0)
+            {
+                tbBuildpackWatermark.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else
+            {
+                tbBuildpackWatermark.Visibility = System.Windows.Visibility.Visible;
+            }
+        }
     }
 }

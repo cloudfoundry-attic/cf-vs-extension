@@ -52,7 +52,6 @@ namespace CloudFoundry.VisualStudio.Forms
                 var servicePlans = viewModel.ServicePlans.Where(o => o.ServiceGuid == serviceGuid);
 
                 this.cbServicePlan.ItemsSource = servicePlans;
-
             }
             catch (Exception ex)
             {

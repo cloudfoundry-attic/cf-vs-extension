@@ -8,17 +8,18 @@
     using EnvDTE;
     using Microsoft.Build.Evaluation;
     using Microsoft.VisualStudio.Shell;
+    using Microsoft.Build.Framework;
 
     public class MSBuildProcess
     {
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
-        public void Publish(EnvDTE.Project projectInfo)
+        public void Publish()
         {
-            this.Publish(projectInfo, Microsoft.Build.Framework.LoggerVerbosity.Normal);
+            this.Publish(Microsoft.Build.Framework.LoggerVerbosity.Normal);
         }
 
-        public void Publish(EnvDTE.Project projectInfo, Microsoft.Build.Framework.LoggerVerbosity verbosity)
+        public void Publish(Microsoft.Build.Framework.LoggerVerbosity verbosity)
         {
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
@@ -37,7 +38,7 @@
 
                 pane.Activate();
 
-                var engine = ProjectCollection.GlobalProjectCollection;
+
 
                 ErrorListProvider errorList = CloudFoundry_VisualStudioPackage.GetErrorListPane();
 
@@ -51,25 +52,30 @@
                 MSBuildLogger customLogger = new MSBuildLogger(pane, errorList);
 
                 customLogger.Verbosity = verbosity;
+                pane.Clear();
 
-                engine.RegisterLogger(customLogger);
+                pane.OutputString("Starting push...");
 
-                foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
+                Microsoft.Build.Evaluation.Project websiteProject = null;
+
+                using (var projectCollection = new ProjectCollection())
                 {
-                    engine.SetGlobalProperty(parameter.Key, parameter.Value);
+                    websiteProject = projectCollection.LoadProject(MSBuildProperties["PublishProfile"]);
+
+                    foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
+                    {
+                        websiteProject.SetProperty(parameter.Key, parameter.Value);
+                    }
+
+                    websiteProject.Build("WebCloudFoundryPublish", new List<ILogger>() { customLogger });
+
+                    if (errorList.Tasks.Count > 0)
+                    {
+                        errorList.Show();
+                    }
+                    pane.OutputString("Push operation finished!");
+                    projectCollection.UnregisterAllLoggers();
                 }
-
-                pane.OutputString("Starting build...");
-
-                Microsoft.Build.Evaluation.Project websiteProject = engine.LoadProject(MSBuildProperties["PublishProfile"]);
-                websiteProject.Build("WebCloudFoundryPublish");
-
-                if (errorList.Tasks.Count > 0)
-                {
-                    errorList.Show();
-                }
-
-                engine.UnregisterAllLoggers();
             });
         }
     }

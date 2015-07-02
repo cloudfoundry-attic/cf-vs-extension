@@ -299,6 +299,7 @@
     <Compile Include="Guids.cs" />
     <Compile Include="ProjectPush\PublishProfileEditorResources.cs" />
     <Compile Include="ProjectPush\PublishProfileRefreshTarget.cs" />
+    <Compile Include="ProjectPush\PushEnvironment.cs" />
     <Compile Include="ProjectPush\ServiceInstanceEditorResource.cs" />
     <Compile Include="ProjectPush\ServiceInstanceSelection.cs" />
     <Compile Include="ProjectPush\SharedDomainWithSelection.cs" />
@@ -315,6 +316,7 @@
     <Compile Include="TargetStore\CloudTarget.cs" />
     <Compile Include="TargetStore\CloudTargetManager.cs" />
     <Compile Include="TargetStore\CloudCredentialsManager.cs" />
+    <Compile Include="VsUtils.cs" />
     <Compile Include="XmlUri.cs" />
   </ItemGroup>
   <ItemGroup>

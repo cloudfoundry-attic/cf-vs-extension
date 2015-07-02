@@ -59,7 +59,6 @@
         public const string Extension = ".cf.pubxml";
         private static ErrorListProvider errorList;
 
-        private DTE dte;
 
         /// <summary>
         /// Default constructor of the package.
@@ -75,32 +74,11 @@
             hackObject = null;
 
             errorList = new ErrorListProvider(this);
-            this.dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
         }
 
         public static ErrorListProvider GetErrorListPane()
         {
             return errorList;
-        }
-
-        public static string GetTargetFile()
-        {
-            string targetFile = string.Empty;
-            try
-            {
-                var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
-
-                IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
-
-                var packageDir = installerServices.GetInstalledPackages().Where(o => o.Id == CloudFoundry_VisualStudioPackage.PackageId).FirstOrDefault().InstallPath;
-
-                targetFile = System.IO.Path.Combine(packageDir, "cf-msbuild-tasks.targets");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("Error retrieving target file", ex);
-            }
-            return targetFile;
         }
 
         /////////////////////////////////////////////////////////////////////////////
@@ -130,8 +108,13 @@
                 // Create the command for button ButtonBuildAndPushProject
                 CommandID commandId = new CommandID(GuidList.GuidCloudFoundryVisualStudioCmdSet, (int)PkgCmdIDList.CmdidButtonPublishProject);
                 OleMenuCommand menuItem = new OleMenuCommand(this.ButtonBuildAndPushProjectExecuteHandler, this.ButtonBuildAndPushProjectChangeHandler, this.MenuItem_BeforeQueryStatus, commandId);
-
+                menuItem.Visible = false;
                 mcs.AddCommand(menuItem);
+
+                CommandID websiteId = new CommandID(GuidList.GuidCloudFoundryVisualStudioCmdSet, (int)PkgCmdIDList.CmdidButtonPublishWebSite);
+                OleMenuCommand menuWebSite = new OleMenuCommand(this.ButtonBuildAndPushProjectExecuteHandler, this.ButtonBuildAndPushProjectChangeHandler, this.MenuItem_BeforeQueryStatus, websiteId);
+                menuWebSite.Visible = false;
+                mcs.AddCommand(menuWebSite);
             }
         }
 
@@ -141,28 +124,22 @@
 
             if (commandInfo != null)
             {
-                DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
+                DTE dte = (DTE)GetService(typeof(DTE));
 
-                var componentModel = (IComponentModel)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(SComponentModel));
+                var componentModel = (IComponentModel)GetService(typeof(SComponentModel));
 
                 IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
-                IVsPackageInstaller installer = componentModel.GetService<IVsPackageInstaller>();
 
                 dte.Windows.Item(EnvDTE.Constants.vsWindowKindSolutionExplorer).Activate();
 
-                Project currentProject = this.GetSelectedProject(dte);
-
-                if (currentProject != null)
+                if (installerServices.GetInstalledPackages().Where(o => o.Id == PackageId).FirstOrDefault() == null)
                 {
-                    if (installerServices.IsPackageInstalled(currentProject, PackageId) == false)
-                    {
-                        commandInfo.Visible = false;
-                    }
-                    else
-                    {
-                        commandInfo.Visible = true;
-                        commandInfo.Text = "Publish to Cloud Foundry";
-                    }
+                    commandInfo.Visible = false;
+                }
+                else
+                {
+                    commandInfo.Visible = true;
+                    commandInfo.Text = "Publish to Cloud Foundry";
                 }
             }
         }
@@ -173,38 +150,20 @@
 
         private void ButtonBuildAndPushProjectExecuteHandler(object sender, EventArgs e)
         {
-            DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
-            Project currentProject = this.GetSelectedProject(dte);
-
-            PublishProfile projectPackage;
-
             try
             {
-                //projectPackage.Initialize(currentProject);
+                PushEnvironment environment = new PushEnvironment();
+                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(), "push.cf.pubxml");
+                var package = PublishProfile.Load(environment);
+
+                var dialog = new PushDialog(package);
+                dialog.ShowDialog();
             }
             catch (Exception ex)
             {
                 MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Cannot load default profile. File is corrupt."));
                 Logger.Error("Error loading default profile", ex);
             }
-
-            //var dialog = new PushDialog(projectPackage, currentProject);
-            //dialog.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
-            //dialog.ShowDialog();
-        }
-
-        private Project GetSelectedProject(DTE dte)
-        {
-            foreach (EnvDTE.SelectedItem item in dte.SelectedItems)
-            {
-                Project current = item.Project as Project;
-                if (current != null)
-                {
-                    return current;
-                }
-            }
-
-            return null;
         }
         #endregion
 
