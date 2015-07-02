@@ -155,7 +155,7 @@
             try
             {
                 PushEnvironment environment = new PushEnvironment();
-                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(), "push.cf.pubxml");
+                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(currentProject), "push.cf.pubxml");
                 var package = PublishProfile.Load(environment);
 
                 var dialog = new PushDialog(package);

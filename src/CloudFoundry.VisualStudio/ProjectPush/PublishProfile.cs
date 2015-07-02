@@ -221,8 +221,6 @@
         {
             get
             {
-
-                this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}.yml", this.GetProfileName());
                 return this.manifest;
             }
             set
@@ -347,7 +345,6 @@
                 // If the file does not exist, we set defaults
                 publishProfile = new PublishProfile()
                 {
-                    Manifest = "manifest.yml",
                     Organization = string.Empty,
                     Password = null,
                     RefreshToken = null,
@@ -359,6 +356,9 @@
                     DeployTargetFile = null,
                     WebPublishMethod = "CloudFoundry"
                 };
+
+                publishProfile.path = pushEnvironment.ProfileFilePath;
+                publishProfile.Manifest = string.Format(CultureInfo.InvariantCulture, "{0}.yml", publishProfile.GetProfileName());
             }
 
             publishProfile.TargetFile = pushEnvironment.TargetFilePath;

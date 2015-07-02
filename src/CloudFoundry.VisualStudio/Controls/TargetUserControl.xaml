@@ -79,7 +79,7 @@
         <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
                   ItemsSource="{Binding Path=Spaces}"
                   SelectedValue="{Binding PublishProfile.Space}" 
-                  DisplayMemberPath="Name" SelectedValuePath="Name"/>
+                  DisplayMemberPath="Name" SelectedValuePath="Name" />
 
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"

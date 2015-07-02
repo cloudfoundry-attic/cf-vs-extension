@@ -14,16 +14,15 @@ namespace CloudFoundry.VisualStudio
 {
     internal class VsUtils
     {
-        public static string GetPublishProfilePath()
+        public static string GetPublishProfilePath(Project project)
         {
-            var project = GetSelectedProject();
             IVsSolution solution = (IVsSolution)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(IVsSolution));
             if (solution == null)
             {
                 return string.Empty;
             }
 
-            string projectFolder = GetProjectDirectory();
+            string projectFolder = GetProjectDirectory(project);
 
             IVsHierarchy hierarchy;
 
@@ -47,11 +46,14 @@ namespace CloudFoundry.VisualStudio
             return System.IO.Path.Combine(projectFolder, "PublishProfiles");
         }
 
-        public static string GetProjectDirectory()
+        public static string GetProjectDirectory(Project project)
         {
-            var project = GetSelectedProject();
             DTE dte = (DTE)CloudFoundry_VisualStudioPackage.GetGlobalService(typeof(DTE));
             if (dte == null)
+            {
+                return string.Empty;
+            }
+            if (project == null)
             {
                 return string.Empty;
             }
