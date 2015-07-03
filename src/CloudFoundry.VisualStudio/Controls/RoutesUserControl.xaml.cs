@@ -28,17 +28,19 @@ namespace CloudFoundry.VisualStudio.Controls
 
         private void btnAddHost_Click(object sender, RoutedEventArgs e)
         {
-            var dataContext = (this.DataContext as PublishProfileEditorResources);
-
-            if (dataContext == null)
+            if (string.IsNullOrWhiteSpace(tbName.Text) == false)
             {
-                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+                var dataContext = (this.DataContext as PublishProfileEditorResources);
+
+                if (dataContext == null)
+                {
+                    throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+                }
+                dataContext.PublishProfile.Application.Hosts.Add(tbName.Text);
+
+                lvRoutes.Items.Refresh();
+                tbName.Clear();
             }
-            dataContext.PublishProfile.Application.Hosts.Add(tbName.Text);
-
-            lvRoutes.Items.Refresh();
-            tbName.Clear();
-
         }
 
         private void btnDeleteHost_Click(object sender, RoutedEventArgs e)

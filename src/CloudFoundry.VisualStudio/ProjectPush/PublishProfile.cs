@@ -73,6 +73,7 @@
 
                 var fileName = string.Format(CultureInfo.InvariantCulture, "{0}.cf.pubxml", value);
                 this.path = System.IO.Path.Combine(profileDir, fileName);
+                this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}.yml", this.GetProfileName());
             }
         }
 

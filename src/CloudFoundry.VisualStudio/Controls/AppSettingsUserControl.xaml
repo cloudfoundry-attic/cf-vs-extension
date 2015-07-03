@@ -32,7 +32,7 @@
         <Label Grid.Row="0" Grid.Column="1" Content="Buildpack" />
         <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
                   ItemsSource="{Binding Buildpacks}" 
-                  SelectedValue="{Binding PublishProfile.Application.BuildpackUrl}" 
+                  Text="{Binding PublishProfile.Application.BuildpackUrl}"
                   SelectedValuePath="Name" DisplayMemberPath="Name" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
         </ComboBox>
 
