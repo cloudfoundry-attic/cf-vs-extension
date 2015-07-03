@@ -36,7 +36,7 @@
                   SelectedValuePath="Name" DisplayMemberPath="Name" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
         </ComboBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto Detect&gt;&gt;" IsHitTestVisible="False">
+        <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto-Detect&gt;&gt;" IsHitTestVisible="False">
         </TextBlock>
 
         <Label Grid.Row="2" Grid.Column="1" Content="Stack" />

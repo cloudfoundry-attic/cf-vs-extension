@@ -17,7 +17,7 @@
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
     <xctk:Wizard NextButtonVisibility="Collapsed" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
-                 FinishButtonClosesWindow="False" Finish="btnFinish_Click">
+                 CancelButtonClosesWindow="False" FinishButtonContent="OK"  Cancel="Wizard_Cancel" FinishButtonClosesWindow="False" Finish="btnFinish_Click">
         <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Add Cloud Foundry Target" CanFinish="True">
             <Grid Margin="50,0,50,0">

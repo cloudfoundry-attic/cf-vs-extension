@@ -21,7 +21,7 @@
             <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-    <xctk:Wizard x:Name="wizardPush" FinishButtonClosesWindow="True" Finish="wizardPush_Finish"
+    <xctk:Wizard x:Name="wizardPush" Cancel="wizardPush_Cancel" FinishButtonClosesWindow="True" Finish="wizardPush_Finish" CancelButtonClosesWindow="False"
                  IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
         <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Target"

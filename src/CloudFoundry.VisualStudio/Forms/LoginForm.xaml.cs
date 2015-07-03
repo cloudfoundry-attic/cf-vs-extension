@@ -105,5 +105,14 @@ namespace CloudFoundry.VisualStudio.Forms
                 this.tbUrl.Text = string.Format(CultureInfo.InvariantCulture, "https://{0}", this.tbUrl.Text);
             }
         }
+
+        private void Wizard_Cancel(object sender, RoutedEventArgs e)
+        {
+            var dialogResult = MessageBoxHelper.WarningQuestion("Do you really want to cancel ?");
+            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.Close();
+            }
+        }
     }
 }

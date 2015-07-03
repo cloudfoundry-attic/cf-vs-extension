@@ -19,7 +19,7 @@
     </ui:DialogWindow.Resources>
 
     <xctk:Wizard NextButtonVisibility="Collapsed" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
-                 FinishButtonClosesWindow="False" Finish="Wizard_Finish">
+                 CancelButtonClosesWindow="False" Cancel="Wizard_Cancel" FinishButtonContent="OK" FinishButtonClosesWindow="False" Finish="Wizard_Finish">
 
         <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Create Cloud Foundry Service Instance" CanFinish="True">

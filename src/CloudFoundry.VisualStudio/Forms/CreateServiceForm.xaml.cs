@@ -31,7 +31,7 @@ namespace CloudFoundry.VisualStudio.Forms
             this.spaceGuid = workingSpaceGuid;
             InitializeComponent();
             this.DataContext = new ServiceInstanceEditorResource(client);
-            
+
         }
 
         private void ServiceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -39,7 +39,7 @@ namespace CloudFoundry.VisualStudio.Forms
             this.IsEnabled = false;
 
             var viewModel = this.DataContext as ServiceInstanceEditorResource;
-          
+
             if (viewModel == null)
             {
                 throw new InvalidOperationException("Invalid DataContext");
@@ -99,6 +99,15 @@ namespace CloudFoundry.VisualStudio.Forms
             }
 
             this.IsEnabled = true;
+        }
+
+        private void Wizard_Cancel(object sender, RoutedEventArgs e)
+        {
+            var dialogResult = MessageBoxHelper.WarningQuestion("Do you really want to cancel ?");
+            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.Close();
+            }
         }
     }
 }
