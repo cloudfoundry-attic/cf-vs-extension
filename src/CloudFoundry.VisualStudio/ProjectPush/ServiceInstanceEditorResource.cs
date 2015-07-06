@@ -12,13 +12,42 @@ using Microsoft.VisualStudio.Threading;
 
 namespace CloudFoundry.VisualStudio.ProjectPush
 {
-    internal class ServiceInstanceEditorResource :INotifyPropertyChanged
+    internal class ServiceInstanceEditorResource : INotifyPropertyChanged
     {
         private readonly ObservableCollection<ListAllServicesResponse> serviceTypes = new ObservableCollection<ListAllServicesResponse>();
 
         private readonly ObservableCollection<ListAllServicePlansResponse> servicePlans = new ObservableCollection<ListAllServicePlansResponse>();
 
         private ErrorResource errorResource = new ErrorResource();
+        private Guid selectedService;
+        private bool enableForm = false;
+        private string refreshMessage = string.Empty;
+
+        public bool Refreshing
+        {
+            get
+            {
+                return enableForm;
+            }
+            set
+            {
+                enableForm = value;
+                RaisePropertyChangedEvent("Refreshing");
+            }
+        }
+
+        public string RefreshMessage
+        {
+            get 
+            { 
+                return refreshMessage; 
+            }
+            set
+            {
+                refreshMessage = value;
+                RaisePropertyChangedEvent("RefreshMessage");
+            }
+        }
 
         public ErrorResource Error
         {
@@ -41,11 +70,31 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
-        public ObservableCollection<ListAllServicePlansResponse> ServicePlans
+        public IEnumerable<ListAllServicePlansResponse> AvailableServicePlans
         {
             get
             {
-                return this.servicePlans;
+                if (SelectedServiceType != null)
+                {
+                    return this.servicePlans.Where(o => o.ServiceGuid == SelectedServiceType.ToGuid());
+                }
+                else
+                {
+                    return new List<ListAllServicePlansResponse>();
+                }
+            }
+        }
+
+        public EntityGuid SelectedServiceType
+        {
+            get
+            {
+                return selectedService;
+            }
+            set
+            {
+                selectedService = value;
+                RaisePropertyChangedEvent("AvailableServicePlans");
             }
         }
 
@@ -57,11 +106,13 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private void ExitInit()
         {
+            this.Refreshing = false;
             this.ExitInit(null);
         }
 
         private void ExitInit(Exception error)
         {
+            this.Refreshing = false;
             this.Error.HasErrors = error != null;
             if (this.Error.HasErrors)
             {
@@ -91,6 +142,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private void InitServicesInformation(CloudFoundryClient client)
         {
+            this.Refreshing = true;
+            this.RefreshMessage = "Loading service informations...";
             Task.Run(async () =>
             {
                 this.EnterInit();
@@ -104,7 +157,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 var plans = await client.ServicePlans.ListAllServicePlans();
                 foreach (var plan in plans)
                 {
-                    OnUIThread(() => { ServicePlans.Add(plan); });
+                    OnUIThread(() => { servicePlans.Add(plan); });
                 }
             }).ContinueWith((antecedent) =>
             {

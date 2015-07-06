@@ -17,7 +17,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-    <xctk:BusyIndicator Name="busyIndicator">
+    <xctk:BusyIndicator Name="busyIndicator" IsBusy="{Binding Refreshing}" BusyContent="{Binding RefreshMessage}">
         <xctk:Wizard NextButtonVisibility="Collapsed" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
                  CancelButtonClosesWindow="False" Cancel="Wizard_Cancel" FinishButtonContent="OK" FinishButtonClosesWindow="False" Finish="Wizard_Finish">
 
@@ -40,11 +40,11 @@
                     <Label Content="Service Name" Grid.Row="0" Grid.Column="0"></Label>
                     <TextBox Name="tbServiceName" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Width="auto"></TextBox>
 
-                    <Label Content="Service Type" Grid.Row="2" Grid.Column="0" ></Label>
-                    <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectionChanged="ServiceType_SelectionChanged"></ComboBox>
+                <Label Content="Service Type" Grid.Row="2" Grid.Column="0" ></Label>
+                <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectedValue="{Binding SelectedServiceType}"></ComboBox>
 
-                    <Label Content="Service Plan" Grid.Row="4" Grid.Column="0" ></Label>
-                    <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto"  DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid"></ComboBox>
+                <Label Content="Service Plan" Grid.Row="4" Grid.Column="0" ></Label>
+                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto" ItemsSource="{Binding AvailableServicePlans}"  DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid"></ComboBox>
 
                     <TextBox Grid.Row="6" IsReadOnly="True" TextWrapping="Wrap" 
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
