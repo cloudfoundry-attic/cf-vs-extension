@@ -35,44 +35,8 @@ namespace CloudFoundry.VisualStudio.Forms
 
         }
 
-        private void ServiceType_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.busyIndicator.IsBusy = true;
-            this.busyIndicator.BusyContent = "Loading services...";
-
-
-            var viewModel = this.DataContext as ServiceInstanceEditorResource;
-
-            if (viewModel == null)
-            {
-                throw new InvalidOperationException("Invalid DataContext");
-            }
-
-            try
-            {
-                Guid serviceGuid = new Guid(cbServiceType.SelectedValue.ToString());
-
-                var servicePlans = viewModel.ServicePlans.Where(o => o.ServiceGuid == serviceGuid);
-
-                this.cbServicePlan.ItemsSource = servicePlans;
-            }
-            catch (Exception ex)
-            {
-                var errorMessages = new List<string>();
-                ErrorFormatter.FormatExceptionMessage(ex, errorMessages);
-                viewModel.Error.ErrorMessage = string.Join(Environment.NewLine, errorMessages.ToArray());
-                viewModel.Error.HasErrors = true;
-                Logger.Error("Error retrieving plans for selected service type ", ex);
-            }
-
-            this.busyIndicator.IsBusy = false;
-        }
-
         private async void Wizard_Finish(object sender, RoutedEventArgs e)
         {
-            this.busyIndicator.IsBusy = true;
-            this.busyIndicator.BusyContent = string.Format(CultureInfo.InvariantCulture, "Creating service {0}...", tbServiceName.Text);
-
             var viewModel = this.DataContext as ServiceInstanceEditorResource;
 
             if (viewModel == null)
@@ -82,6 +46,8 @@ namespace CloudFoundry.VisualStudio.Forms
 
             try
             {
+                viewModel.Refreshing = true;
+                viewModel.RefreshMessage = string.Format(CultureInfo.InvariantCulture, "Creating service {0} ...", tbServiceName.Text);
                 CreateServiceInstanceRequest request = new CreateServiceInstanceRequest();
                 request.Name = this.tbServiceName.Text;
                 request.ServicePlanGuid = new Guid(this.cbServicePlan.SelectedValue.ToString());
@@ -90,19 +56,17 @@ namespace CloudFoundry.VisualStudio.Forms
                 await client.ServiceInstances.CreateServiceInstance(request);
 
                 this.DialogResult = true;
-
                 this.Close();
             }
             catch (Exception ex)
             {
+                viewModel.Refreshing = false;
                 var errorMessages = new List<string>();
                 ErrorFormatter.FormatExceptionMessage(ex, errorMessages);
                 viewModel.Error.HasErrors = true;
                 viewModel.Error.ErrorMessage = string.Join(Environment.NewLine, errorMessages.ToArray());
                 Logger.Error("Error creating service instance ", ex);
             }
-
-            this.busyIndicator.IsBusy = false;
         }
 
         private void Wizard_Cancel(object sender, RoutedEventArgs e)
