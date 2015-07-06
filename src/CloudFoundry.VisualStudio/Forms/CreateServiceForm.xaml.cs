@@ -93,8 +93,8 @@ namespace CloudFoundry.VisualStudio.Forms
             {
                 var errorMessages = new List<string>();
                 ErrorFormatter.FormatExceptionMessage(ex, errorMessages);
-                viewModel.Error.ErrorMessage = string.Join(Environment.NewLine, errorMessages.ToArray());
                 viewModel.Error.HasErrors = true;
+                viewModel.Error.ErrorMessage = string.Join(Environment.NewLine, errorMessages.ToArray());
                 Logger.Error("Error creating service instance ", ex);
             }
 

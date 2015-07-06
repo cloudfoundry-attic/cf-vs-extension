@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Threading;
 
 namespace CloudFoundry.VisualStudio.ProjectPush
 {
-    public class ServiceInstanceEditorResource :INotifyPropertyChanged
+    internal class ServiceInstanceEditorResource :INotifyPropertyChanged
     {
         private readonly ObservableCollection<ListAllServicesResponse> serviceTypes = new ObservableCollection<ListAllServicesResponse>();
 
@@ -20,10 +20,17 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private ErrorResource errorResource = new ErrorResource();
 
-        internal ErrorResource Error
+        public ErrorResource Error
         {
-            get { return errorResource; }
-            set { this.errorResource = value; }
+            get 
+            { 
+                return errorResource; 
+            }
+            set 
+            { 
+                this.errorResource = value; 
+                RaisePropertyChangedEvent("Error"); 
+            }
         }
 
         public ObservableCollection<ListAllServicesResponse> ServiceTypes
