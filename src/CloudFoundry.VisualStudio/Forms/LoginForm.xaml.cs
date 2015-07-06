@@ -45,7 +45,7 @@ namespace CloudFoundry.VisualStudio.Forms
 
         private async void btnFinish_Click(object sender, RoutedEventArgs e)
         {
-            this.IsEnabled = false;
+            this.busyIndicator.IsBusy = true;
             var targetUrl = this.tbUrl.Text;
 
             var errorResource = this.DataContext as ErrorResource;
@@ -87,7 +87,7 @@ namespace CloudFoundry.VisualStudio.Forms
                 errorResource.HasErrors = true;
 
             }
-            this.IsEnabled = true;
+            this.busyIndicator.IsBusy = false;
 
         }
 
@@ -103,6 +103,15 @@ namespace CloudFoundry.VisualStudio.Forms
                 !this.tbUrl.Text.StartsWith("https://", StringComparison.InvariantCultureIgnoreCase))
             {
                 this.tbUrl.Text = string.Format(CultureInfo.InvariantCulture, "https://{0}", this.tbUrl.Text);
+            }
+        }
+
+        private void Wizard_Cancel(object sender, RoutedEventArgs e)
+        {
+            var dialogResult = MessageBoxHelper.WarningQuestion("Do you really want to cancel ?");
+            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.Close();
             }
         }
     }

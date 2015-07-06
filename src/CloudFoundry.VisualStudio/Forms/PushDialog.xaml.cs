@@ -55,5 +55,14 @@ namespace CloudFoundry.VisualStudio.Forms
 
             process.Publish();
         }
+
+        private void wizardPush_Cancel(object sender, RoutedEventArgs e)
+        {
+            var dialogResult = MessageBoxHelper.WarningQuestion("Do you really want to cancel ?");
+            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+            {
+                this.Close();
+            }
+        }
     }
 }
