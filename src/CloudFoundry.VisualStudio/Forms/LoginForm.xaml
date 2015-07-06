@@ -16,49 +16,50 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-    <xctk:Wizard NextButtonVisibility="Collapsed" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
+    <xctk:BusyIndicator Name="busyIndicator" BusyContent="Checking cloud connectivity...">
+        <xctk:Wizard NextButtonVisibility="Collapsed" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
                  CancelButtonClosesWindow="False" FinishButtonContent="OK"  Cancel="Wizard_Cancel" FinishButtonClosesWindow="False" Finish="btnFinish_Click">
-        <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
+            <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Add Cloud Foundry Target" CanFinish="True">
-            <Grid Margin="50,0,50,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="20"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="auto"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Label Content="Description" Grid.Row="0" Grid.Column="0"></Label>
-                <TextBox Name="tbDescription" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Width="auto"></TextBox>
+                <Grid Margin="50,0,50,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                        <RowDefinition Height="20"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Description" Grid.Row="0" Grid.Column="0"></Label>
+                    <TextBox Name="tbDescription" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Width="auto"></TextBox>
 
-                <Label Content="Target URL" Grid.Row="2" Grid.Column="0"></Label>
-                <TextBox Name="tbUrl" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto" LostFocus="tbUrl_LostFocus"></TextBox>
+                    <Label Content="Target URL" Grid.Row="2" Grid.Column="0"></Label>
+                    <TextBox Name="tbUrl" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto" LostFocus="tbUrl_LostFocus"></TextBox>
 
-                <Label Content="Username" Grid.Row="4" Grid.Column="0"></Label>
-                <TextBox Name="tbUsername" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></TextBox>
+                    <Label Content="Username" Grid.Row="4" Grid.Column="0"></Label>
+                    <TextBox Name="tbUsername" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></TextBox>
 
-                <Label Content="Password" Grid.Row="6" Grid.Column="0" ></Label>
-                <PasswordBox Name="pbPassword" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></PasswordBox>
-                <CheckBox Name="cbIgnoreSSK" Grid.Row="8" Grid.Column="1" Content="Skip SSL validation" Margin="0,5,5,5" ></CheckBox>
+                    <Label Content="Password" Grid.Row="6" Grid.Column="0" ></Label>
+                    <PasswordBox Name="pbPassword" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></PasswordBox>
+                    <CheckBox Name="cbIgnoreSSK" Grid.Row="8" Grid.Column="1" Content="Skip SSL validation" Margin="0,5,5,5" ></CheckBox>
 
 
-                <TextBox Grid.Row="10" Grid.Column="0"  IsReadOnly="True" TextWrapping="Wrap"
+                    <TextBox Grid.Row="10" Grid.Column="0"  IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
                  Text="{Binding Path=ErrorMessage}" 
                  Visibility="{Binding Path=HasErrors, Converter={StaticResource Visibility}}"/>
-            </Grid>
-        </xctk:WizardPage>
-    </xctk:Wizard>
-    
+                </Grid>
+            </xctk:WizardPage>
+        </xctk:Wizard>
+    </xctk:BusyIndicator>
 </ui:DialogWindow>

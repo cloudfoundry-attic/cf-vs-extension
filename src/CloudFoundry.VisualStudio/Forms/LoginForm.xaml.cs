@@ -45,7 +45,7 @@ namespace CloudFoundry.VisualStudio.Forms
 
         private async void btnFinish_Click(object sender, RoutedEventArgs e)
         {
-            this.IsEnabled = false;
+            this.busyIndicator.IsBusy = true;
             var targetUrl = this.tbUrl.Text;
 
             var errorResource = this.DataContext as ErrorResource;
@@ -87,7 +87,7 @@ namespace CloudFoundry.VisualStudio.Forms
                 errorResource.HasErrors = true;
 
             }
-            this.IsEnabled = true;
+            this.busyIndicator.IsBusy = false;
 
         }
 

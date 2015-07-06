@@ -25,6 +25,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private ObservableCollection<ServiceInstanceSelection> serviceInstances = new ObservableCollection<ServiceInstanceSelection>();
 
         private ErrorResource errorResource = new ErrorResource();
+        private string refreshMessage = "Please Wait...";
 
         public ErrorResource Error
         {
@@ -54,6 +55,17 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             get { return buildpacks; }
             set { buildpacks = value; }
         }
+
+        public string RefreshMessage
+        {
+            get { return refreshMessage; }
+            set
+            {
+                refreshMessage = value;
+                this.RaisePropertyChangedEvent("RefreshMessage");
+            }
+        }
+
 
         public IEnumerable<SharedDomainWithSelection> SharedDomains
         {
@@ -163,14 +175,14 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private CancellationToken cancellationToken;
         private CloudFoundryClient client;
 
-        public CloudFoundryClient Client 
+        public CloudFoundryClient Client
         {
-            get 
-            { 
-                return client; 
-            } 
+            get
+            {
+                return client;
+            }
         }
-        
+
         public bool Refreshing
         {
             get
@@ -296,6 +308,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private async Task RefreshClient()
         {
+            this.RefreshMessage = "Loading Cloud Foundry client...";
             this.LastRefreshTarget = PublishProfileRefreshTarget.Client;
 
             this.client = new CloudFoundryClient(
@@ -351,6 +364,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Organizations;
 
+            this.RefreshMessage = "Loading organizations...";
             OnUIThread(() => this.orgs.Clear());
 
             PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
@@ -372,6 +386,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         private async Task RefreshSpaces()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Spaces;
+            this.RefreshMessage = "Loading spaces...";
 
             OnUIThread(() => this.spaces.Clear());
 
@@ -400,7 +415,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         private async Task RefreshServiceInstances()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.ServiceInstances;
-
+            this.RefreshMessage = "Detecting service instances...";
             OnUIThread(() => this.serviceInstances.Clear());
 
             var space = this.spaces.FirstOrDefault(s => s.Name == this.publishProfile.Space);
@@ -436,7 +451,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         private async Task RefreshStacks()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Stacks;
-
+            this.RefreshMessage = "Detecting stacks...";
             OnUIThread(() => this.stacks.Clear());
 
             PagedResponseCollection<ListAllStacksResponse> stacks = await this.client.Stacks.ListAllStacks();
@@ -455,7 +470,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         private async Task RefreshBuildpacks()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Buildpacks;
-
+            this.RefreshMessage = "Detecting buildpacks...";
             OnUIThread(() => this.buildpacks.Clear());
 
             PagedResponseCollection<ListAllBuildpacksResponse> buildpacks = await this.client.Buildpacks.ListAllBuildpacks();
@@ -474,7 +489,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         private async Task RefreshSharedDomains()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.SharedDomains;
-
+            this.RefreshMessage = "Detecting shared domains...";
             OnUIThread(() => this.sharedDomains.Clear());
 
             PagedResponseCollection<ListAllSharedDomainsResponse> sharedDomains = await this.client.SharedDomains.ListAllSharedDomains();
@@ -495,7 +510,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         private async Task RefreshPrivateDomains()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.PrivateDomains;
-
+            this.refreshMessage = "Detecting private domains...";
             OnUIThread(() => this.privateDomains.Clear());
 
             var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);

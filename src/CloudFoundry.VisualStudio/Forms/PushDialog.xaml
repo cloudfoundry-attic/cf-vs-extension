@@ -13,7 +13,6 @@
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="..\Style\ListViewStyle.xaml" />-->
                 <ResourceDictionary Source="..\Style\Controls.xaml" />
                 <ResourceDictionary Source="..\Style\Images.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -21,9 +20,9 @@
             <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-    <xctk:Wizard x:Name="wizardPush" Cancel="wizardPush_Cancel" FinishButtonClosesWindow="True" Finish="wizardPush_Finish" CancelButtonClosesWindow="False"
-                 IsEnabled="{Binding Refreshing, Converter={StaticResource InverseBoolean}}">
-        <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
+    <xctk:BusyIndicator IsBusy="{Binding Refreshing}" BusyContent="{Binding RefreshMessage}">
+        <xctk:Wizard x:Name="wizardPush" Cancel="wizardPush_Cancel" FinishButtonClosesWindow="True" Finish="wizardPush_Finish" CancelButtonClosesWindow="False">
+            <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Target"
                          Description="Cloud Foundry target."
                          CanSelectNextPage="{Binding Error.HasErrors, Converter={StaticResource InverseBoolean}}">
@@ -53,4 +52,5 @@
             <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
         </xctk:WizardPage>
     </xctk:Wizard>
+    </xctk:BusyIndicator>
 </ui:DialogWindow>
