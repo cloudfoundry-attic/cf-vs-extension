@@ -20,6 +20,8 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="20" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
@@ -29,31 +31,35 @@
             <ColumnDefinition Width="50"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="1" Content="Buildpack" />
-        <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
+        <Label Grid.Row="0" Grid.Column="1" Content="Name" />
+        <TextBox Grid.Row="1" Grid.Column="1" Name="tbName" 
+                 Text="{Binding PublishProfile.Application.Name}" />
+
+        <Label Grid.Row="2" Grid.Column="1" Content="Buildpack" />
+        <ComboBox Grid.Row="3" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
                   ItemsSource="{Binding Buildpacks}" 
                   Text="{Binding PublishProfile.Application.BuildpackUrl}"
                   SelectedValuePath="Name" DisplayMemberPath="Name" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
         </ComboBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto-Detect&gt;&gt;" IsHitTestVisible="False">
+        <TextBlock Grid.Row="3" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto-Detect&gt;&gt;" IsHitTestVisible="False">
         </TextBlock>
 
-        <Label Grid.Row="2" Grid.Column="1" Content="Stack" />
-        <ComboBox Grid.Row="3" Grid.Column="1" Name="cbStack" 
+        <Label Grid.Row="4" Grid.Column="1" Content="Stack" />
+        <ComboBox Grid.Row="5" Grid.Column="1" Name="cbStack" 
                   ItemsSource="{Binding Path=Stacks}"
                   SelectedValue="{Binding PublishProfile.Application.StackName}"
                   SelectedValuePath="Name" DisplayMemberPath="Name" />
 
-        <Label Grid.Row="4" Grid.Column="1" Content="Memory (MB)" />
-        <TextBox Grid.Row="5" Grid.Column="1" Name="tbMemory" 
+        <Label Grid.Row="6" Grid.Column="1" Content="Memory (MB)" />
+        <TextBox Grid.Row="7" Grid.Column="1" Name="tbMemory" 
                  Text="{Binding PublishProfile.Application.Memory}" />
 
-        <Label Grid.Row="6" Grid.Column="1" Content="Instances" />
-        <TextBox Grid.Row="7" Grid.Column="1" Name="tbInstances"
+        <Label Grid.Row="8" Grid.Column="1" Content="Instances" />
+        <TextBox Grid.Row="9" Grid.Column="1" Name="tbInstances"
                  Text="{Binding PublishProfile.Application.InstanceCount}" />
 
-        <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
+        <TextBox Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="4" MaxLines="4" Background="Transparent"
                  Text="{Binding Path=Error.ErrorMessage}" 
