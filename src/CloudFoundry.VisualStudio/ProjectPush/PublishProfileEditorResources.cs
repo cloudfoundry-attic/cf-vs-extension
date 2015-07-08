@@ -231,7 +231,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         }
 
         private void ExitRefresh()
-        {
+        {  
             this.ExitRefresh(null);
         }
 
@@ -365,19 +365,35 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.LastRefreshTarget = PublishProfileRefreshTarget.Organizations;
 
             this.RefreshMessage = "Loading organizations...";
-            OnUIThread(() => this.orgs.Clear());
-
+            List<ListAllOrganizationsResponse> orgsList = new List<ListAllOrganizationsResponse>();
+            
             PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
 
             while (orgs != null && orgs.Properties.TotalResults != 0)
             {
                 foreach (var org in orgs)
                 {
-                    OnUIThread(() => this.orgs.Add(org));
-                }
+                    orgsList.Add(org);                }
 
                 orgs = await orgs.GetNextPage();
             }
+
+            OnUIThread(() =>
+            {
+                this.orgs.Clear();
+                foreach (var org in orgsList)
+                {
+                    this.orgs.Add(org);
+                }
+
+                if (string.IsNullOrWhiteSpace(this.PublishProfile.Organization))
+                {
+                    if (this.Orgs.Count > 0)
+                    {
+                        this.PublishProfile.Organization = this.Orgs.FirstOrDefault().Name;
+                    }
+                }
+            });
 
             await this.RefreshSpaces();
             await this.RefreshPrivateDomains();
@@ -388,8 +404,8 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.LastRefreshTarget = PublishProfileRefreshTarget.Spaces;
             this.RefreshMessage = "Loading spaces...";
 
-            OnUIThread(() => this.spaces.Clear());
-
+            List<ListAllSpacesForOrganizationResponse> spacesList = new List<ListAllSpacesForOrganizationResponse>();
+            
             var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
 
             if (org == null)
@@ -403,21 +419,36 @@ Please note that credentials are saved automatically in the Windows Credential M
             {
                 foreach (var space in spaces)
                 {
-                    OnUIThread(() => this.spaces.Add(space));
+                    spacesList.Add(space);
                 }
 
                 spaces = await spaces.GetNextPage();
             }
 
+            OnUIThread(() =>
+            {
+                this.spaces.Clear();
+                foreach (var space in spacesList)
+                {
+                    this.spaces.Add(space);
+                }
+
+                if (string.IsNullOrWhiteSpace(this.PublishProfile.Space))
+                {
+                    this.PublishProfile.Space = this.spaces.FirstOrDefault().Name;
+                }
+            });
+
             await this.RefreshServiceInstances();
         }
 
         private async Task RefreshServiceInstances()
-        {
+        {   
             this.LastRefreshTarget = PublishProfileRefreshTarget.ServiceInstances;
             this.RefreshMessage = "Detecting service instances...";
-            OnUIThread(() => this.serviceInstances.Clear());
 
+            List<ServiceInstanceSelection> serviceInstancesList = new List<ServiceInstanceSelection>();
+            
             var space = this.spaces.FirstOrDefault(s => s.Name == this.publishProfile.Space);
 
             if (space == null)
@@ -434,17 +465,28 @@ Please note that credentials are saved automatically in the Windows Credential M
                     var servicePlan = await this.client.ServicePlans.RetrieveServicePlan(serviceInstance.ServicePlanGuid);
                     var systemService = await this.client.Services.RetrieveService(servicePlan.ServiceGuid);
 
+
                     ServiceInstanceSelection serviceProfile = new ServiceInstanceSelection(this);
 
                     serviceProfile.ServiceInstance = serviceInstance;
                     serviceProfile.Service = systemService;
                     serviceProfile.ServicePlan = servicePlan;
-
-                    OnUIThread(() => this.serviceInstances.Add(serviceProfile));
+                    serviceInstancesList.Add(serviceProfile);
                 }
 
                 serviceInstances = await serviceInstances.GetNextPage();
             }
+
+
+            OnUIThread(() =>
+            {
+                this.serviceInstances.Clear();
+                foreach (var serviceProfile in serviceInstancesList)
+                {
+                    this.serviceInstances.Add(serviceProfile);
+                }
+            });
+            
             RaisePropertyChangedEvent("ServiceInstances");
         }
 
@@ -452,7 +494,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Stacks;
             this.RefreshMessage = "Detecting stacks...";
-            OnUIThread(() => this.stacks.Clear());
+            List<ListAllStacksResponse> stacksList = new List<ListAllStacksResponse>();
 
             PagedResponseCollection<ListAllStacksResponse> stacks = await this.client.Stacks.ListAllStacks();
 
@@ -460,18 +502,34 @@ Please note that credentials are saved automatically in the Windows Credential M
             {
                 foreach (var stack in stacks)
                 {
-                    OnUIThread(() => this.stacks.Add(stack));
+                    stacksList.Add(stack);
                 }
 
                 stacks = await stacks.GetNextPage();
             }
+
+            OnUIThread(() => 
+            { 
+                this.stacks.Clear();
+                foreach (var stack in stacksList)
+                {
+                    this.stacks.Add(stack);
+                }
+
+                if (string.IsNullOrWhiteSpace(this.PublishProfile.Application.StackName))
+                {
+                  this.PublishProfile.Application.StackName = this.stacks.FirstOrDefault().Name;    
+                }
+            });
+            RaisePropertyChangedEvent("PublishProfile");
+            
         }
 
         private async Task RefreshBuildpacks()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.Buildpacks;
             this.RefreshMessage = "Detecting buildpacks...";
-            OnUIThread(() => this.buildpacks.Clear());
+            List<ListAllBuildpacksResponse> buildpacksList = new List<ListAllBuildpacksResponse>();
 
             PagedResponseCollection<ListAllBuildpacksResponse> buildpacks = await this.client.Buildpacks.ListAllBuildpacks();
 
@@ -479,18 +537,28 @@ Please note that credentials are saved automatically in the Windows Credential M
             {
                 foreach (var buildpack in buildpacks)
                 {
-                    OnUIThread(() => this.buildpacks.Add(buildpack));
+                    buildpacksList.Add(buildpack);
                 }
 
                 buildpacks = await buildpacks.GetNextPage();
             }
+
+
+            OnUIThread(() => 
+            { 
+                this.buildpacks.Clear();
+                foreach (var buildpack in buildpacksList)
+                {
+                    this.buildpacks.Add(buildpack);
+                }
+            });
         }
 
         private async Task RefreshSharedDomains()
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.SharedDomains;
             this.RefreshMessage = "Detecting shared domains...";
-            OnUIThread(() => this.sharedDomains.Clear());
+            List<ListAllSharedDomainsResponse> sharedDomainsList = new List<ListAllSharedDomainsResponse>();
 
             PagedResponseCollection<ListAllSharedDomainsResponse> sharedDomains = await this.client.SharedDomains.ListAllSharedDomains();
 
@@ -498,11 +566,20 @@ Please note that credentials are saved automatically in the Windows Credential M
             {
                 foreach (var sharedDomain in sharedDomains)
                 {
-                    OnUIThread(() => this.sharedDomains.Add(sharedDomain));
+                    sharedDomainsList.Add(sharedDomain);
                 }
 
                 sharedDomains = await sharedDomains.GetNextPage();
             }
+
+            OnUIThread(() =>
+            {
+                this.sharedDomains.Clear();
+                foreach (var sharedDomain in sharedDomainsList)
+                {
+                    this.sharedDomains.Add(sharedDomain);
+                }
+            });
 
             RaisePropertyChangedEvent("SharedDomains");
         }
@@ -511,7 +588,7 @@ Please note that credentials are saved automatically in the Windows Credential M
         {
             this.LastRefreshTarget = PublishProfileRefreshTarget.PrivateDomains;
             this.refreshMessage = "Detecting private domains...";
-            OnUIThread(() => this.privateDomains.Clear());
+            List<ListAllPrivateDomainsForOrganizationResponse> privateDomainsList = new List<ListAllPrivateDomainsForOrganizationResponse>();
 
             var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
 
@@ -526,12 +603,20 @@ Please note that credentials are saved automatically in the Windows Credential M
             {
                 foreach (var privateDomain in privateDomains)
                 {
-                    OnUIThread(() => this.privateDomains.Add(privateDomain));
+                    privateDomainsList.Add(privateDomain);
                 }
 
                 privateDomains = await privateDomains.GetNextPage();
             }
-
+            OnUIThread(() =>
+            {
+                this.privateDomains.Clear();
+                foreach (var privateDomain in privateDomainsList)
+                {
+                    this.privateDomains.Add(privateDomain);
+                }
+            });
+            
             RaisePropertyChangedEvent("PrivateDomains");
         }
 

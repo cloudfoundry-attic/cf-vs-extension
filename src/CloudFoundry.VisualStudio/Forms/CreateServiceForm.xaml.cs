@@ -50,7 +50,7 @@ namespace CloudFoundry.VisualStudio.Forms
                 viewModel.RefreshMessage = string.Format(CultureInfo.InvariantCulture, "Creating service {0} ...", tbServiceName.Text);
                 CreateServiceInstanceRequest request = new CreateServiceInstanceRequest();
                 request.Name = this.tbServiceName.Text;
-                request.ServicePlanGuid = new Guid(this.cbServicePlan.SelectedValue.ToString());
+                request.ServicePlanGuid = viewModel.SelectedServicePlan.ToGuid();
                 request.SpaceGuid = this.spaceGuid;
 
                 await client.ServiceInstances.CreateServiceInstance(request);

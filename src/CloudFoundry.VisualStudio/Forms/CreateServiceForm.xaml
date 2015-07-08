@@ -44,7 +44,7 @@
                 <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectedValue="{Binding SelectedServiceType}"></ComboBox>
 
                 <Label Content="Service Plan" Grid.Row="4" Grid.Column="0" ></Label>
-                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto" ItemsSource="{Binding AvailableServicePlans}"  DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid"></ComboBox>
+                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto" ItemsSource="{Binding AvailableServicePlans}" DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid" SelectedValue="{Binding SelectedServicePlan}"></ComboBox>
 
                     <TextBox Grid.Row="6" IsReadOnly="True" TextWrapping="Wrap" 
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"

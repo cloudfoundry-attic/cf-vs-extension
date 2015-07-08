@@ -19,7 +19,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private readonly ObservableCollection<ListAllServicePlansResponse> servicePlans = new ObservableCollection<ListAllServicePlansResponse>();
 
         private ErrorResource errorResource = new ErrorResource();
-        private Guid selectedService;
+        private EntityGuid selectedService = null;
+        private EntityGuid selectedPlan = null;
         private bool enableForm = false;
         private string refreshMessage = string.Empty;
 
@@ -95,6 +96,23 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 selectedService = value;
                 RaisePropertyChangedEvent("AvailableServicePlans");
+                if (AvailableServicePlans != null)
+                {
+                    this.SelectedServicePlan = AvailableServicePlans.FirstOrDefault().EntityMetadata.Guid;
+                }
+            }
+        }
+
+        public EntityGuid SelectedServicePlan
+        {
+            get
+            {
+                return selectedPlan;
+            }
+            set
+            {
+                selectedPlan = value;
+                RaisePropertyChangedEvent("SelectedServicePlan");
             }
         }
 
@@ -108,6 +126,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             this.Refreshing = false;
             this.ExitInit(null);
+            if (this.selectedService == null)
+            {
+                this.SelectedServiceType = this.ServiceTypes.FirstOrDefault().EntityMetadata.Guid;
+            }
+            RaisePropertyChangedEvent("SelectedServiceType");
         }
 
         private void ExitInit(Exception error)
