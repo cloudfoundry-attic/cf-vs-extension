@@ -46,6 +46,7 @@
         private string webPublishMethod;
         private string manifest;
         private string name = string.Empty;
+        private string version;
         private PushEnvironment environment;
 
 
@@ -230,6 +231,20 @@
             }
         }
 
+        [XmlElement(ElementName = "Version")]
+        public string Version
+        {
+            get
+            {
+                return this.version;
+            }
+            set
+            {
+                this.version = value;
+                RaisePropertyChangedEvent("Version");
+            }
+        }
+
         [XmlIgnore]
         public Application Application
         {
@@ -392,6 +407,8 @@
             this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}{1}.yml", relativePath, this.name);
 
             SaveManifest();
+
+            this.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(this.path));
 
