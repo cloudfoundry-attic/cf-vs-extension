@@ -56,7 +56,7 @@
     public sealed class CloudFoundry_VisualStudioPackage : Package
     {
         public const string PackageId = "cf-msbuild-tasks";
-        public const string Extension = ".cf.pubxml";
+
         private static ErrorListProvider errorList;
 
 
@@ -153,7 +153,8 @@
             try
             {
                 PushEnvironment environment = new PushEnvironment();
-                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(), "push.cf.pubxml");
+                environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(),
+                    string.Format(CultureInfo.InvariantCulture, "{0}.cf.pubxml", PushEnvironment.DefaultProfileName));
                 var package = PublishProfile.Load(environment);
 
                 var dialog = new PushDialog(package);

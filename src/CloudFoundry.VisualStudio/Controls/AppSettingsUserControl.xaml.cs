@@ -27,7 +27,7 @@ namespace CloudFoundry.VisualStudio.Controls
 
         private void cbBuildpack_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (cbBuildpack.Text.Length > 0)
+            if (!string.IsNullOrWhiteSpace(cbBuildpack.Text))
             {
                 tbBuildpackWatermark.Visibility = System.Windows.Visibility.Hidden;
             }

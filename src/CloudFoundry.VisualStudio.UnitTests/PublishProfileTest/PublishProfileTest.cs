@@ -41,7 +41,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual("arandor", publishProfile.Space);
             Assert.AreEqual(string.Empty, publishProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
-            Assert.AreEqual("push.yml", publishProfile.Manifest);
+            Assert.AreEqual(@"..\..\push.yml", publishProfile.Manifest);
         }
 
         [TestMethod()]
@@ -99,7 +99,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual(string.Empty, publishProfile.Space);
             Assert.AreEqual(null, publishProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
-            Assert.AreEqual("foo-bar.yml", publishProfile.Manifest);
+            Assert.AreEqual("push.yml", publishProfile.Manifest);
         }
 
         [TestMethod()]
@@ -136,20 +136,18 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         [TestMethod()]
         public void SaveNonExistingProfileAndManifest()
         {
-
-
             // Arrange
-            string testProjectDir = Path.Combine(Path.GetTempPath(), string.Format("savetest-{0}", Guid.NewGuid().ToString("N")));
+            string testProjectDir = Path.Combine(Path.GetTempPath(), string.Format("savetest-{0}\\", Guid.NewGuid().ToString("N")));
             Directory.CreateDirectory(testProjectDir);
             PushEnvironment environment = new PushEnvironment();
             environment.ProjectDirectory = testProjectDir;
 
 
-            string publishProfilePath = Path.Combine(testProjectDir, "Properties", "PublishProfiles", "mypush.cf.pubxml");
+            string publishProfilePath = Path.Combine(testProjectDir, "Properties", "PublishProfiles", "push.cf.pubxml");
             environment.ProfileFilePath = publishProfilePath;
             environment.ProjectName = "mypush";
 
-            string manifestPath = Path.Combine(testProjectDir, "mypush.yml");
+            string manifestPath = Path.Combine(testProjectDir, "push.yml");
 
             PublishProfile publishProfile = PublishProfile.Load(environment);
             publishProfile.Organization = "doriath";

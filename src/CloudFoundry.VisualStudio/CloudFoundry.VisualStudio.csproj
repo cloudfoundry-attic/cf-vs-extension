@@ -260,6 +260,7 @@
     <Compile Include="Converters\VisibilityConverter.cs" />
     <Compile Include="Converters\IsNullConverter.cs" />
     <Compile Include="ErrorFormater.cs" />
+    <Compile Include="FileUtils.cs" />
     <Compile Include="Forms\CreateServiceForm.xaml.cs">
       <DependentUpon>CreateServiceForm.xaml</DependentUpon>
     </Compile>
