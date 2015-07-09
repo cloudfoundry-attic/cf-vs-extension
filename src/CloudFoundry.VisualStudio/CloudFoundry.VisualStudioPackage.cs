@@ -153,12 +153,13 @@
             try
             {
                 PushEnvironment environment = new PushEnvironment();
+                // TODO: Fix cf.pubxml extension
                 environment.ProfileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(),
                     string.Format(CultureInfo.InvariantCulture, "{0}.cf.pubxml", PushEnvironment.DefaultProfileName));
                 var package = PublishProfile.Load(environment);
 
                 var dialog = new PushDialog(package);
-                dialog.ShowDialog();
+                dialog.ShowModal();
             }
             catch (Exception ex)
             {

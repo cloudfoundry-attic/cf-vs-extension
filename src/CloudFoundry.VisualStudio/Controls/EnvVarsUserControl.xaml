@@ -72,7 +72,7 @@
             </Button>
 
             <ListView Grid.Row="1" Grid.Column="0" Grid.RowSpan="4" Grid.ColumnSpan="3" x:Name="lvEnvVars" 
-                  ItemsSource="{Binding PublishProfile.Application.EnvironmentVariables}">
+                  ItemsSource="{Binding SelectedPublishProfile.Application.EnvironmentVariables}">
 
                 <ListView.View>
                     <GridView>

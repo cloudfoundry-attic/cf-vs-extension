@@ -36,7 +36,7 @@ namespace CloudFoundry.VisualStudio.Controls
                 {
                     throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
                 }
-                dataContext.PublishProfile.Application.Hosts.Add(tbName.Text);
+                dataContext.SelectedPublishProfile.Application.Hosts.Add(tbName.Text);
 
                 lvRoutes.Items.Refresh();
                 tbName.Clear();
@@ -55,9 +55,9 @@ namespace CloudFoundry.VisualStudio.Controls
             foreach (var item in lvRoutes.SelectedItems)
             {
                 string host = item as string;
-                if (dataContext.PublishProfile.Application.Hosts.Contains(host))
+                if (dataContext.SelectedPublishProfile.Application.Hosts.Contains(host))
                 {
-                    dataContext.PublishProfile.Application.Hosts.Remove(host);
+                    dataContext.SelectedPublishProfile.Application.Hosts.Remove(host);
                 }
             }
             lvRoutes.Items.Refresh();

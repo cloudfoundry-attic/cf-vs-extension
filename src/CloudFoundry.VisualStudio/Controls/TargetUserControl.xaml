@@ -42,7 +42,9 @@
 
         <Label Grid.Row="0" Grid.Column="1" Content="Profile" />
         <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEditable="True" Name="cbProfile" 
-                  Text="{Binding PublishProfile.Name}" />
+                  Text="{Binding SelectedPublishProfile.Name}" ItemsSource="{Binding Path=PublishProfiles}" DisplayMemberPath="Name" 
+                  SelectedValue="{Binding SelectedPublishProfile, Mode=OneWayToSource}">
+        </ComboBox>
 
 
         <Label Grid.Row="2" Grid.Column="1" Content="Target" />
@@ -72,13 +74,13 @@
         <Label Grid.Row="4" Grid.Column="1" Content="Organization" />
         <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="cbOrganization" 
                   ItemsSource="{Binding Path=Orgs}" 
-                  SelectedValue="{Binding PublishProfile.Organization}"
+                  SelectedValue="{Binding SelectedPublishProfile.Organization}"
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
 
         <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="Space" />
         <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
                   ItemsSource="{Binding Path=Spaces}"
-                  SelectedValue="{Binding PublishProfile.Space}"
+                  SelectedValue="{Binding SelectedPublishProfile.Space}"
                   DisplayMemberPath="Name" SelectedValuePath="Name" />
 
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
