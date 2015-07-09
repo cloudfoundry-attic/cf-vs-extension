@@ -48,6 +48,13 @@ namespace CloudFoundry.VisualStudio.Forms
             this.publishProfileResources.CleanManifest();
             this.publishProfileResources.PublishProfile.Save();
 
+            var project = VsUtils.GetSelectedProject();
+
+            if (project != null)
+            {
+                project.ProjectItems.AddFromFile(this.publishProfileResources.PublishProfile.Path);
+            }
+
             MSBuildProcess process = new MSBuildProcess();
             process.MSBuildProperties = new Dictionary<string, string>();
             process.MSBuildProperties.Add("DeployOnBuild", "true");
