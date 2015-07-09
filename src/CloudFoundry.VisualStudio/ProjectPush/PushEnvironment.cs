@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,9 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 {
     public class PushEnvironment
     {
+        public const string DefaultProfileName = "push";
+        public const string Extension = ".cf.pubxml";
+
         private string projectDirectory;
         private string profileFilePath;
         private string targetFilePath;
@@ -19,7 +23,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             this.targetFilePath = VsUtils.GetTargetFile();
 
             var project = VsUtils.GetSelectedProject();
-            this.profileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(), "push.cf.pubxml");
+            this.profileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(),
+                string.Format(CultureInfo.InvariantCulture, "{0}{1}", DefaultProfileName, Extension));
             this.projectDirectory = VsUtils.GetProjectDirectory();
             if (project != null)
             {

@@ -37,7 +37,7 @@
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
 
-            if (!fileInfo.Name.ToLowerInvariant().EndsWith(CloudFoundry_VisualStudioPackage.Extension))
+            if (!fileInfo.Name.ToLowerInvariant().EndsWith(PushEnvironment.Extension))
             {
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
