@@ -39,17 +39,17 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
-                return this.publishProfileResources.PublishProfile.Application.Services.Contains(this.ServiceInstance.Name);
+                return this.publishProfileResources.SelectedPublishProfile.Application.Services.Contains(this.ServiceInstance.Name);
             }
             set
             {
                 if (value && !this.Selected)
                 {
-                    this.publishProfileResources.PublishProfile.Application.Services.Add(this.ServiceInstance.Name);
+                    this.publishProfileResources.SelectedPublishProfile.Application.Services.Add(this.ServiceInstance.Name);
                 }
                 else if (this.Selected)
                 {
-                    this.publishProfileResources.PublishProfile.Application.Services.Remove(this.ServiceInstance.Name);
+                    this.publishProfileResources.SelectedPublishProfile.Application.Services.Remove(this.ServiceInstance.Name);
                 }
 
                 RaisePropertyChangedEvent("Selected");

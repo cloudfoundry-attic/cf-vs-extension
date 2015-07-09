@@ -31,18 +31,18 @@ namespace CloudFoundry.VisualStudio.Controls
         {
             if (string.IsNullOrWhiteSpace(tbEnvVarKey.Text) == false)
             {
-                var dataContext = (this.DataContext as PublishProfileEditorResources);
+            var dataContext = (this.DataContext as PublishProfileEditorResources);
 
-                if (dataContext == null)
-                {
-                    throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
-                }
+            if (dataContext == null)
+            {
+                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+            }
 
-                dataContext.PublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
+            dataContext.SelectedPublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
 
-                tbEnvVarValue.Clear();
-                tbEnvVarKey.Clear();
-                lvEnvVars.Items.Refresh();
+            tbEnvVarValue.Clear();
+            tbEnvVarKey.Clear();
+            lvEnvVars.Items.Refresh();
             }
         }
 
@@ -59,7 +59,7 @@ namespace CloudFoundry.VisualStudio.Controls
             foreach (var item in lvEnvVars.SelectedItems)
             {
                 var envVar = (KeyValuePair<string, string>)item;
-                dataContext.PublishProfile.Application.EnvironmentVariables.Remove(envVar.Key);
+                dataContext.SelectedPublishProfile.Application.EnvironmentVariables.Remove(envVar.Key);
             }
             lvEnvVars.Items.Refresh();
         }

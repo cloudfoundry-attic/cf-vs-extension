@@ -27,17 +27,17 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
-                return this.publishProfileResources.PublishProfile.Application.Domains.Contains(this.SharedDomain.Name);
+                return this.publishProfileResources.SelectedPublishProfile.Application.Domains.Contains(this.SharedDomain.Name);
             }
             set
             {
                 if (value && !this.Selected)
                 {
-                    this.publishProfileResources.PublishProfile.Application.Domains.Add(this.SharedDomain.Name);
+                    this.publishProfileResources.SelectedPublishProfile.Application.Domains.Add(this.SharedDomain.Name);
                 }
                 else if (this.Selected)
                 {
-                    this.publishProfileResources.PublishProfile.Application.Domains.Remove(this.SharedDomain.Name);
+                    this.publishProfileResources.SelectedPublishProfile.Application.Domains.Remove(this.SharedDomain.Name);
                 }
 
                 RaisePropertyChangedEvent("Selected");

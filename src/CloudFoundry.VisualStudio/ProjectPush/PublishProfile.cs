@@ -341,7 +341,7 @@
         /// </summary>
         /// <param name="project">The Visual Studio EnvDTE project. Cannot be null.</param>
         /// <param name="path">Absolute path to the publish profile to load. If the file does not exist, defaults will be loaded for the object.</param>
-        /// <returns>A new PublishProfile.</returns>
+        /// <returns>A new SelectedPublishProfile.</returns>
         /// <exception cref="System.ArgumentNullException">project</exception>
         public static PublishProfile Load(PushEnvironment pushEnvironment)
         {

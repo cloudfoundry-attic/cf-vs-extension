@@ -8,6 +8,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 {
     internal enum PublishProfileRefreshTarget
     {
+        PublishProfile,
         Client,
         Organizations,
         Spaces,
