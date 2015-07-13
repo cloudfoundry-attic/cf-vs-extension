@@ -35,9 +35,10 @@
             <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
         </xctk:WizardPage>
 
-        <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
-                         Title="Routes" Description="Application routes settings." CanFinish="True">
-            <Controls:RoutesUserControl x:Name="ucRoutes" />
+            <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
+                         Title="Routes" Description="Application routes settings." CanFinish="False"
+                         CanSelectNextPage="{Binding Error.HasErrors, Converter={StaticResource InverseBoolean}}">
+                <Controls:RoutesUserControl x:Name="ucRoutes" />
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Threading;
 using CloudFoundry.UAA;
 using CloudFoundry.VisualStudio.TargetStore;
+using System.Text.RegularExpressions;
 
 namespace CloudFoundry.VisualStudio.ProjectPush
 {
@@ -666,6 +667,33 @@ Please note that credentials are saved automatically in the Windows Credential M
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public void ValidateRoutes()
+        {
+            Regex regex = new Regex("^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]+$");
+
+            this.Error.HasErrors = false;
+            this.Error.ErrorMessage = string.Empty;
+
+            foreach (string hostName in this.PublishProfile.Application.Hosts)
+            {
+                if (string.IsNullOrWhiteSpace(hostName))
+                {
+                    this.Error.ErrorMessage = "Hostname cannot be empty";
+                    this.Error.HasErrors = true;
+                    break;
+                }
+                else
+                {
+                    if (regex.IsMatch(hostName) == false)
+                    {
+                        this.Error.ErrorMessage = string.Format(System.Globalization.CultureInfo.InvariantCulture, "Invalid hostname {0}", hostName);
+                        this.Error.HasErrors = true;
+                        break;
+                    }
+                }
             }
         }
     }

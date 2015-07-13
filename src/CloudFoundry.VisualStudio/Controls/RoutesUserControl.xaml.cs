@@ -28,19 +28,18 @@ namespace CloudFoundry.VisualStudio.Controls
 
         private void btnAddHost_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(tbName.Text) == false)
+            var dataContext = (this.DataContext as PublishProfileEditorResources);
+
+            if (dataContext == null)
             {
-                var dataContext = (this.DataContext as PublishProfileEditorResources);
-
-                if (dataContext == null)
-                {
-                    throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
-                }
-                dataContext.PublishProfile.Application.Hosts.Add(tbName.Text);
-
-                lvRoutes.Items.Refresh();
-                tbName.Clear();
+                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
             }
+            dataContext.PublishProfile.Application.Hosts.Add(tbName.Text);
+
+            lvRoutes.Items.Refresh();
+            tbName.Clear();
+
+            dataContext.ValidateRoutes();
         }
 
         private void btnDeleteHost_Click(object sender, RoutedEventArgs e)
@@ -61,6 +60,8 @@ namespace CloudFoundry.VisualStudio.Controls
                 }
             }
             lvRoutes.Items.Refresh();
+
+            dataContext.ValidateRoutes();
         }
     }
 }

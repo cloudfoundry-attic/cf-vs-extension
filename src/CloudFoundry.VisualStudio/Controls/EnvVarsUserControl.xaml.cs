@@ -29,18 +29,21 @@ namespace CloudFoundry.VisualStudio.Controls
 
         private void btnAddEnvVar_Click(object sender, RoutedEventArgs e)
         {
-            var dataContext = (this.DataContext as PublishProfileEditorResources);
-
-            if (dataContext == null)
+            if (string.IsNullOrWhiteSpace(tbEnvVarKey.Text) == false)
             {
-                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+                var dataContext = (this.DataContext as PublishProfileEditorResources);
+
+                if (dataContext == null)
+                {
+                    throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+                }
+
+                dataContext.PublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
+
+                tbEnvVarValue.Clear();
+                tbEnvVarKey.Clear();
+                lvEnvVars.Items.Refresh();
             }
-
-            dataContext.PublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
-
-            tbEnvVarValue.Clear();
-            tbEnvVarKey.Clear();
-            lvEnvVars.Items.Refresh();
         }
 
 
