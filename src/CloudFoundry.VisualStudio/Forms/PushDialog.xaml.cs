@@ -52,7 +52,7 @@ namespace CloudFoundry.VisualStudio.Forms
 
             if (project != null)
             {
-                project.ProjectItems.AddFromFile(this.publishProfileResources.PublishProfile.Path);
+                project.ProjectItems.AddFromFile(this.publishProfileResources.SelectedPublishProfile.Path);
             }
 
             MSBuildProcess process = new MSBuildProcess();

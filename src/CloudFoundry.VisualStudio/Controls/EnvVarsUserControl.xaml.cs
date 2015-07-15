@@ -31,18 +31,18 @@ namespace CloudFoundry.VisualStudio.Controls
         {
             if (string.IsNullOrWhiteSpace(tbEnvVarKey.Text) == false)
             {
-            var dataContext = (this.DataContext as PublishProfileEditorResources);
+                var dataContext = (this.DataContext as PublishProfileEditorResources);
 
-            if (dataContext == null)
-            {
-                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
-            }
+                if (dataContext == null)
+                {
+                    throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+                }
 
-            dataContext.SelectedPublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
+                dataContext.SelectedPublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
 
-            tbEnvVarValue.Clear();
-            tbEnvVarKey.Clear();
-            lvEnvVars.Items.Refresh();
+                tbEnvVarValue.Clear();
+                tbEnvVarKey.Clear();
+                lvEnvVars.Items.Refresh();
             }
         }
 

@@ -99,6 +99,31 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
+        public string SelectedStack
+        {
+            get
+            {
+                return this.selectedPublishProfile.Application.StackName;
+            }
+            set
+            {
+                this.selectedPublishProfile.Application.StackName = value;
+                this.RaisePropertyChangedEvent("SelectedStack");
+            }
+        }
+
+        public string SelectedBuildpack
+        {
+            get
+            {
+                return this.selectedPublishProfile.Application.BuildpackUrl;
+            }
+            set
+            {
+                this.selectedPublishProfile.Application.BuildpackUrl = value;
+                this.RaisePropertyChangedEvent("SelectedBuildpack");
+            }
+        }
 
         public PublishProfile SelectedPublishProfile
         {
@@ -177,6 +202,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 this.selectedPublishProfile.SavedPassword = true;
                 this.selectedPublishProfile.Password = null;
                 this.selectedPublishProfile.RefreshToken = null;
+                this.selectedPublishProfile.PropertyChanged -= publishProfile_PropertyChanged;
+                this.selectedPublishProfile.PropertyChanged += publishProfile_PropertyChanged;
 
                 this.Refresh(PublishProfileRefreshTarget.Client);
                 this.RaisePropertyChangedEvent("SelectedCloudTarget");
@@ -275,6 +302,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     {
                         this.Refresh(PublishProfileRefreshTarget.Spaces);
                         this.Refresh(PublishProfileRefreshTarget.PrivateDomains);
+                        this.Refresh(PublishProfileRefreshTarget.SharedDomains);
                     }
                     break;
                 case "Space":
@@ -377,6 +405,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 this.SelectedCloudTarget = this.ToV2CloudTarget();
             });
+
         }
 
         private async Task RefreshClient()
@@ -505,10 +534,17 @@ Please note that credentials are saved automatically in the Windows Credential M
 
             OnUIThread(() =>
             {
+                var oldSelectedSpace = this.selectedPublishProfile.Space;
+
                 this.spaces.Clear();
                 foreach (var space in spacesList)
                 {
                     this.spaces.Add(space);
+                }
+
+                if (this.spaces.Any(o => o.Name == oldSelectedSpace))
+                {
+                    this.selectedPublishProfile.Space = oldSelectedSpace;
                 }
 
                 if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Space))
@@ -588,16 +624,21 @@ Please note that credentials are saved automatically in the Windows Credential M
 
             OnUIThread(() =>
             {
+                var oldSelectedStack = this.SelectedStack;
+
                 this.stacks.Clear();
                 foreach (var stack in stacksList)
                 {
                     this.stacks.Add(stack);
                 }
-
-
-                if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Application.StackName))
+                if (stacks.Any(o => o.Name == oldSelectedStack))
                 {
-                    this.selectedPublishProfile.Application.StackName = this.stacks.FirstOrDefault().Name;
+                    this.SelectedStack = oldSelectedStack;
+                }
+
+                if (string.IsNullOrWhiteSpace(this.SelectedStack))
+                {
+                    this.SelectedStack = this.stacks.FirstOrDefault().Name;
                 }
             });
 
@@ -610,25 +651,43 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.RefreshMessage = "Detecting buildpacks...";
             List<ListAllBuildpacksResponse> buildpacksList = new List<ListAllBuildpacksResponse>();
 
-            PagedResponseCollection<ListAllBuildpacksResponse> buildpacks = await this.client.Buildpacks.ListAllBuildpacks();
+            PagedResponseCollection<ListAllBuildpacksResponse> buildpacksResponse = await this.client.Buildpacks.ListAllBuildpacks();
 
-            while (buildpacks != null && buildpacks.Properties.TotalResults != 0)
+            while (buildpacksResponse != null && buildpacksResponse.Properties.TotalResults != 0)
             {
-                foreach (var buildpack in buildpacks)
+                foreach (var buildpack in buildpacksResponse)
                 {
                     buildpacksList.Add(buildpack);
                 }
 
-                buildpacks = await buildpacks.GetNextPage();
+                buildpacksResponse = await buildpacksResponse.GetNextPage();
             }
 
 
             OnUIThread(() =>
             {
+                var oldSelectedBuildpack = this.SelectedBuildpack;
+                
                 this.buildpacks.Clear();
                 foreach (var buildpack in buildpacksList)
                 {
                     this.buildpacks.Add(buildpack);
+                }
+
+                if (Uri.IsWellFormedUriString(oldSelectedBuildpack, UriKind.Absolute))
+                {
+                    this.SelectedBuildpack = oldSelectedBuildpack;
+                }
+                else
+                {
+                    if (this.buildpacks.Any(o => o.Name == oldSelectedBuildpack))
+                    {
+                        this.SelectedBuildpack = oldSelectedBuildpack;
+                    }
+                    else
+                    {
+                        this.SelectedBuildpack = String.Empty;
+                    }
                 }
             });
 
@@ -758,7 +817,7 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.Error.HasErrors = false;
             this.Error.ErrorMessage = string.Empty;
 
-            foreach (string hostName in this.PublishProfile.Application.Hosts)
+            foreach (string hostName in this.SelectedPublishProfile.Application.Hosts)
             {
                 if (string.IsNullOrWhiteSpace(hostName))
                 {

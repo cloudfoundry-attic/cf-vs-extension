@@ -34,7 +34,7 @@ namespace CloudFoundry.VisualStudio.Controls
             {
                 throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
             }
-            dataContext.PublishProfile.Application.Hosts.Add(tbName.Text);
+            dataContext.SelectedPublishProfile.Application.Hosts.Add(tbName.Text);
 
             lvRoutes.Items.Refresh();
             tbName.Clear();
