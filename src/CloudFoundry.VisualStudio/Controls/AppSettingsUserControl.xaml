@@ -33,12 +33,12 @@
 
         <Label Grid.Row="0" Grid.Column="1" Content="Name" />
         <TextBox Grid.Row="1" Grid.Column="1" Name="tbName" 
-                 Text="{Binding PublishProfile.Application.Name}" />
+                 Text="{Binding SelectedPublishProfile.Application.Name}" />
 
         <Label Grid.Row="2" Grid.Column="1" Content="Buildpack" />
         <ComboBox Grid.Row="3" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
                   ItemsSource="{Binding Buildpacks}" 
-                  Text="{Binding PublishProfile.Application.BuildpackUrl}"
+                  Text="{Binding SelectedBuildpack}"
                   SelectedValuePath="Name" DisplayMemberPath="Name" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
         </ComboBox>
 
@@ -47,17 +47,17 @@
 
         <Label Grid.Row="4" Grid.Column="1" Content="Stack" />
         <ComboBox Grid.Row="5" Grid.Column="1" Name="cbStack" 
-                  ItemsSource="{Binding Path=Stacks}"
-                  SelectedValue="{Binding PublishProfile.Application.StackName}"
+                  ItemsSource="{Binding Stacks}"
+                  SelectedValue="{Binding SelectedStack}"
                   SelectedValuePath="Name" DisplayMemberPath="Name" />
 
         <Label Grid.Row="6" Grid.Column="1" Content="Memory (MB)" />
         <TextBox Grid.Row="7" Grid.Column="1" Name="tbMemory" 
-                 Text="{Binding PublishProfile.Application.Memory}" />
+                 Text="{Binding SelectedPublishProfile.Application.Memory}" />
 
         <Label Grid.Row="8" Grid.Column="1" Content="Instances" />
         <TextBox Grid.Row="9" Grid.Column="1" Name="tbInstances"
-                 Text="{Binding PublishProfile.Application.InstanceCount}" />
+                 Text="{Binding SelectedPublishProfile.Application.InstanceCount}" />
 
         <TextBox Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"

@@ -46,19 +46,19 @@ namespace CloudFoundry.VisualStudio.Forms
         {
 
             this.publishProfileResources.CleanManifest();
-            this.publishProfileResources.PublishProfile.Save();
+            this.publishProfileResources.SelectedPublishProfile.Save();
 
             var project = VsUtils.GetSelectedProject();
 
             if (project != null)
             {
-                project.ProjectItems.AddFromFile(this.publishProfileResources.PublishProfile.Path);
+                project.ProjectItems.AddFromFile(this.publishProfileResources.SelectedPublishProfile.Path);
             }
 
             MSBuildProcess process = new MSBuildProcess();
             process.MSBuildProperties = new Dictionary<string, string>();
             process.MSBuildProperties.Add("DeployOnBuild", "true");
-            process.MSBuildProperties.Add("PublishProfile", this.publishProfileResources.PublishProfile.Path);
+            process.MSBuildProperties.Add("SelectedPublishProfile", this.publishProfileResources.SelectedPublishProfile.Path);
 
             process.Publish();
         }

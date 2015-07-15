@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Threading;
 using CloudFoundry.UAA;
 using CloudFoundry.VisualStudio.TargetStore;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace CloudFoundry.VisualStudio.ProjectPush
@@ -98,11 +99,50 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
-
-        public PublishProfile PublishProfile
+        public string SelectedStack
         {
-            get { return publishProfile; }
-            set { publishProfile = value; }
+            get
+            {
+                return this.selectedPublishProfile.Application.StackName;
+            }
+            set
+            {
+                this.selectedPublishProfile.Application.StackName = value;
+                this.RaisePropertyChangedEvent("SelectedStack");
+            }
+        }
+
+        public string SelectedBuildpack
+        {
+            get
+            {
+                return this.selectedPublishProfile.Application.BuildpackUrl;
+            }
+            set
+            {
+                this.selectedPublishProfile.Application.BuildpackUrl = value;
+                this.RaisePropertyChangedEvent("SelectedBuildpack");
+            }
+        }
+
+        public PublishProfile SelectedPublishProfile
+        {
+            get
+            {
+                return this.selectedPublishProfile;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+                this.selectedPublishProfile = value;
+
+                this.Refresh(PublishProfileRefreshTarget.PublishProfile);
+
+                this.RaisePropertyChangedEvent("SelectedPublishProfile");
+            }
         }
 
         public CloudTarget[] CloudTargets
@@ -111,32 +151,43 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set;
         }
 
+        public PublishProfile[] PublishProfiles
+        {
+            get;
+            set;
+        }
+
+        private CloudTarget ToV2CloudTarget()
+        {
+            string description = string.Empty;
+
+            // If this is a 'vanilla' publish profile, we can display it the same way; note that password can be a series of whitespaces
+            if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.RefreshToken))
+            {
+                description = string.Format("Using explicit refresh token - {0}", this.selectedPublishProfile.ServerUri);
+            }
+            else if (!string.IsNullOrEmpty(this.selectedPublishProfile.Password))
+            {
+                description = string.Format("Using clear-text password - {0}", this.selectedPublishProfile.ServerUri);
+            }
+            else if (!this.selectedPublishProfile.SavedPassword)
+            {
+                description = string.Format("Invalid credential configuration - {0}", this.selectedPublishProfile.ServerUri);
+            }
+
+            return CloudTarget.CreateV2Target(
+                this.selectedPublishProfile.ServerUri,
+                description,
+                this.selectedPublishProfile.User,
+                this.selectedPublishProfile.SkipSSLValidation,
+                string.Empty);
+        }
+
         public CloudTarget SelectedCloudTarget
         {
             get
             {
-                string description = string.Empty;
-
-                // If this is a 'vanila' publish profile, we can display it the same way; note that password can be a series of whitespaces
-                if (!string.IsNullOrWhiteSpace(this.PublishProfile.RefreshToken))
-                {
-                    description = string.Format("Using explicit refresh token - {0}", this.PublishProfile.ServerUri);
-                }
-                else if (!string.IsNullOrEmpty(this.PublishProfile.Password))
-                {
-                    description = string.Format("Using clear-text password - {0}", this.PublishProfile.ServerUri);
-                }
-                else if (!this.PublishProfile.SavedPassword)
-                {
-                    description = string.Format("Invalid credential configuration - {0}", this.PublishProfile.ServerUri);
-                }
-
-                return CloudTarget.CreateV2Target(
-                    this.PublishProfile.ServerUri,
-                    description,
-                    this.PublishProfile.User,
-                    this.PublishProfile.SkipSSLValidation,
-                    string.Empty);
+                return this.ToV2CloudTarget();
             }
             set
             {
@@ -145,12 +196,14 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     return;
                 }
 
-                this.PublishProfile.ServerUri = value.TargetUrl;
-                this.PublishProfile.User = value.Email;
-                this.PublishProfile.SkipSSLValidation = value.IgnoreSSLErrors;
-                this.PublishProfile.SavedPassword = true;
-                this.PublishProfile.Password = null;
-                this.PublishProfile.RefreshToken = null;
+                this.selectedPublishProfile.ServerUri = value.TargetUrl;
+                this.selectedPublishProfile.User = value.Email;
+                this.selectedPublishProfile.SkipSSLValidation = value.IgnoreSSLErrors;
+                this.selectedPublishProfile.SavedPassword = true;
+                this.selectedPublishProfile.Password = null;
+                this.selectedPublishProfile.RefreshToken = null;
+                this.selectedPublishProfile.PropertyChanged -= publishProfile_PropertyChanged;
+                this.selectedPublishProfile.PropertyChanged += publishProfile_PropertyChanged;
 
                 this.Refresh(PublishProfileRefreshTarget.Client);
                 this.RaisePropertyChangedEvent("SelectedCloudTarget");
@@ -170,9 +223,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
-        private PublishProfile publishProfile;
+        private PublishProfile selectedPublishProfile;
 
-        private bool refreshing = false;
         private CancellationToken cancellationToken;
         private CloudFoundryClient client;
 
@@ -184,26 +236,62 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
+        private int RefreshCounter
+        {
+            get
+            {
+                return this.refreshCounter;
+            }
+            set
+            {
+                this.refreshCounter = Math.Max(value, 0);
+                this.RaisePropertyChangedEvent("Refreshing");
+            }
+        }
+
+
         public bool Refreshing
         {
             get
             {
-                return refreshing;
-            }
-            set
-            {
-                refreshing = value;
-                this.RaisePropertyChangedEvent("Refreshing");
+                return refreshCounter != 0;
             }
         }
 
         public PublishProfileEditorResources(PublishProfile publishProfile, CancellationToken cancellationToken)
         {
-            this.publishProfile = publishProfile;
-            this.publishProfile.PropertyChanged += publishProfile_PropertyChanged;
+            this.selectedPublishProfile = publishProfile;
+            this.selectedPublishProfile.PropertyChanged += publishProfile_PropertyChanged;
             this.cancellationToken = cancellationToken;
 
             this.CloudTargets = CloudTargetManager.GetTargets();
+
+            var publishProfiles = new List<PublishProfile>();
+
+            var publishDirectory = Directory.GetParent(this.selectedPublishProfile.Path);
+
+            foreach (var file in publishDirectory.GetFiles())
+            {
+                if (file.Name.EndsWith(PushEnvironment.Extension))
+                {
+                    try
+                    {
+                        PushEnvironment env = new PushEnvironment();
+                        env.ProfileFilePath = file.FullName;
+                        var profile = PublishProfile.Load(env);
+                        publishProfiles.Add(profile);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Ignore profiles that cannot be loaded.
+                        Logger.Warning(string.Format("Cloud not load profile from {0}: {1}", file.Name, ex));
+                    }
+
+                }
+            }
+            this.PublishProfiles = publishProfiles.ToArray();
+
+
         }
 
         private void publishProfile_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -214,6 +302,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     {
                         this.Refresh(PublishProfileRefreshTarget.Spaces);
                         this.Refresh(PublishProfileRefreshTarget.PrivateDomains);
+                        this.Refresh(PublishProfileRefreshTarget.SharedDomains);
                     }
                     break;
                 case "Space":
@@ -226,19 +315,19 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private void EnterRefresh()
         {
-            this.Refreshing = true;
+            this.RefreshCounter++;
             this.Error.HasErrors = false;
             this.Error.ErrorMessage = string.Empty;
         }
 
         private void ExitRefresh()
-        {  
+        {
             this.ExitRefresh(null);
         }
 
         private void ExitRefresh(Exception error)
         {
-            this.Refreshing = false;
+            this.RefreshCounter--;
             this.Error.HasErrors = error != null;
             if (this.Error.HasErrors)
             {
@@ -267,6 +356,9 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
                 switch (refreshTarget)
                 {
+                    case PublishProfileRefreshTarget.PublishProfile:
+                        await this.RefreshPublishProfile();
+                        break;
                     case PublishProfileRefreshTarget.Client:
                         await this.RefreshClient();
                         break;
@@ -307,41 +399,50 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }).Forget();
         }
 
+        private async Task RefreshPublishProfile()
+        {
+            await Task.Run(() =>
+            {
+                this.SelectedCloudTarget = this.ToV2CloudTarget();
+            });
+
+        }
+
         private async Task RefreshClient()
         {
             this.RefreshMessage = "Loading Cloud Foundry client...";
             this.LastRefreshTarget = PublishProfileRefreshTarget.Client;
 
             this.client = new CloudFoundryClient(
-                this.publishProfile.ServerUri,
+                this.selectedPublishProfile.ServerUri,
                 this.cancellationToken,
                 null,
-                this.publishProfile.SkipSSLValidation);
+                this.selectedPublishProfile.SkipSSLValidation);
 
             AuthenticationContext authenticationContext = null;
-            if (!string.IsNullOrWhiteSpace(this.PublishProfile.RefreshToken))
+            if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.RefreshToken))
             {
-                authenticationContext = await client.Login(this.PublishProfile.RefreshToken);
+                authenticationContext = await client.Login(this.selectedPublishProfile.RefreshToken);
             }
             else
             {
-                if (!string.IsNullOrWhiteSpace(this.PublishProfile.Password))
+                if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.Password))
                 {
                     authenticationContext = await client.Login(new CloudCredentials()
                     {
-                        User = this.publishProfile.User,
-                        Password = this.publishProfile.Password
+                        User = this.selectedPublishProfile.User,
+                        Password = this.selectedPublishProfile.Password
                     });
                 }
-                else if (this.publishProfile.SavedPassword == true)
+                else if (this.selectedPublishProfile.SavedPassword == true)
                 {
                     string password = CloudCredentialsManager.GetPassword(
-                        this.publishProfile.ServerUri,
-                        this.publishProfile.User);
+                        this.selectedPublishProfile.ServerUri,
+                        this.selectedPublishProfile.User);
 
                     authenticationContext = await client.Login(new CloudCredentials()
                     {
-                        User = this.publishProfile.User,
+                        User = this.selectedPublishProfile.User,
                         Password = password
                     });
                 }
@@ -367,37 +468,42 @@ Please note that credentials are saved automatically in the Windows Credential M
 
             this.RefreshMessage = "Loading organizations...";
             List<ListAllOrganizationsResponse> orgsList = new List<ListAllOrganizationsResponse>();
-            
-            PagedResponseCollection<ListAllOrganizationsResponse> orgs = await client.Organizations.ListAllOrganizations();
 
-            while (orgs != null && orgs.Properties.TotalResults != 0)
+            PagedResponseCollection<ListAllOrganizationsResponse> orgsResponse = await client.Organizations.ListAllOrganizations();
+
+            while (orgsResponse != null && orgsResponse.Properties.TotalResults != 0)
             {
-                foreach (var org in orgs)
+                foreach (var org in orgsResponse)
                 {
-                    orgsList.Add(org);                }
+                    orgsList.Add(org);
+                }
 
-                orgs = await orgs.GetNextPage();
+                orgsResponse = await orgsResponse.GetNextPage();
             }
 
             OnUIThread(() =>
             {
+                var oldSelectedOrg = this.selectedPublishProfile.Organization;
+
                 this.orgs.Clear();
                 foreach (var org in orgsList)
                 {
                     this.orgs.Add(org);
                 }
 
-                if (string.IsNullOrWhiteSpace(this.PublishProfile.Organization))
+                if (this.orgs.Any(o => o.Name == oldSelectedOrg))
+                {
+                    this.selectedPublishProfile.Organization = oldSelectedOrg;
+                }
+
+                if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Organization))
                 {
                     if (this.Orgs.Count > 0)
                     {
-                        this.PublishProfile.Organization = this.Orgs.FirstOrDefault().Name;
+                        this.selectedPublishProfile.Organization = this.Orgs.FirstOrDefault().Name;
                     }
                 }
             });
-
-            await this.RefreshSpaces();
-            await this.RefreshPrivateDomains();
         }
 
         private async Task RefreshSpaces()
@@ -406,8 +512,8 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.RefreshMessage = "Loading spaces...";
 
             List<ListAllSpacesForOrganizationResponse> spacesList = new List<ListAllSpacesForOrganizationResponse>();
-            
-            var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
+
+            var org = this.orgs.FirstOrDefault(o => o.Name == this.selectedPublishProfile.Organization);
 
             if (org == null)
             {
@@ -428,15 +534,22 @@ Please note that credentials are saved automatically in the Windows Credential M
 
             OnUIThread(() =>
             {
+                var oldSelectedSpace = this.selectedPublishProfile.Space;
+
                 this.spaces.Clear();
                 foreach (var space in spacesList)
                 {
                     this.spaces.Add(space);
                 }
 
-                if (string.IsNullOrWhiteSpace(this.PublishProfile.Space))
+                if (this.spaces.Any(o => o.Name == oldSelectedSpace))
                 {
-                    this.PublishProfile.Space = this.spaces.FirstOrDefault().Name;
+                    this.selectedPublishProfile.Space = oldSelectedSpace;
+                }
+
+                if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Space))
+                {
+                    this.selectedPublishProfile.Space = this.spaces.FirstOrDefault().Name;
                 }
             });
 
@@ -444,13 +557,13 @@ Please note that credentials are saved automatically in the Windows Credential M
         }
 
         private async Task RefreshServiceInstances()
-        {   
+        {
             this.LastRefreshTarget = PublishProfileRefreshTarget.ServiceInstances;
             this.RefreshMessage = "Detecting service instances...";
 
             List<ServiceInstanceSelection> serviceInstancesList = new List<ServiceInstanceSelection>();
-            
-            var space = this.spaces.FirstOrDefault(s => s.Name == this.publishProfile.Space);
+
+            var space = this.spaces.FirstOrDefault(s => s.Name == this.selectedPublishProfile.Space);
 
             if (space == null)
             {
@@ -487,7 +600,7 @@ Please note that credentials are saved automatically in the Windows Credential M
                     this.serviceInstances.Add(serviceProfile);
                 }
             });
-            
+
             RaisePropertyChangedEvent("ServiceInstances");
         }
 
@@ -497,33 +610,39 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.RefreshMessage = "Detecting stacks...";
             List<ListAllStacksResponse> stacksList = new List<ListAllStacksResponse>();
 
-            PagedResponseCollection<ListAllStacksResponse> stacks = await this.client.Stacks.ListAllStacks();
+            PagedResponseCollection<ListAllStacksResponse> stacksResponse = await this.client.Stacks.ListAllStacks();
 
-            while (stacks != null && stacks.Properties.TotalResults != 0)
+            while (stacksResponse != null && stacksResponse.Properties.TotalResults != 0)
             {
-                foreach (var stack in stacks)
+                foreach (var stack in stacksResponse)
                 {
                     stacksList.Add(stack);
                 }
 
-                stacks = await stacks.GetNextPage();
+                stacksResponse = await stacksResponse.GetNextPage();
             }
 
-            OnUIThread(() => 
-            { 
+            OnUIThread(() =>
+            {
+                var oldSelectedStack = this.SelectedStack;
+
                 this.stacks.Clear();
                 foreach (var stack in stacksList)
                 {
                     this.stacks.Add(stack);
                 }
-
-                if (string.IsNullOrWhiteSpace(this.PublishProfile.Application.StackName))
+                if (stacks.Any(o => o.Name == oldSelectedStack))
                 {
-                  this.PublishProfile.Application.StackName = this.stacks.FirstOrDefault().Name;    
+                    this.SelectedStack = oldSelectedStack;
+                }
+
+                if (string.IsNullOrWhiteSpace(this.SelectedStack))
+                {
+                    this.SelectedStack = this.stacks.FirstOrDefault().Name;
                 }
             });
-            RaisePropertyChangedEvent("PublishProfile");
-            
+
+            RaisePropertyChangedEvent("Stacks");
         }
 
         private async Task RefreshBuildpacks()
@@ -532,27 +651,47 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.RefreshMessage = "Detecting buildpacks...";
             List<ListAllBuildpacksResponse> buildpacksList = new List<ListAllBuildpacksResponse>();
 
-            PagedResponseCollection<ListAllBuildpacksResponse> buildpacks = await this.client.Buildpacks.ListAllBuildpacks();
+            PagedResponseCollection<ListAllBuildpacksResponse> buildpacksResponse = await this.client.Buildpacks.ListAllBuildpacks();
 
-            while (buildpacks != null && buildpacks.Properties.TotalResults != 0)
+            while (buildpacksResponse != null && buildpacksResponse.Properties.TotalResults != 0)
             {
-                foreach (var buildpack in buildpacks)
+                foreach (var buildpack in buildpacksResponse)
                 {
                     buildpacksList.Add(buildpack);
                 }
 
-                buildpacks = await buildpacks.GetNextPage();
+                buildpacksResponse = await buildpacksResponse.GetNextPage();
             }
 
 
-            OnUIThread(() => 
-            { 
+            OnUIThread(() =>
+            {
+                var oldSelectedBuildpack = this.SelectedBuildpack;
+                
                 this.buildpacks.Clear();
                 foreach (var buildpack in buildpacksList)
                 {
                     this.buildpacks.Add(buildpack);
                 }
+
+                if (Uri.IsWellFormedUriString(oldSelectedBuildpack, UriKind.Absolute))
+                {
+                    this.SelectedBuildpack = oldSelectedBuildpack;
+                }
+                else
+                {
+                    if (this.buildpacks.Any(o => o.Name == oldSelectedBuildpack))
+                    {
+                        this.SelectedBuildpack = oldSelectedBuildpack;
+                    }
+                    else
+                    {
+                        this.SelectedBuildpack = String.Empty;
+                    }
+                }
             });
+
+            RaisePropertyChangedEvent("Buildpacks");
         }
 
         private async Task RefreshSharedDomains()
@@ -591,7 +730,7 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.refreshMessage = "Detecting private domains...";
             List<ListAllPrivateDomainsForOrganizationResponse> privateDomainsList = new List<ListAllPrivateDomainsForOrganizationResponse>();
 
-            var org = this.orgs.FirstOrDefault(o => o.Name == this.publishProfile.Organization);
+            var org = this.orgs.FirstOrDefault(o => o.Name == this.selectedPublishProfile.Organization);
 
             if (org == null)
             {
@@ -617,7 +756,7 @@ Please note that credentials are saved automatically in the Windows Credential M
                     this.privateDomains.Add(privateDomain);
                 }
             });
-            
+
             RaisePropertyChangedEvent("PrivateDomains");
         }
 
@@ -640,8 +779,8 @@ Please note that credentials are saved automatically in the Windows Credential M
                 }
             }
 
-            this.publishProfile.Application.Domains.Clear();
-            this.publishProfile.Application.Domains.AddRange(selectedDomains);
+            this.selectedPublishProfile.Application.Domains.Clear();
+            this.selectedPublishProfile.Application.Domains.AddRange(selectedDomains);
 
             List<string> selectedServices = new List<string>();
             foreach (var servInstance in this.serviceInstances)
@@ -652,13 +791,14 @@ Please note that credentials are saved automatically in the Windows Credential M
                 }
             }
 
-            this.publishProfile.Application.Services.Clear();
-            this.publishProfile.Application.Services.AddRange(selectedServices);
+            this.selectedPublishProfile.Application.Services.Clear();
+            this.selectedPublishProfile.Application.Services.AddRange(selectedServices);
 
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private PublishProfileRefreshTarget lastRefreshTarget;
+        private volatile int refreshCounter;
 
         protected void RaisePropertyChangedEvent(string propertyName)
         {
@@ -677,7 +817,7 @@ Please note that credentials are saved automatically in the Windows Credential M
             this.Error.HasErrors = false;
             this.Error.ErrorMessage = string.Empty;
 
-            foreach (string hostName in this.PublishProfile.Application.Hosts)
+            foreach (string hostName in this.SelectedPublishProfile.Application.Hosts)
             {
                 if (string.IsNullOrWhiteSpace(hostName))
                 {

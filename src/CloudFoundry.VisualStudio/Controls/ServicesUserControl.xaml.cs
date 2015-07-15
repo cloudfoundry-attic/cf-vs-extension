@@ -38,11 +38,11 @@ namespace CloudFoundry.VisualStudio.Controls
                 throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
             }
 
-           var spaceInfo=dataContext.Spaces.Where(o=>o.Name == dataContext.PublishProfile.Space).FirstOrDefault();
+           var spaceInfo=dataContext.Spaces.Where(o=>o.Name == dataContext.SelectedPublishProfile.Space).FirstOrDefault();
 
            if (spaceInfo == null)
            {
-               throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Could not find space {0} in datacontext's spaces", dataContext.PublishProfile.Space));
+               throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Could not find space {0} in datacontext's spaces", dataContext.SelectedPublishProfile.Space));
            }
 
            CreateServiceForm serviceDialog = new CreateServiceForm(dataContext.Client, spaceInfo.EntityMetadata.Guid.ToGuid());

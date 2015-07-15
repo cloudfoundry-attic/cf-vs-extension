@@ -60,7 +60,7 @@
 
                 using (var projectCollection = new ProjectCollection())
                 {
-                    websiteProject = projectCollection.LoadProject(MSBuildProperties["PublishProfile"]);
+                    websiteProject = projectCollection.LoadProject(MSBuildProperties["SelectedPublishProfile"]);
 
                     foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
                     {

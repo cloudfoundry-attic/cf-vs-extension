@@ -59,7 +59,7 @@
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
             }
             var dialog = new PushDialog(packageFile);
-            dialog.ShowDialog();
+            dialog.ShowModal();
             return VSConstants.S_OK;
         }
 
