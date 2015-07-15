@@ -231,7 +231,7 @@
             }
         }
 
-        [XmlElement(ElementName = "Version")]
+        [XmlElement(ElementName = "CFPublishProfileVersion")]
         public string Version
         {
             get
