@@ -82,7 +82,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         {
             // Arrange
             PushEnvironment environment = new PushEnvironment();
-            environment.ProjectDirectory = @"c:\somedirthatdoesntexist";
+            environment.ProjectDirectory = @"c:\somedirthatdoesntexist\";
             environment.ProfileFilePath = @"c:\foo-bar.cf.pubxml";
             environment.ProjectName = "foo-bar";
 
@@ -99,7 +99,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             Assert.AreEqual(string.Empty, publishProfile.Space);
             Assert.AreEqual(null, publishProfile.DeployTargetFile);
             Assert.AreEqual("CloudFoundry", publishProfile.WebPublishMethod);
-            Assert.AreEqual("push.yml", publishProfile.Manifest);
+            Assert.AreEqual("foo-bar.yml", publishProfile.Manifest);
         }
 
         [TestMethod()]

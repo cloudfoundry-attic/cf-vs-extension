@@ -59,6 +59,15 @@
 
         private static ErrorListProvider errorList;
 
+        public IVsBuildManagerAccessor BMAccessor
+        {
+            get
+            {
+                return GetService(typeof(SVsBuildManagerAccessor)) as IVsBuildManagerAccessor;
+            }
+        }
+
+        public static CloudFoundry_VisualStudioPackage CFPackage = null;
 
         /// <summary>
         /// Default constructor of the package.
@@ -74,6 +83,8 @@
             hackObject = null;
 
             errorList = new ErrorListProvider(this);
+
+            CloudFoundry_VisualStudioPackage.CFPackage = this;
         }
 
         public static ErrorListProvider GetErrorListPane()

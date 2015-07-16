@@ -262,10 +262,26 @@
         }
 
         [XmlIgnore]
-        public string TargetFile
+        public string ManifestFileName
         {
-            get;
-            set;
+            get
+            {
+                return string.Format(CultureInfo.InvariantCulture, @"{0}.yml", this.Name);
+            }
+        }
+
+        [XmlIgnore]
+        public string ManifestAbsoluteSavePath
+        {
+            get
+            {
+                return System.IO.Path.Combine(this.environment.ProjectDirectory, this.ManifestFileName);
+            }
+        }
+
+        private string CalculateManifestRelativeLocation()
+        {
+            return FileUtils.GetRelativePath(FileUtils.PathAddBackslash(this.environment.ProjectDirectory), this.ManifestAbsoluteSavePath);
         }
 
         private PublishProfile()
@@ -277,17 +293,14 @@
 
         private void LoadManifest()
         {
-            var profileDir = System.IO.Directory.GetParent(this.environment.ProfileFilePath).FullName;
             if (string.IsNullOrWhiteSpace(this.manifest))
             {
-                this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}.yml", PushEnvironment.DefaultProfileName);
+                this.manifest = this.CalculateManifestRelativeLocation();
             }
-            string absoluteManifestPath = System.IO.Path.Combine(profileDir, this.manifest);
 
-
-            if (File.Exists(absoluteManifestPath))
+            if (File.Exists(this.ManifestAbsoluteSavePath))
             {
-                var manifest = ManifestDiskRepository.ReadManifest(absoluteManifestPath);
+                var manifest = ManifestDiskRepository.ReadManifest(this.ManifestAbsoluteSavePath);
 
                 if (manifest.Applications().Count() > 1)
                 {
@@ -324,16 +337,7 @@
 
         private void SaveManifest()
         {
-            string projectDir = this.environment.ProjectDirectory;
-            Directory.CreateDirectory(projectDir);
-
-            this.Application.Path = projectDir;
-
-            var profileDir = System.IO.Directory.GetParent(this.environment.ProfileFilePath).FullName;
-
-            string absoluteManifestPath = System.IO.Path.Combine(profileDir, this.Manifest);
-
-            CloudFoundry.Manifests.Manifest.Save(new Application[] { this.Application }, absoluteManifestPath);
+            CloudFoundry.Manifests.Manifest.Save(new Application[] { this.Application }, this.ManifestAbsoluteSavePath);
         }
 
         /// <summary>
@@ -376,13 +380,51 @@
                     WebPublishMethod = "CloudFoundry"
                 };
             }
-
-            publishProfile.TargetFile = pushEnvironment.TargetFilePath;
+        
             publishProfile.path = pushEnvironment.ProfileFilePath;
             publishProfile.environment = pushEnvironment;
             publishProfile.LoadManifest();
 
             return publishProfile;
+        }
+
+        private void SaveWebsiteProject()
+        {
+            string cfprojPath = System.IO.Path.Combine(this.environment.ProjectDirectory, PushEnvironment.DefaultWebsiteProjName);
+
+            if(File.Exists(cfprojPath))
+            {
+                return;
+            }
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = true;
+
+            using (StringWriter textWriter = new StringWriter(System.Globalization.CultureInfo.InvariantCulture))
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings))
+                {
+                    xmlWriter.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+                    xmlWriter.WriteAttributeString("ToolsVersion", "4.0");
+
+                    xmlWriter.WriteStartElement("PropertyGroup");
+                    
+                    xmlWriter.WriteStartElement("SourceWebPhysicalPath");
+                    xmlWriter.WriteValue(@"$(MSBuildThisFileDirectory)");
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteStartElement("Import");
+                    xmlWriter.WriteAttributeString("Project", PushEnvironment.WebsitePublishingTargets);
+                    xmlWriter.WriteEndElement();
+
+                    xmlWriter.WriteEndElement();
+                }
+
+                File.WriteAllText(cfprojPath, textWriter.ToString());
+            }
         }
 
         /// <summary>
@@ -391,7 +433,6 @@
         /// </summary>
         public void Save()
         {
-
             var profileDir = System.IO.Directory.GetParent(this.environment.ProfileFilePath).FullName;
 
             if (string.IsNullOrWhiteSpace(this.name))
@@ -400,11 +441,6 @@
             }
 
             this.path = System.IO.Path.Combine(profileDir, string.Format(CultureInfo.InvariantCulture, "{0}{1}", this.name, PushEnvironment.Extension));
-
-
-            string relativePath = FileUtils.GetRelativePath(this.path, this.environment.ProjectDirectory);
-
-            this.manifest = string.Format(CultureInfo.InvariantCulture, "{0}{1}.yml", relativePath, this.name);
 
             SaveManifest();
 
@@ -426,8 +462,9 @@
                     xmlWriter.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
                     xmlWriter.WriteAttributeString("ToolsVersion", "4.0");
 
+                    // Import cf-msbuild-tasks
                     xmlWriter.WriteStartElement("Import");
-                    xmlWriter.WriteAttributeString("Project", this.TargetFile);
+                    xmlWriter.WriteAttributeString("Project", this.environment.TargetFilePath);
                     xmlWriter.WriteEndElement();
 
                     serializer.Serialize(xmlWriter, this, this.Namespaces);
@@ -436,6 +473,11 @@
                 }
 
                 File.WriteAllText(this.path, textWriter.ToString());
+            }
+
+            if (this.environment.IsProjectWebsite)
+            {
+                SaveWebsiteProject();
             }
         }
 
