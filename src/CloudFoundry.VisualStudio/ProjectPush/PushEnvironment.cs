@@ -12,24 +12,38 @@ namespace CloudFoundry.VisualStudio.ProjectPush
     {
         public const string DefaultProfileName = "push";
         public const string Extension = ".cf.pubxml";
+        public const string DefaultWebsiteProjName = "website.cfproj";
+        public const string WebsitePublishingTargets = @"$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.WebSite.Publishing.targets";
 
         private string projectDirectory;
         private string profileFilePath;
         private string targetFilePath;
         private string projectName;
+        private bool isProjectWebsite;
 
         public PushEnvironment()
         {
-            this.targetFilePath = VsUtils.GetTargetFile();
+            this.targetFilePath = FileUtils.GetRelativePath(VsUtils.GetPublishProfilePath(), VsUtils.GetTargetFile());
+            this.isProjectWebsite = VsUtils.IsSelectedProjectWebsite;
 
             var project = VsUtils.GetSelectedProject();
-            this.profileFilePath = Path.Combine(VsUtils.GetPublishProfilePath(),
+
+            this.profileFilePath = Path.Combine(
+                VsUtils.GetPublishProfilePath(),
                 string.Format(CultureInfo.InvariantCulture, "{0}{1}", DefaultProfileName, Extension));
+
             this.projectDirectory = VsUtils.GetProjectDirectory();
+
             if (project != null)
             {
                 this.projectName = project.Name;
             }
+        }
+
+        public bool IsProjectWebsite
+        {
+            get { return isProjectWebsite; }
+            set { isProjectWebsite = value; }
         }
 
         public string ProjectDirectory

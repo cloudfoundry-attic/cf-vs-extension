@@ -47,7 +47,6 @@
             {
                 PushEnvironment environment = new PushEnvironment();
                 environment.ProjectName = project.Name;
-                environment.ProjectDirectory = VsUtils.GetProjectDirectory();
                 environment.ProfileFilePath = pszMkDocument;
 
                 packageFile = PublishProfile.Load(environment);

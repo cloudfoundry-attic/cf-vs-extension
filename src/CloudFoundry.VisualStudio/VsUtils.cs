@@ -36,17 +36,19 @@ namespace CloudFoundry.VisualStudio
             string projectTypes = string.Empty;
             aggregatable.GetAggregateProjectTypeGuids(out projectTypes);
 
+            string result = System.IO.Path.Combine(projectFolder, "PublishProfiles");
+
             if (projectTypes.ToUpperInvariant().Contains("{E24C65DC-7377-472B-9ABA-BC803B73C61A}"))
             {
-                return System.IO.Path.Combine(projectFolder, "App_Data", "PublishProfiles");
+                result = System.IO.Path.Combine(projectFolder, "App_Data", "PublishProfiles");
             }
 
             if (projectTypes.ToUpperInvariant().Contains("{349C5851-65DF-11DA-9384-00065B846F21}"))
             {
-                return System.IO.Path.Combine(projectFolder, "Properties", "PublishProfiles");
+                result = System.IO.Path.Combine(projectFolder, "Properties", "PublishProfiles");
             }
 
-            return System.IO.Path.Combine(projectFolder, "PublishProfiles");
+            return FileUtils.PathAddBackslash(result);
         }
 
         public static string GetProjectDirectory()
@@ -75,6 +77,22 @@ namespace CloudFoundry.VisualStudio
                 }
             }
             return projectFolder;
+        }
+
+        public static bool IsSelectedProjectWebsite
+        {
+            get
+            {
+                var project = VsUtils.GetSelectedProject();
+                if (project != null)
+                {
+                    return (project.Object is VsWebSite.VSWebSite);
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         public static Project GetSelectedProject()

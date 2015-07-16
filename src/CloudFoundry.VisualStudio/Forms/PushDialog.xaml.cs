@@ -58,9 +58,9 @@ namespace CloudFoundry.VisualStudio.Forms
             MSBuildProcess process = new MSBuildProcess();
             process.MSBuildProperties = new Dictionary<string, string>();
             process.MSBuildProperties.Add("DeployOnBuild", "true");
-            process.MSBuildProperties.Add("SelectedPublishProfile", this.publishProfileResources.SelectedPublishProfile.Path);
+            process.MSBuildProperties.Add("PublishProfile", this.publishProfileResources.SelectedPublishProfile.Path);
 
-            process.Publish();
+            process.Publish(project);
         }
 
         private void wizardPush_Cancel(object sender, RoutedEventArgs e)

@@ -144,6 +144,9 @@
     <Reference Include="Thinktecture.IdentityModel.Client.Net45">
       <HintPath>..\..\packages\Thinktecture.IdentityModel.Client.4.0.0\lib\net45\Thinktecture.IdentityModel.Client.Net45.dll</HintPath>
     </Reference>
+    <Reference Include="VsWebSite.Interop, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="WebSocket4Net">
       <HintPath>..\..\packages\WebSocket4Net.0.12\lib\net45\WebSocket4Net.dll</HintPath>
     </Reference>

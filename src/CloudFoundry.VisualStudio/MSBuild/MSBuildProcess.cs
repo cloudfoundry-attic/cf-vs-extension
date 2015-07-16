@@ -9,17 +9,23 @@
     using Microsoft.Build.Evaluation;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.Build.Framework;
+    using Microsoft.Build.Execution;
+    using Microsoft.VisualStudio.Shell.Interop;
+    using Microsoft.VisualStudio.ComponentModelHost;
+    using Microsoft.VisualStudio;
+    using EnvDTE80;
+    using System.IO;
 
     public class MSBuildProcess
     {
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
-        public void Publish()
+        public void Publish(EnvDTE.Project project)
         {
-            this.Publish(Microsoft.Build.Framework.LoggerVerbosity.Normal);
+            this.Publish(project, Microsoft.Build.Framework.LoggerVerbosity.Normal);
         }
 
-        public void Publish(Microsoft.Build.Framework.LoggerVerbosity verbosity)
+        public void Publish(EnvDTE.Project project, Microsoft.Build.Framework.LoggerVerbosity verbosity)
         {
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
@@ -37,8 +43,6 @@
                 }
 
                 pane.Activate();
-
-
 
                 ErrorListProvider errorList = CloudFoundry_VisualStudioPackage.GetErrorListPane();
 
@@ -60,7 +64,15 @@
 
                 using (var projectCollection = new ProjectCollection())
                 {
-                    websiteProject = projectCollection.LoadProject(MSBuildProperties["SelectedPublishProfile"]);
+                    string proj = project.FullName;
+
+                    if (project.Object is VsWebSite.VSWebSite)
+                    {
+                        string projectDir = new System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(MSBuildProperties["PublishProfile"])).Parent.Parent.FullName;
+                        proj = Path.Combine(projectDir, CloudFoundry.VisualStudio.ProjectPush.PushEnvironment.DefaultWebsiteProjName);
+                    }
+
+                    websiteProject = projectCollection.LoadProject(proj);
 
                     foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
                     {
@@ -71,7 +83,7 @@
 
                     if (errorList.Tasks.Count > 0)
                     {
-                        errorList.Show();
+                        errorList.BringToFront();
                     }
                     pane.OutputString("Push operation finished!");
                     projectCollection.UnregisterAllLoggers();
