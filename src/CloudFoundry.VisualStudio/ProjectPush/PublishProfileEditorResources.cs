@@ -302,7 +302,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     {
                         this.Refresh(PublishProfileRefreshTarget.Spaces);
                         this.Refresh(PublishProfileRefreshTarget.PrivateDomains);
-                        this.Refresh(PublishProfileRefreshTarget.SharedDomains);
                     }
                     break;
                 case "Space":
@@ -453,13 +452,11 @@ Either set CFSavedPassword to true and use credentials saved in the Windows Cred
 Please note that credentials are saved automatically in the Windows Credential Manager if you use the Cloud Foundry Visual Studio Extensions to connect to a cloud.");
                 }
             }
-
-            await this.RefreshOrganizations();
-            await this.RefreshStacks();
-            await this.RefreshBuildpacks();
-            await this.RefreshSharedDomains();
-            await this.RefreshPrivateDomains();
-            await this.RefreshServiceInstances();
+            
+             await this.RefreshOrganizations();
+             await this.RefreshStacks();
+             await this.RefreshBuildpacks();
+             await this.RefreshSharedDomains();
         }
 
         private async Task RefreshOrganizations()
