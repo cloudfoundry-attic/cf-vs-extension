@@ -270,28 +270,28 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
             var publishDirectory = Directory.GetParent(this.selectedPublishProfile.Path);
 
-            foreach (var file in publishDirectory.GetFiles())
+            if (Directory.Exists(publishDirectory.FullName))
             {
-                if (file.Name.EndsWith(PushEnvironment.Extension))
+                foreach (var file in publishDirectory.GetFiles())
                 {
-                    try
+                    if (file.Name.EndsWith(PushEnvironment.Extension))
                     {
-                        PushEnvironment env = new PushEnvironment();
-                        env.ProfileFilePath = file.FullName;
-                        var profile = PublishProfile.Load(env);
-                        publishProfiles.Add(profile);
+                        try
+                        {
+                            PushEnvironment env = new PushEnvironment();
+                            env.ProfileFilePath = file.FullName;
+                            var profile = PublishProfile.Load(env);
+                            publishProfiles.Add(profile);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Ignore profiles that cannot be loaded.
+                            Logger.Warning(string.Format("Cloud not load profile from {0}: {1}", file.Name, ex));
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        // Ignore profiles that cannot be loaded.
-                        Logger.Warning(string.Format("Cloud not load profile from {0}: {1}", file.Name, ex));
-                    }
-
                 }
             }
             this.PublishProfiles = publishProfiles.ToArray();
-
-
         }
 
         private void publishProfile_PropertyChanged(object sender, PropertyChangedEventArgs e)
