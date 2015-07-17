@@ -79,7 +79,7 @@
                         websiteProject.SetProperty(parameter.Key, parameter.Value);
                     }
 
-                    websiteProject.Build("WebCloudFoundryPublish", new List<ILogger>() { customLogger });
+                    websiteProject.Build(new List<ILogger>() { customLogger });
 
                     if (errorList.Tasks.Count > 0)
                     {
