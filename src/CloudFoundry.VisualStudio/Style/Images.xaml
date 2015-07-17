@@ -6,10 +6,37 @@
     <BitmapImage x:Key="SSLEnabledImage" UriSource="../Resources/SSLEnabled.png" />
     <BitmapImage x:Key="SSLDisabledImage" UriSource="../Resources/SSLDisabled.png" />
     <BitmapImage x:Key="RefreshImage" UriSource="../Resources/Refresh.png" />
+    <BitmapImage x:Key="LoadingImage" UriSource="../Resources/Loader.png"/>
     <BitmapImage x:Key="AddImage" UriSource="../Resources/Add.png" />
     <BitmapImage x:Key="AddGenericImage" UriSource="../Resources/AddGeneric.png" />
     <BitmapImage x:Key="StatusUnknown" UriSource="../Resources/StatusUnknown.png" />
     <BitmapImage x:Key="SynchronizeSmallImage" UriSource="../Resources/SynchronizeSmall.png" />
     <BitmapImage x:Key="DeleteImage" UriSource="../Resources/Delete.png" />
     <BitmapImage x:Key="EditImage" UriSource="../Resources/Edit.png" />
+    
+    <Style x:Key="Spinner" TargetType="Image">
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Width" Value="16"/>
+        <Setter Property="Image.RenderTransform">
+            <Setter.Value>
+                <RotateTransform CenterX="8" CenterY="8" />
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Trigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                        Storyboard.TargetProperty="RenderTransform.Angle"
+                                        From="0"
+                                        To="360"
+                                        Duration="0:0:1"
+                                        RepeatBehavior="Forever" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </Trigger.EnterActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

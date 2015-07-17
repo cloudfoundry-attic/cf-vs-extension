@@ -32,6 +32,7 @@ namespace CloudFoundry.VisualStudio.Forms
             this.spaceGuid = workingSpaceGuid;
             InitializeComponent();
             this.DataContext = new ServiceInstanceEditorResource(client);
+            this.InfoMessage.Text = string.Empty;
 
         }
 
@@ -46,8 +47,8 @@ namespace CloudFoundry.VisualStudio.Forms
 
             try
             {
-                viewModel.Refreshing = true;
-                viewModel.RefreshMessage = string.Format(CultureInfo.InvariantCulture, "Creating service {0} ...", tbServiceName.Text);
+                viewModel.AllowFinish = false;
+                this.InfoMessage.Text = "Please wait while creating service...";
                 CreateServiceInstanceRequest request = new CreateServiceInstanceRequest();
                 request.Name = this.tbServiceName.Text;
                 request.ServicePlanGuid = viewModel.SelectedServicePlan.ToGuid();
@@ -60,7 +61,8 @@ namespace CloudFoundry.VisualStudio.Forms
             }
             catch (Exception ex)
             {
-                viewModel.Refreshing = false;
+                viewModel.AllowFinish = true;
+                this.InfoMessage.Text = string.Empty;
                 var errorMessages = new List<string>();
                 ErrorFormatter.FormatExceptionMessage(ex, errorMessages);
                 viewModel.Error.HasErrors = true;

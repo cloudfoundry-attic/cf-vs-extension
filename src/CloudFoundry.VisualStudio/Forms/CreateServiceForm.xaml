@@ -12,48 +12,68 @@
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
             <converters:VisibilityConverter x:Key="Visibility" />
+            <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="..\Style\Controls.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-    <xctk:BusyIndicator Name="busyIndicator" IsBusy="{Binding Refreshing}" BusyContent="{Binding RefreshMessage}">
-        <xctk:Wizard NextButtonVisibility="Collapsed" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
+    <xctk:Wizard NextButtonVisibility="Collapsed" x:Name="CreateServiceWizard" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
                  CancelButtonClosesWindow="False" Cancel="Wizard_Cancel" FinishButtonContent="OK" FinishButtonClosesWindow="False" Finish="Wizard_Finish">
 
-            <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
-                         Title="Create Cloud Foundry Service Instance" CanFinish="True">
-                <Grid Margin="50,0,50,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
+        <xctk:WizardPage x:Name="CreateServicePage" PageType= "Interior"
+                         Title="Create Cloud Foundry Service Instance" CanFinish="{Binding AllowFinish}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
 
-                    <Label Content="Service Name" Grid.Row="0" Grid.Column="0"></Label>
-                    <TextBox Name="tbServiceName" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0" Width="auto"></TextBox>
+                <Label Content="Service Name" Grid.Row="0" Grid.Column="1"></Label>
+                <TextBox Name="tbServiceName" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" Width="auto"></TextBox>
 
-                <Label Content="Service Type" Grid.Row="2" Grid.Column="0" ></Label>
-                <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" DisplayMemberPath="Label" SelectedValue="{Binding SelectedServiceType}"></ComboBox>
+                <Label Content="Service Type" Grid.Row="2" Grid.Column="1" ></Label>
 
-                <Label Content="Service Plan" Grid.Row="4" Grid.Column="0" ></Label>
-                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="0" Width="auto" ItemsSource="{Binding AvailableServicePlans}" DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid" SelectedValue="{Binding SelectedServicePlan}"></ComboBox>
+                <Image Grid.Row="3" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" 
+                       Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}"
+                       Visibility="{Binding Path=RefreshingServiceInformations, Converter={StaticResource Visibility}}">
+                </Image>
 
-                    <TextBox Grid.Row="6" IsReadOnly="True" TextWrapping="Wrap" 
+                <ComboBox Name="cbServiceType" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding ServiceTypes}" SelectedValuePath="EntityMetadata.Guid" 
+                          DisplayMemberPath="Label" SelectedValue="{Binding SelectedServiceType}" 
+                          IsEnabled="{Binding RefreshingServiceInformations, Converter={StaticResource InverseBoolean}}"></ComboBox>
+
+                <Label Content="Service Plan" Grid.Row="4" Grid.Column="1" ></Label>
+
+                <Image Grid.Row="5" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" 
+                       Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}"
+                       Visibility="{Binding Path=RefreshingServiceInformations, Converter={StaticResource Visibility}}">
+                </Image>
+
+                <ComboBox Name="cbServicePlan" Grid.Row="5" Grid.Column="1" Width="auto" ItemsSource="{Binding AvailableServicePlans}"
+                          DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid" SelectedValue="{Binding SelectedServicePlan}" 
+                          IsEnabled="{Binding RefreshingServiceInformations, Converter={StaticResource InverseBoolean}}"></ComboBox>
+
+                <TextBox Name="InfoMessage" Grid.Row="6" Grid.Column="1" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" BorderBrush="Transparent"></TextBox>
+                
+                <TextBox Grid.Row="7" Grid.Column="1" IsReadOnly="True" TextWrapping="Wrap" 
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
                  Text="{Binding Path=Error.ErrorMessage}" 
                  Visibility="{Binding Path=Error.HasErrors, Converter={StaticResource Visibility}}"/>
 
-                </Grid>
-            </xctk:WizardPage>
-        </xctk:Wizard>
-    </xctk:BusyIndicator>
+            </Grid>
+        </xctk:WizardPage>
+    </xctk:Wizard>
 </ui:DialogWindow>

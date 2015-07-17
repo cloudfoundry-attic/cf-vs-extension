@@ -1,4 +1,5 @@
 ﻿using CloudFoundry.CloudController.V2.Client.Data;
+using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CloudFoundry.VisualStudio.ProjectPush
 {
-    internal class PrivateDomainsWithSelection : INotifyPropertyChanged
+    internal class PrivateDomainsWithSelection : ObservableObject
     {
         private PublishProfileEditorResources publishProfileResources;
 
@@ -40,20 +41,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     this.publishProfileResources.SelectedPublishProfile.Application.Domains.Remove(this.PrivateDomain.Name);
                 }
 
-                RaisePropertyChangedEvent("Selected");
             }
         }
-
-        protected void RaisePropertyChangedEvent(string propertyName)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
