@@ -62,31 +62,39 @@
 
                 Microsoft.Build.Evaluation.Project websiteProject = null;
 
-                using (var projectCollection = new ProjectCollection())
+                using (var buildManager = new BuildManager())
                 {
-                    string proj = project.FullName;
-
-                    if (project.Object is VsWebSite.VSWebSite)
+                    using (var projectCollection = new ProjectCollection())
                     {
-                        string projectDir = new System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(MSBuildProperties["PublishProfile"])).Parent.Parent.FullName;
-                        proj = Path.Combine(projectDir, CloudFoundry.VisualStudio.ProjectPush.PushEnvironment.DefaultWebsiteProjName);
+
+                        string proj = project.FullName;
+
+                        if (project.Object is VsWebSite.VSWebSite)
+                        {
+                            string projectDir = new System.IO.DirectoryInfo(System.IO.Path.GetDirectoryName(MSBuildProperties["PublishProfile"])).Parent.Parent.FullName;
+                            proj = Path.Combine(projectDir, CloudFoundry.VisualStudio.ProjectPush.PushEnvironment.DefaultWebsiteProjName);
+                        }
+
+                        websiteProject = projectCollection.LoadProject(proj);
+
+                        foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
+                        {
+                            websiteProject.SetProperty(parameter.Key, parameter.Value);
+                        }
+
+                        BuildParameters buildParameters = new BuildParameters(projectCollection);
+                        buildParameters.Loggers = new List<ILogger>() { customLogger };
+                        BuildRequestData buildRequestData = new BuildRequestData(websiteProject.CreateProjectInstance(), new string[] { });
+
+                        buildManager.Build(buildParameters, buildRequestData);
+                        if (errorList.Tasks.Count > 0)
+                        {
+                            errorList.BringToFront();
+                        }
+                        pane.OutputString("Push operation finished!");
+                        projectCollection.UnregisterAllLoggers();
                     }
 
-                    websiteProject = projectCollection.LoadProject(proj);
-
-                    foreach (KeyValuePair<string, string> parameter in MSBuildProperties)
-                    {
-                        websiteProject.SetProperty(parameter.Key, parameter.Value);
-                    }
-
-                    websiteProject.Build(new List<ILogger>() { customLogger });
-
-                    if (errorList.Tasks.Count > 0)
-                    {
-                        errorList.BringToFront();
-                    }
-                    pane.OutputString("Push operation finished!");
-                    projectCollection.UnregisterAllLoggers();
                 }
             });
         }
