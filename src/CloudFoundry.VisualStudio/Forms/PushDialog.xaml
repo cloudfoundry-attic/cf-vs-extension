@@ -18,32 +18,60 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
+            <converters:BooleanAndConverter x:Key="BooleanAnd"/>
+
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-    <xctk:BusyIndicator IsBusy="{Binding Refreshing}" BusyContent="{Binding RefreshMessage}">
-        <xctk:Wizard x:Name="wizardPush" Cancel="wizardPush_Cancel" FinishButtonClosesWindow="True" Finish="wizardPush_Finish" CancelButtonClosesWindow="False">
+    <!--<xctk:BusyIndicator IsBusy="{Binding Refreshing}" BusyContent="{Binding RefreshMessage}">
+    </xctk:BusyIndicator>-->
+
+    <xctk:Wizard x:Name="wizardPush" Cancel="wizardPush_Cancel" FinishButtonClosesWindow="True" Finish="wizardPush_Finish" CancelButtonClosesWindow="False">
             <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Target"
-                         Description="Cloud Foundry target."
-                         CanSelectNextPage="{Binding Error.HasErrors, Converter={StaticResource InverseBoolean}}">
+                         Description="Cloud Foundry target.">
             <Controls:TargetUserControl x:Name="ucTarget" />
+                <xctk:WizardPage.CanSelectNextPage>
+                    <MultiBinding Converter="{StaticResource BooleanAnd}">
+                        <Binding Converter="{StaticResource InverseBoolean}" Path="Error.HasErrors" />
+                        <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingTargetSettings" />
+                    </MultiBinding>
+                </xctk:WizardPage.CanSelectNextPage>
+                
         </xctk:WizardPage>
         <xctk:WizardPage x:Name="AppPage" PageType= "Interior"
                          Title="Application"
                          Description="Application settings.">
 
             <Controls:AppSettingsUserControl x:Name="ucAppSeetings" />
+
+            <xctk:WizardPage.CanSelectNextPage>
+                <MultiBinding Converter="{StaticResource BooleanAnd}">
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="Error.HasErrors"/>
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingAppSettings" />
+                </MultiBinding>
+            </xctk:WizardPage.CanSelectNextPage>
         </xctk:WizardPage>
 
-            <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
-                         Title="Routes" Description="Application routes settings." CanFinish="False"
-                         CanSelectNextPage="{Binding Error.HasErrors, Converter={StaticResource InverseBoolean}}">
-                <Controls:RoutesUserControl x:Name="ucRoutes" />
+        <xctk:WizardPage x:Name="RoutesPage" PageType= "Interior"
+                         Title="Routes" Description="Application routes settings." CanFinish="False">
+            <Controls:RoutesUserControl x:Name="ucRoutes" />
+            <xctk:WizardPage.CanSelectNextPage>
+                <MultiBinding Converter="{StaticResource BooleanAnd}">
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="Error.HasErrors"/>
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingRoutes" />
+                </MultiBinding>
+            </xctk:WizardPage.CanSelectNextPage>
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="ServicesPage" PageType= "Interior"
                          Title="Services" Description="Application services settings." CanFinish="True">
             <Controls:ServicesUserControl x:Name="ucServices" />
+            <xctk:WizardPage.CanSelectNextPage>
+                <MultiBinding Converter="{StaticResource BooleanAnd}">
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="Error.HasErrors"/>
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingServices" />
+                </MultiBinding>
+            </xctk:WizardPage.CanSelectNextPage>
         </xctk:WizardPage>
 
         <xctk:WizardPage x:Name="EnvVarsPage" PageType= "Interior"
@@ -53,5 +81,4 @@
             <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
         </xctk:WizardPage>
     </xctk:Wizard>
-    </xctk:BusyIndicator>
 </ui:DialogWindow>

@@ -21,35 +21,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private ErrorResource errorResource = new ErrorResource();
         private EntityGuid selectedService = null;
         private EntityGuid selectedPlan = null;
-        private bool enableForm = false;
-        private string refreshMessage = string.Empty;
-
-        public bool Refreshing
-        {
-            get
-            {
-                return enableForm;
-            }
-            set
-            {
-                enableForm = value;
-                RaisePropertyChangedEvent("Refreshing");
-            }
-        }
-
-        public string RefreshMessage
-        {
-            get 
-            { 
-                return refreshMessage; 
-            }
-            set
-            {
-                refreshMessage = value;
-                RaisePropertyChangedEvent("RefreshMessage");
-            }
-        }
-
+        private bool refreshingServiceInformations;
+        private bool allowFinish = true;
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        
         public ErrorResource Error
         {
             get 
@@ -124,7 +100,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private void ExitInit()
         {
-            this.Refreshing = false;
+            this.RefreshingServiceInformations = false;
             this.ExitInit(null);
             if (this.selectedService == null)
             {
@@ -135,7 +111,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private void ExitInit(Exception error)
         {
-            this.Refreshing = false;
+            this.RefreshingServiceInformations = false;
             this.Error.HasErrors = error != null;
             if (this.Error.HasErrors)
             {
@@ -165,8 +141,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         private void InitServicesInformation(CloudFoundryClient client)
         {
-            this.Refreshing = true;
-            this.RefreshMessage = "Loading service informations...";
+            this.RefreshingServiceInformations = true;
             Task.Run(async () =>
             {
                 this.EnterInit();
@@ -195,7 +170,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }).Forget();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected void RaisePropertyChangedEvent(string propertyName)
         {
@@ -204,6 +178,33 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             if (handler != null)
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        public bool RefreshingServiceInformations 
+        {
+            get
+            {
+                return this.refreshingServiceInformations;
+            }
+            private set
+            {
+                this.refreshingServiceInformations = value;
+                RaisePropertyChangedEvent("RefreshingServiceInformations");
+                RaisePropertyChangedEvent("AllowFinish");
+            }
+        }
+
+        public bool AllowFinish
+        {
+            get
+            {
+                return this.allowFinish && !this.refreshingServiceInformations;
+            }
+            set
+            {
+                this.allowFinish = value;
+                RaisePropertyChangedEvent("AllowFinish");
             }
         }
     }

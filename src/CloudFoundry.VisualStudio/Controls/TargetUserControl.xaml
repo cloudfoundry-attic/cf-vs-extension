@@ -17,6 +17,8 @@
 
             <converters:XmlUriToStringConverter x:Key="UriToString"/>
             <converters:VisibilityConverter x:Key="Visibility" />
+            <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
+            <converters:BooleanAndConverter x:Key="BooleanAnd"/>
         </ResourceDictionary>
     </Control.Resources>
     
@@ -41,6 +43,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="1" Content="Profile" />
+        
         <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEditable="True" Name="cbProfile" 
                   Text="{Binding SelectedPublishProfile.Name}" ItemsSource="{Binding Path=PublishProfiles}" DisplayMemberPath="Name" 
                   SelectedValue="{Binding SelectedPublishProfile, Mode=OneWayToSource}">
@@ -48,9 +51,15 @@
 
 
         <Label Grid.Row="2" Grid.Column="1" Content="Target" />
+
+        <Image Grid.Row="3" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" 
+               Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}"
+               Visibility="{Binding Path=RefreshingClient, Converter={StaticResource Visibility}}">
+        </Image>
+
         <ComboBox Grid.Row="3" Grid.Column="1" Name="cbTarget" IsEditable="True" IsReadOnly="True"
                   SelectedValue="{Binding SelectedCloudTarget, Mode=OneWayToSource }"
-                  ItemsSource="{Binding Path=CloudTargets}"
+                  ItemsSource="{Binding Path=CloudTargets}" IsEnabled="{Binding Path=RefreshingClient, Converter={StaticResource InverseBoolean}}"
                   Text="{Binding SelectedCloudTarget.DisplayName, Mode=OneWay}"
                   DisplayMemberPath="DisplayName">
             <ComboBox.Style>
@@ -72,16 +81,44 @@
                 Width="30" HorizontalAlignment="Right" Click="ButtonSetTarget_Click" />
 
         <Label Grid.Row="4" Grid.Column="1" Content="Organization" />
+
+        <Image Grid.Row="5" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" 
+               Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}"
+               Visibility="{Binding Path=RefreshingOrganizations, Converter={StaticResource Visibility}}">
+        </Image>
         <ComboBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Name="cbOrganization" 
                   ItemsSource="{Binding Path=Orgs}" 
                   SelectedValue="{Binding SelectedPublishProfile.Organization}"
-                  DisplayMemberPath="Name" SelectedValuePath="Name" />
+                  DisplayMemberPath="Name" SelectedValuePath="Name" >
+            <ComboBox.IsEnabled>
+                <MultiBinding Converter="{StaticResource BooleanAnd}">
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingPublishProfile" />
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingClient" />
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingOrganizations" />
+                </MultiBinding>
+            </ComboBox.IsEnabled>
+        </ComboBox>
 
+      
         <Label Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Content="Space" />
+        
+        <Image Grid.Row="7" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" 
+               Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}"
+               Visibility="{Binding Path=RefreshingSpaces, Converter={StaticResource Visibility}}">
+        </Image>
+
         <ComboBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Name="cbSpace"  
                   ItemsSource="{Binding Path=Spaces}"
                   SelectedValue="{Binding SelectedPublishProfile.Space}"
-                  DisplayMemberPath="Name" SelectedValuePath="Name" />
+                  DisplayMemberPath="Name" SelectedValuePath="Name">
+            <ComboBox.IsEnabled>
+                <MultiBinding Converter="{StaticResource BooleanAnd}">
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingPublishProfile" />
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingClient" />
+                    <Binding Converter="{StaticResource InverseBoolean}" Path="RefreshingSpaces" />
+                </MultiBinding>
+            </ComboBox.IsEnabled>
+        </ComboBox>
 
         <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"

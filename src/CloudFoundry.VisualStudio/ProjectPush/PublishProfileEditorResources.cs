@@ -22,12 +22,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private ObservableCollection<ListAllSpacesForOrganizationResponse> spaces = new ObservableCollection<ListAllSpacesForOrganizationResponse>();
         private ObservableCollection<ListAllStacksResponse> stacks = new ObservableCollection<ListAllStacksResponse>();
         private ObservableCollection<ListAllBuildpacksResponse> buildpacks = new ObservableCollection<ListAllBuildpacksResponse>();
-        private ObservableCollection<ListAllSharedDomainsResponse> sharedDomains = new ObservableCollection<ListAllSharedDomainsResponse>();
-        private ObservableCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomains = new ObservableCollection<ListAllPrivateDomainsForOrganizationResponse>();
+        private ObservableCollection<SharedDomainWithSelection> sharedDomains = new ObservableCollection<SharedDomainWithSelection>();
+        private ObservableCollection<PrivateDomainsWithSelection> privateDomains = new ObservableCollection<PrivateDomainsWithSelection>();
         private ObservableCollection<ServiceInstanceSelection> serviceInstances = new ObservableCollection<ServiceInstanceSelection>();
 
         private ErrorResource errorResource = new ErrorResource();
-        private string refreshMessage = "Please Wait...";
 
         public ErrorResource Error
         {
@@ -58,36 +57,19 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set { buildpacks = value; }
         }
 
-        public string RefreshMessage
-        {
-            get { return refreshMessage; }
-            set
-            {
-                refreshMessage = value;
-                this.RaisePropertyChangedEvent("RefreshMessage");
-            }
-        }
-
-
-        public IEnumerable<SharedDomainWithSelection> SharedDomains
+        public ObservableCollection<SharedDomainWithSelection> SharedDomains
         {
             get
             {
-                return this.sharedDomains.Select(d => new SharedDomainWithSelection(this)
-                {
-                    SharedDomain = d
-                });
+                return this.sharedDomains;
             }
         }
 
-        public IEnumerable<PrivateDomainsWithSelection> PrivateDomains
+        public ObservableCollection<PrivateDomainsWithSelection> PrivateDomains
         {
             get
             {
-                return this.privateDomains.Select(d => new PrivateDomainsWithSelection(this)
-                {
-                    PrivateDomain = d
-                });
+                return this.privateDomains;
             }
         }
 
@@ -249,15 +231,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
-
-        public bool Refreshing
-        {
-            get
-            {
-                return refreshCounter != 0;
-            }
-        }
-
         public PublishProfileEditorResources(PublishProfile publishProfile, CancellationToken cancellationToken)
         {
             this.selectedPublishProfile = publishProfile;
@@ -402,359 +375,421 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             await Task.Run(() =>
             {
-                this.SelectedCloudTarget = this.ToV2CloudTarget();
+                this.RefreshingPublishProfile = true;
+                try
+                {
+                    this.SelectedCloudTarget = this.ToV2CloudTarget();
+                }
+                finally
+                {
+                    this.RefreshingPublishProfile = false;
+                }
             });
 
         }
 
         private async Task RefreshClient()
         {
-            this.RefreshMessage = "Loading Cloud Foundry client...";
-            this.LastRefreshTarget = PublishProfileRefreshTarget.Client;
+            this.RefreshingClient = true;
 
-            this.client = new CloudFoundryClient(
-                this.selectedPublishProfile.ServerUri,
-                this.cancellationToken,
-                null,
-                this.selectedPublishProfile.SkipSSLValidation);
-
-            AuthenticationContext authenticationContext = null;
-            if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.RefreshToken))
+            try
             {
-                authenticationContext = await client.Login(this.selectedPublishProfile.RefreshToken);
-            }
-            else
-            {
-                if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.Password))
-                {
-                    authenticationContext = await client.Login(new CloudCredentials()
-                    {
-                        User = this.selectedPublishProfile.User,
-                        Password = this.selectedPublishProfile.Password
-                    });
-                }
-                else if (this.selectedPublishProfile.SavedPassword == true)
-                {
-                    string password = CloudCredentialsManager.GetPassword(
-                        this.selectedPublishProfile.ServerUri,
-                        this.selectedPublishProfile.User);
+                this.LastRefreshTarget = PublishProfileRefreshTarget.Client;
 
-                    authenticationContext = await client.Login(new CloudCredentials()
-                    {
-                        User = this.selectedPublishProfile.User,
-                        Password = password
-                    });
+                this.client = new CloudFoundryClient(
+                    this.selectedPublishProfile.ServerUri,
+                    this.cancellationToken,
+                    null,
+                    this.selectedPublishProfile.SkipSSLValidation);
+
+                AuthenticationContext authenticationContext = null;
+                if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.RefreshToken))
+                {
+                    authenticationContext = await client.Login(this.selectedPublishProfile.RefreshToken);
                 }
                 else
                 {
-                    throw new InvalidOperationException(@"Credentials are not configured correctly in your publish profile.
+                    if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.Password))
+                    {
+                        authenticationContext = await client.Login(new CloudCredentials()
+                        {
+                            User = this.selectedPublishProfile.User,
+                            Password = this.selectedPublishProfile.Password
+                        });
+                    }
+                    else if (this.selectedPublishProfile.SavedPassword == true)
+                    {
+                        string password = CloudCredentialsManager.GetPassword(
+                            this.selectedPublishProfile.ServerUri,
+                            this.selectedPublishProfile.User);
+
+                        authenticationContext = await client.Login(new CloudCredentials()
+                        {
+                            User = this.selectedPublishProfile.User,
+                            Password = password
+                        });
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(@"Credentials are not configured correctly in your publish profile.
 Either set CFSavedPassword to true and use credentials saved in the Windows Credential Manager (recommended), or set a CFPassword or CFRefreshToken.
 Please note that credentials are saved automatically in the Windows Credential Manager if you use the Cloud Foundry Visual Studio Extensions to connect to a cloud.");
+                    }
                 }
             }
-            
-             await this.RefreshOrganizations();
-             await this.RefreshStacks();
-             await this.RefreshBuildpacks();
-             await this.RefreshSharedDomains();
+            finally
+            {
+                this.RefreshingClient = false;
+            }
+
+            Parallel.Invoke(
+             new Action(() => this.Refresh(PublishProfileRefreshTarget.Organizations)),
+             new Action(() => this.Refresh(PublishProfileRefreshTarget.Stacks)),
+             new Action(() => this.Refresh(PublishProfileRefreshTarget.Buildpacks)),
+             new Action(() => this.Refresh(PublishProfileRefreshTarget.SharedDomains))
+             );
         }
 
         private async Task RefreshOrganizations()
         {
-            this.LastRefreshTarget = PublishProfileRefreshTarget.Organizations;
-
-            this.RefreshMessage = "Loading organizations...";
-            List<ListAllOrganizationsResponse> orgsList = new List<ListAllOrganizationsResponse>();
-
-            PagedResponseCollection<ListAllOrganizationsResponse> orgsResponse = await client.Organizations.ListAllOrganizations();
-
-            while (orgsResponse != null && orgsResponse.Properties.TotalResults != 0)
+            this.RefreshingOrganizations = true;
+            try
             {
-                foreach (var org in orgsResponse)
+                this.LastRefreshTarget = PublishProfileRefreshTarget.Organizations;
+
+                List<ListAllOrganizationsResponse> orgsList = new List<ListAllOrganizationsResponse>();
+
+                PagedResponseCollection<ListAllOrganizationsResponse> orgsResponse = await client.Organizations.ListAllOrganizations();
+
+                while (orgsResponse != null && orgsResponse.Properties.TotalResults != 0)
                 {
-                    orgsList.Add(org);
-                }
-
-                orgsResponse = await orgsResponse.GetNextPage();
-            }
-
-            OnUIThread(() =>
-            {
-                var oldSelectedOrg = this.selectedPublishProfile.Organization;
-
-                this.orgs.Clear();
-                foreach (var org in orgsList)
-                {
-                    this.orgs.Add(org);
-                }
-
-                if (this.orgs.Any(o => o.Name == oldSelectedOrg))
-                {
-                    this.selectedPublishProfile.Organization = oldSelectedOrg;
-                }
-
-                if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Organization))
-                {
-                    if (this.Orgs.Count > 0)
+                    foreach (var org in orgsResponse)
                     {
-                        this.selectedPublishProfile.Organization = this.Orgs.FirstOrDefault().Name;
+                        orgsList.Add(org);
                     }
+
+                    orgsResponse = await orgsResponse.GetNextPage();
                 }
-            });
+
+                OnUIThread(() =>
+                {
+                    var oldSelectedOrg = this.selectedPublishProfile.Organization;
+
+                    this.orgs.Clear();
+                    foreach (var org in orgsList)
+                    {
+                        this.orgs.Add(org);
+                    }
+
+                    if (this.orgs.Any(o => o.Name == oldSelectedOrg))
+                    {
+                        this.selectedPublishProfile.Organization = oldSelectedOrg;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Organization))
+                    {
+                        if (this.Orgs.Count > 0)
+                        {
+                            this.selectedPublishProfile.Organization = this.Orgs.FirstOrDefault().Name;
+                        }
+                    }
+                });
+            }
+            finally
+            {
+                this.RefreshingOrganizations = false;
+            }
         }
 
         private async Task RefreshSpaces()
         {
-            this.LastRefreshTarget = PublishProfileRefreshTarget.Spaces;
-            this.RefreshMessage = "Loading spaces...";
+            this.RefreshingSpaces = true;
 
-            List<ListAllSpacesForOrganizationResponse> spacesList = new List<ListAllSpacesForOrganizationResponse>();
-
-            var org = this.orgs.FirstOrDefault(o => o.Name == this.selectedPublishProfile.Organization);
-
-            if (org == null)
+            try
             {
-                return;
+                this.LastRefreshTarget = PublishProfileRefreshTarget.Spaces;
+          
+                List<ListAllSpacesForOrganizationResponse> spacesList = new List<ListAllSpacesForOrganizationResponse>();
+
+                var org = this.orgs.FirstOrDefault(o => o.Name == this.selectedPublishProfile.Organization);
+
+                if (org == null)
+                {
+                    return;
+                }
+
+                PagedResponseCollection<ListAllSpacesForOrganizationResponse> spaces = await this.client.Organizations.ListAllSpacesForOrganization(org.EntityMetadata.Guid);
+
+                while (spaces != null && spaces.Properties.TotalResults != 0)
+                {
+                    foreach (var space in spaces)
+                    {
+                        spacesList.Add(space);
+                    }
+
+                    spaces = await spaces.GetNextPage();
+                }
+
+                OnUIThread(() =>
+                {
+                    var oldSelectedSpace = this.selectedPublishProfile.Space;
+
+                    this.spaces.Clear();
+                    foreach (var space in spacesList)
+                    {
+                        this.spaces.Add(space);
+                    }
+
+                    if (this.spaces.Any(o => o.Name == oldSelectedSpace))
+                    {
+                        this.selectedPublishProfile.Space = oldSelectedSpace;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Space))
+                    {
+                        this.selectedPublishProfile.Space = this.spaces.FirstOrDefault().Name;
+                    }
+                });
             }
-
-            PagedResponseCollection<ListAllSpacesForOrganizationResponse> spaces = await this.client.Organizations.ListAllSpacesForOrganization(org.EntityMetadata.Guid);
-
-            while (spaces != null && spaces.Properties.TotalResults != 0)
+            finally
             {
-                foreach (var space in spaces)
-                {
-                    spacesList.Add(space);
-                }
-
-                spaces = await spaces.GetNextPage();
+                this.RefreshingSpaces = false;
             }
-
-            OnUIThread(() =>
-            {
-                var oldSelectedSpace = this.selectedPublishProfile.Space;
-
-                this.spaces.Clear();
-                foreach (var space in spacesList)
-                {
-                    this.spaces.Add(space);
-                }
-
-                if (this.spaces.Any(o => o.Name == oldSelectedSpace))
-                {
-                    this.selectedPublishProfile.Space = oldSelectedSpace;
-                }
-
-                if (string.IsNullOrWhiteSpace(this.selectedPublishProfile.Space))
-                {
-                    this.selectedPublishProfile.Space = this.spaces.FirstOrDefault().Name;
-                }
-            });
-
-            await this.RefreshServiceInstances();
         }
 
         private async Task RefreshServiceInstances()
         {
-            this.LastRefreshTarget = PublishProfileRefreshTarget.ServiceInstances;
-            this.RefreshMessage = "Detecting service instances...";
+            this.RefreshingServiceInstances = true;
 
-            List<ServiceInstanceSelection> serviceInstancesList = new List<ServiceInstanceSelection>();
-
-            var space = this.spaces.FirstOrDefault(s => s.Name == this.selectedPublishProfile.Space);
-
-            if (space == null)
+            try
             {
-                return;
-            }
+                this.LastRefreshTarget = PublishProfileRefreshTarget.ServiceInstances;
+            
+                List<ServiceInstanceSelection> serviceInstancesList = new List<ServiceInstanceSelection>();
 
-            PagedResponseCollection<ListAllServiceInstancesForSpaceResponse> serviceInstances = await this.client.Spaces.ListAllServiceInstancesForSpace(space.EntityMetadata.Guid);
+                var space = this.spaces.FirstOrDefault(s => s.Name == this.selectedPublishProfile.Space);
 
-            while (serviceInstances != null && serviceInstances.Properties.TotalResults != 0)
-            {
-                foreach (var serviceInstance in serviceInstances)
+                if (space == null)
                 {
-                    var servicePlan = await this.client.ServicePlans.RetrieveServicePlan(serviceInstance.ServicePlanGuid);
-                    var systemService = await this.client.Services.RetrieveService(servicePlan.ServiceGuid);
-
-
-                    ServiceInstanceSelection serviceProfile = new ServiceInstanceSelection(this);
-
-                    serviceProfile.ServiceInstance = serviceInstance;
-                    serviceProfile.Service = systemService;
-                    serviceProfile.ServicePlan = servicePlan;
-                    serviceInstancesList.Add(serviceProfile);
+                    return;
                 }
 
-                serviceInstances = await serviceInstances.GetNextPage();
-            }
+                PagedResponseCollection<ListAllServiceInstancesForSpaceResponse> serviceInstances = await this.client.Spaces.ListAllServiceInstancesForSpace(space.EntityMetadata.Guid);
 
-
-            OnUIThread(() =>
-            {
-                this.serviceInstances.Clear();
-                foreach (var serviceProfile in serviceInstancesList)
+                while (serviceInstances != null && serviceInstances.Properties.TotalResults != 0)
                 {
-                    this.serviceInstances.Add(serviceProfile);
-                }
-            });
+                    foreach (var serviceInstance in serviceInstances)
+                    {
+                        var servicePlan = await this.client.ServicePlans.RetrieveServicePlan(serviceInstance.ServicePlanGuid);
+                        var systemService = await this.client.Services.RetrieveService(servicePlan.ServiceGuid);
 
-            RaisePropertyChangedEvent("ServiceInstances");
+
+                        ServiceInstanceSelection serviceProfile = new ServiceInstanceSelection(this);
+
+                        serviceProfile.ServiceInstance = serviceInstance;
+                        serviceProfile.Service = systemService;
+                        serviceProfile.ServicePlan = servicePlan;
+                        serviceInstancesList.Add(serviceProfile);
+                    }
+
+                    serviceInstances = await serviceInstances.GetNextPage();
+                }
+
+
+                OnUIThread(() =>
+                {
+                    this.serviceInstances.Clear();
+                    foreach (var serviceProfile in serviceInstancesList)
+                    {
+                        this.serviceInstances.Add(serviceProfile);
+                    }
+                });
+            }
+            finally
+            {
+                this.RefreshingServiceInstances = false;
+            }
         }
 
         private async Task RefreshStacks()
         {
-            this.LastRefreshTarget = PublishProfileRefreshTarget.Stacks;
-            this.RefreshMessage = "Detecting stacks...";
-            List<ListAllStacksResponse> stacksList = new List<ListAllStacksResponse>();
+            this.RefreshingSpaces = true;
 
-            PagedResponseCollection<ListAllStacksResponse> stacksResponse = await this.client.Stacks.ListAllStacks();
-
-            while (stacksResponse != null && stacksResponse.Properties.TotalResults != 0)
+            try
             {
-                foreach (var stack in stacksResponse)
+                this.LastRefreshTarget = PublishProfileRefreshTarget.Stacks;
+                List<ListAllStacksResponse> stacksList = new List<ListAllStacksResponse>();
+
+                PagedResponseCollection<ListAllStacksResponse> stacksResponse = await this.client.Stacks.ListAllStacks();
+
+                while (stacksResponse != null && stacksResponse.Properties.TotalResults != 0)
                 {
-                    stacksList.Add(stack);
+                    foreach (var stack in stacksResponse)
+                    {
+                        stacksList.Add(stack);
+                    }
+
+                    stacksResponse = await stacksResponse.GetNextPage();
                 }
 
-                stacksResponse = await stacksResponse.GetNextPage();
+                OnUIThread(() =>
+                {
+                    var oldSelectedStack = this.SelectedStack;
+
+                    this.stacks.Clear();
+                    foreach (var stack in stacksList)
+                    {
+                        this.stacks.Add(stack);
+                    }
+                    if (stacks.Any(o => o.Name == oldSelectedStack))
+                    {
+                        this.SelectedStack = oldSelectedStack;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(this.SelectedStack))
+                    {
+                        this.SelectedStack = this.stacks.FirstOrDefault().Name;
+                    }
+                });
             }
-
-            OnUIThread(() =>
+            finally
             {
-                var oldSelectedStack = this.SelectedStack;
-
-                this.stacks.Clear();
-                foreach (var stack in stacksList)
-                {
-                    this.stacks.Add(stack);
-                }
-                if (stacks.Any(o => o.Name == oldSelectedStack))
-                {
-                    this.SelectedStack = oldSelectedStack;
-                }
-
-                if (string.IsNullOrWhiteSpace(this.SelectedStack))
-                {
-                    this.SelectedStack = this.stacks.FirstOrDefault().Name;
-                }
-            });
-
-            RaisePropertyChangedEvent("Stacks");
+                this.RefreshingStacks = false;
+            }
         }
 
         private async Task RefreshBuildpacks()
         {
-            this.LastRefreshTarget = PublishProfileRefreshTarget.Buildpacks;
-            this.RefreshMessage = "Detecting buildpacks...";
-            List<ListAllBuildpacksResponse> buildpacksList = new List<ListAllBuildpacksResponse>();
+            this.RefreshingBuildpacks = true;
 
-            PagedResponseCollection<ListAllBuildpacksResponse> buildpacksResponse = await this.client.Buildpacks.ListAllBuildpacks();
-
-            while (buildpacksResponse != null && buildpacksResponse.Properties.TotalResults != 0)
+            try
             {
-                foreach (var buildpack in buildpacksResponse)
+
+                this.LastRefreshTarget = PublishProfileRefreshTarget.Buildpacks;
+                List<ListAllBuildpacksResponse> buildpacksList = new List<ListAllBuildpacksResponse>();
+
+                PagedResponseCollection<ListAllBuildpacksResponse> buildpacksResponse = await this.client.Buildpacks.ListAllBuildpacks();
+
+                while (buildpacksResponse != null && buildpacksResponse.Properties.TotalResults != 0)
                 {
-                    buildpacksList.Add(buildpack);
+                    foreach (var buildpack in buildpacksResponse)
+                    {
+                        buildpacksList.Add(buildpack);
+                    }
+
+                    buildpacksResponse = await buildpacksResponse.GetNextPage();
                 }
 
-                buildpacksResponse = await buildpacksResponse.GetNextPage();
-            }
 
+                OnUIThread(() =>
+                {
+                    var oldSelectedBuildpack = this.SelectedBuildpack;
 
-            OnUIThread(() =>
-            {
-                var oldSelectedBuildpack = this.SelectedBuildpack;
-                
-                this.buildpacks.Clear();
-                foreach (var buildpack in buildpacksList)
-                {
-                    this.buildpacks.Add(buildpack);
-                }
+                    this.buildpacks.Clear();
+                    foreach (var buildpack in buildpacksList)
+                    {
+                        this.buildpacks.Add(buildpack);
+                    }
 
-                if (Uri.IsWellFormedUriString(oldSelectedBuildpack, UriKind.Absolute))
-                {
-                    this.SelectedBuildpack = oldSelectedBuildpack;
-                }
-                else
-                {
-                    if (this.buildpacks.Any(o => o.Name == oldSelectedBuildpack))
+                    if (Uri.IsWellFormedUriString(oldSelectedBuildpack, UriKind.Absolute))
                     {
                         this.SelectedBuildpack = oldSelectedBuildpack;
                     }
                     else
                     {
-                        this.SelectedBuildpack = String.Empty;
+                        if (this.buildpacks.Any(o => o.Name == oldSelectedBuildpack))
+                        {
+                            this.SelectedBuildpack = oldSelectedBuildpack;
+                        }
+                        else
+                        {
+                            this.SelectedBuildpack = String.Empty;
+                        }
                     }
-                }
-            });
-
-            RaisePropertyChangedEvent("Buildpacks");
+                });
+            }
+            finally
+            {
+                this.RefreshingBuildpacks = false;
+            }
         }
 
         private async Task RefreshSharedDomains()
         {
-            this.LastRefreshTarget = PublishProfileRefreshTarget.SharedDomains;
-            this.RefreshMessage = "Detecting shared domains...";
-            List<ListAllSharedDomainsResponse> sharedDomainsList = new List<ListAllSharedDomainsResponse>();
+            this.RefreshingSharedDomains = true;
 
-            PagedResponseCollection<ListAllSharedDomainsResponse> sharedDomains = await this.client.SharedDomains.ListAllSharedDomains();
-
-            while (sharedDomains != null && sharedDomains.Properties.TotalResults != 0)
+            try
             {
-                foreach (var sharedDomain in sharedDomains)
+                this.LastRefreshTarget = PublishProfileRefreshTarget.SharedDomains;
+                List<SharedDomainWithSelection> sharedDomainsList = new List<SharedDomainWithSelection>();
+
+                PagedResponseCollection<ListAllSharedDomainsResponse> sharedDomainsResponse = await this.client.SharedDomains.ListAllSharedDomains();
+
+                while (sharedDomainsResponse != null && sharedDomainsResponse.Properties.TotalResults != 0)
                 {
-                    sharedDomainsList.Add(sharedDomain);
+                    foreach (var sharedDomain in sharedDomainsResponse)
+                    {
+                        sharedDomainsList.Add(new SharedDomainWithSelection(this) { SharedDomain = sharedDomain });
+                    }
+
+                    sharedDomainsResponse = await sharedDomainsResponse.GetNextPage();
                 }
 
-                sharedDomains = await sharedDomains.GetNextPage();
+                OnUIThread(() =>
+                {
+                    this.sharedDomains.Clear();
+                    foreach (var sharedDomain in sharedDomainsList)
+                    {
+                        this.sharedDomains.Add(sharedDomain);
+                    }
+                });
             }
-
-            OnUIThread(() =>
+            finally
             {
-                this.sharedDomains.Clear();
-                foreach (var sharedDomain in sharedDomainsList)
-                {
-                    this.sharedDomains.Add(sharedDomain);
-                }
-            });
-
-            RaisePropertyChangedEvent("SharedDomains");
+                this.RefreshingSharedDomains = false;
+            }
         }
 
         private async Task RefreshPrivateDomains()
         {
-            this.LastRefreshTarget = PublishProfileRefreshTarget.PrivateDomains;
-            this.refreshMessage = "Detecting private domains...";
-            List<ListAllPrivateDomainsForOrganizationResponse> privateDomainsList = new List<ListAllPrivateDomainsForOrganizationResponse>();
+            this.RefreshingPrivateDomains = true;
 
-            var org = this.orgs.FirstOrDefault(o => o.Name == this.selectedPublishProfile.Organization);
-
-            if (org == null)
+            try
             {
-                return;
-            }
+                this.LastRefreshTarget = PublishProfileRefreshTarget.PrivateDomains;
+                List<PrivateDomainsWithSelection> privateDomainsList = new List<PrivateDomainsWithSelection>();
 
-            PagedResponseCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomains = await this.client.Organizations.ListAllPrivateDomainsForOrganization(org.EntityMetadata.Guid);
+                var org = this.orgs.FirstOrDefault(o => o.Name == this.selectedPublishProfile.Organization);
 
-            while (privateDomains != null && privateDomains.Properties.TotalResults != 0)
-            {
-                foreach (var privateDomain in privateDomains)
+                if (org == null)
                 {
-                    privateDomainsList.Add(privateDomain);
+                    return;
                 }
 
-                privateDomains = await privateDomains.GetNextPage();
-            }
-            OnUIThread(() =>
-            {
-                this.privateDomains.Clear();
-                foreach (var privateDomain in privateDomainsList)
-                {
-                    this.privateDomains.Add(privateDomain);
-                }
-            });
+                PagedResponseCollection<ListAllPrivateDomainsForOrganizationResponse> privateDomainsResponse = await this.client.Organizations.ListAllPrivateDomainsForOrganization(org.EntityMetadata.Guid);
 
-            RaisePropertyChangedEvent("PrivateDomains");
+                while (privateDomainsResponse != null && privateDomainsResponse.Properties.TotalResults != 0)
+                {
+                    foreach (var privateDomain in privateDomainsResponse)
+                    {
+                        privateDomainsList.Add(new PrivateDomainsWithSelection(this) { PrivateDomain = privateDomain });
+                    }
+
+                    privateDomainsResponse = await privateDomainsResponse.GetNextPage();
+                }
+                OnUIThread(() =>
+                {
+                    this.privateDomains.Clear();
+                    foreach (var privateDomain in privateDomainsList)
+                    {
+                        this.privateDomains.Add(privateDomain);
+                    }
+                });
+            }
+            finally
+            {
+                this.RefreshingPrivateDomains = false;
+            }
         }
 
         internal void CleanManifest()
@@ -831,6 +866,174 @@ Please note that credentials are saved automatically in the Windows Credential M
                         break;
                     }
                 }
+            }
+        }
+
+        public bool RefreshingPublishProfile
+        {
+            get
+            {
+                return this.refreshingPublishProfile;
+            }
+
+            private set
+            {
+                this.refreshingPublishProfile = value;
+                RaisePropertyChangedEvent("RefreshingPublishProfile");
+                RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+
+        public bool RefreshingClient
+        {
+            get
+            {
+                return this.refreshingClient;
+            }
+
+            private set
+            {
+                this.refreshingClient = value;
+                RaisePropertyChangedEvent("RefreshingClient");
+                RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+
+        private bool refreshingOrganizations = false;
+        private bool refreshingPublishProfile;
+        private bool refreshingClient;
+        private bool refreshingSpaces;
+        private bool refreshingServiceInstances;
+        private bool refreshingStacks;
+        private bool refreshingBuildpacks;
+        private bool refreshingSharedDomains;
+        private bool refreshingPrivateDomains;
+        public bool RefreshingOrganizations
+        {
+            get
+            {
+                return this.refreshingOrganizations;
+            }
+
+            private set
+            {
+                this.refreshingOrganizations = value;
+                RaisePropertyChangedEvent("RefreshingOrganizations");
+                RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+        public bool RefreshingSpaces
+        {
+            get
+            {
+                return this.refreshingSpaces;
+            }
+            private set
+            {
+                this.refreshingSpaces = value;
+                RaisePropertyChangedEvent("RefreshingSpaces");
+                RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+        public bool RefreshingServiceInstances
+        {
+            get
+            {
+                return this.refreshingServiceInstances;
+            }
+            private set
+            {
+                this.refreshingServiceInstances = value;
+                RaisePropertyChangedEvent("RefreshingServiceInstances");
+                RaisePropertyChangedEvent("RefreshingServices");
+            }
+        }
+        public bool RefreshingStacks
+        {
+            get
+            {
+                return this.refreshingStacks;
+            }
+            private set
+            {
+                this.refreshingStacks = value;
+                RaisePropertyChangedEvent("RefreshingStacks");
+                RaisePropertyChangedEvent("RefreshingAppSettings");
+            }
+        }
+
+        public bool RefreshingBuildpacks
+        {
+            get
+            {
+                return this.refreshingBuildpacks;
+            }
+            private set
+            {
+                this.refreshingBuildpacks = value;
+                RaisePropertyChangedEvent("RefreshingBuildpacks");
+                RaisePropertyChangedEvent("RefreshingAppSettings");
+            }
+        }
+        public bool RefreshingSharedDomains
+        {
+            get
+            {
+                return this.refreshingSharedDomains;
+            }
+            private set
+            {
+                this.refreshingSharedDomains = value;
+                RaisePropertyChangedEvent("RefreshingSharedDomains");
+                RaisePropertyChangedEvent("RefreshingRoutes");
+            }
+        }
+
+        public bool RefreshingPrivateDomains
+        {
+            get
+            {
+                return this.refreshingPrivateDomains;
+            }
+            private set
+            {
+                this.refreshingPrivateDomains = value;
+                RaisePropertyChangedEvent("RefreshingPrivateDomains");
+                RaisePropertyChangedEvent("RefreshingRoutes");
+            }
+        }
+
+
+
+        public bool RefreshingTargetSettings
+        {
+            get
+            {
+                return this.RefreshingClient || this.RefreshingPublishProfile || this.RefreshingOrganizations || this.RefreshingSpaces;
+            }
+        }
+
+        public bool RefreshingAppSettings
+        {
+            get
+            {
+                return this.RefreshingStacks || this.RefreshingBuildpacks;
+            }
+        }
+
+        public bool RefreshingRoutes
+        {
+            get
+            {
+                return this.RefreshingPrivateDomains || this.RefreshingSharedDomains;
+            }
+        }
+
+        public bool RefreshingServices
+        {
+            get
+            {
+               return this.RefreshingServiceInstances;
             }
         }
     }

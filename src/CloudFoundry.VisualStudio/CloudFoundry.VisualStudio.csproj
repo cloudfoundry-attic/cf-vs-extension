@@ -261,6 +261,7 @@
     <Compile Include="Controls\TargetUserControl.xaml.cs">
       <DependentUpon>TargetUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BooleanAndConverter.cs" />
     <Compile Include="Converters\ImageConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\XmlUriToStringConverter.cs" />
@@ -398,6 +399,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\Loader.png" />
     <Content Include="Resources\LogoWordsOnly.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

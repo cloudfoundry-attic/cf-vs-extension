@@ -7,8 +7,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="450">
     <Control.Resources>
-        <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
-        <converters:VisibilityConverter x:Key="Visibility" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Style\Controls.xaml" />
+                <ResourceDictionary Source="..\Style\Images.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <Thickness x:Key="DefaultMargin" Top="0" Bottom="5" Left="0" Right="0"></Thickness>
+
+            <converters:VisibilityConverter x:Key="Visibility" />
+            <converters:InverseBooleanConverter x:Key="InverseBoolean"/>
+            <converters:BooleanAndConverter x:Key="BooleanAnd"/>
+        </ResourceDictionary>
     </Control.Resources>
     <Grid VerticalAlignment="Top">
         <Grid.RowDefinitions>
@@ -36,20 +46,33 @@
                  Text="{Binding SelectedPublishProfile.Application.Name}" />
 
         <Label Grid.Row="2" Grid.Column="1" Content="Buildpack" />
+
+        <Image Grid.Row="3" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" 
+               Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}"
+               Visibility="{Binding Path=RefreshingBuildpacks, Converter={StaticResource Visibility}}">
+        </Image>
+
         <ComboBox Grid.Row="3" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
                   ItemsSource="{Binding Buildpacks}" 
                   Text="{Binding SelectedBuildpack}"
-                  SelectedValuePath="Name" DisplayMemberPath="Name" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
+                  SelectedValuePath="Name" DisplayMemberPath="Name" IsEnabled="{Binding Path=RefreshingBuildpacks, Converter={StaticResource InverseBoolean}}" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
         </ComboBox>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto-Detect&gt;&gt;" IsHitTestVisible="False">
         </TextBlock>
 
+        
         <Label Grid.Row="4" Grid.Column="1" Content="Stack" />
+
+        <Image Grid.Row="5" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" 
+               Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}"
+               Visibility="{Binding Path=RefreshingStacks, Converter={StaticResource Visibility}}">
+        </Image>
+
         <ComboBox Grid.Row="5" Grid.Column="1" Name="cbStack" 
                   ItemsSource="{Binding Stacks}"
                   SelectedValue="{Binding SelectedStack}"
-                  SelectedValuePath="Name" DisplayMemberPath="Name" />
+                  SelectedValuePath="Name" DisplayMemberPath="Name" IsEnabled="{Binding Path=RefreshingStacks, Converter={StaticResource InverseBoolean}}" />
 
         <Label Grid.Row="6" Grid.Column="1" Content="Memory (MB)" />
         <TextBox Grid.Row="7" Grid.Column="1" Name="tbMemory" 
