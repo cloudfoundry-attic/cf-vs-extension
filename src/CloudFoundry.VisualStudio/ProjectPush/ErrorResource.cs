@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.ProjectPush
+﻿namespace CloudFoundry.VisualStudio.ProjectPush
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
     internal class ErrorResource : INotifyPropertyChanged
     {
         private bool hasErrors = false;
@@ -18,11 +18,12 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
-                return hasErrors;
+                return this.hasErrors;
             }
+
             set
             {
-                hasErrors = value;
+                this.hasErrors = value;
                 this.RaisePropertyChangedEvent("HasErrors");
             }
         }
@@ -31,18 +32,19 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
-                return errorMessage;
+                return this.errorMessage;
             }
+
             set
             {
-                errorMessage = value;
+                this.errorMessage = value;
                 this.RaisePropertyChangedEvent("ErrorMessage");
             }
         }
 
         protected void RaisePropertyChangedEvent(string propertyName)
         {
-            var handler = PropertyChanged;
+            var handler = this.PropertyChanged;
 
             if (handler != null)
             {

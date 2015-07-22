@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.ProjectPush
+﻿namespace CloudFoundry.VisualStudio.ProjectPush
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
     internal enum PublishProfileRefreshTarget
     {
         PublishProfile,

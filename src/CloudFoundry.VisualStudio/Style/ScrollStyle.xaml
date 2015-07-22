@@ -11,7 +11,7 @@
 
 
     <Style TargetType="{x:Type ScrollViewer}">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}"/>
     </Style>
 
     <Style x:Key="BulletedLabel" TargetType="{x:Type Label}" BasedOn="{StaticResource {x:Type Label}}">
@@ -44,8 +44,8 @@
 
    
     <Style TargetType="{x:Type RepeatButton}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowBackgroundKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowKey}}" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Padding" Value="1" />
@@ -69,23 +69,23 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowBackgroundHoverKey}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowHoverKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowBackgroundHoverKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowHoverKey}}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowBackgroundPressedKey}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowPressedKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowBackgroundPressedKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowPressedKey}}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Opacity" Value="0.56" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowBackgroundDisabledKey}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarArrowDisabledKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowBackgroundDisabledKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarArrowDisabledKey}}" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style TargetType="{x:Type Thumb}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarThumbBackgroundKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarThumbBackgroundKey}}" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
@@ -97,10 +97,10 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarThumbBackgroundHoverKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarThumbBackgroundHoverKey}}" />
             </Trigger>
             <Trigger Property="IsDragging" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarThumbBackgroundPressedKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarThumbBackgroundPressedKey}}" />
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -108,7 +108,7 @@
     <Style TargetType="{x:Type ScrollBar}">
         <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ScrollBarBackgroundKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ScrollBarBackgroundKey}}" />
         <Setter Property="Width" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
         <Setter Property="MinWidth" Value="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" />
         <Setter Property="Template">

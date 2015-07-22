@@ -15,6 +15,7 @@
             return VSConstants.S_OK;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Prevent VS crash")]
         public int CreateEditorInstance(uint grfCreateDoc, string pszMkDocument, string pszPhysicalView, IVsHierarchy ppvHier, uint itemid, IntPtr punkDocDataExisting, out IntPtr ppunkDocView, out IntPtr ppunkDocData, out string pbstrEditorCaption, out Guid pguidCmdUI, out int pgrfCDW)
         {
             ppunkDocData = IntPtr.Zero;
@@ -37,7 +38,7 @@
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
 
-            if (!fileInfo.Name.ToLowerInvariant().EndsWith(PushEnvironment.Extension))
+            if (!fileInfo.Name.ToUpperInvariant().EndsWith(PushEnvironment.Extension, StringComparison.OrdinalIgnoreCase))
             {
                 return VSConstants.VS_E_UNSUPPORTEDFORMAT;
             }
@@ -57,6 +58,7 @@
                 Logger.Error("Exception loading package file", ex);
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
             }
+
             var dialog = new PushDialog(packageFile);
             dialog.ShowModal();
             return VSConstants.S_OK;

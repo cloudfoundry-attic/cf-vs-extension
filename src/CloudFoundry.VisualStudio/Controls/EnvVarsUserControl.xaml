@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="CloudFoundry.VisualStudio.Controls.EnvVarsUserControl"
+﻿<UserControl x:Class="CloudFoundry.VisualStudio.Controls.EnvironmentVariablesUserControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -44,7 +44,7 @@
                  Name="tbEnvVarValue" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  MinLines="4" VerticalContentAlignment="Top" />
 
-            <Button Grid.Row="4" Grid.Column="1" Name="btnAddEnvVar" Click="btnAddEnvVar_Click" Margin="0,5,0,0">
+            <Button Grid.Row="4" Grid.Column="1" Name="btnAddEnvVar" Click="BtnAddEnvVar_Click" Margin="0,5,0,0">
                 <StackPanel Orientation="Horizontal">
                     <Image Margin="5,0,0,0" Stretch="None" Source="{StaticResource AddGenericImage}" />
                     <Label Margin="0,0,5,0" Content="Save Variable"/>
@@ -63,11 +63,11 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Row="0" Grid.Column="0" Content="Environment Variables" />
             <Button Grid.Row="0" Grid.Column="1" Name="btnEditEnvVar" Margin="0,0,0,5"
-                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnEditEnvVar_Click">
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="BtnEditEnvVar_Click">
                 <Image Stretch="None" Source="{StaticResource EditImage}" />
             </Button>
             <Button Grid.Row="0" Grid.Column="2" Name="btnRemoveEnvVar" Margin="5,0,0,5"
-                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnRemoveEnvVar_Click">
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="BtnRemoveEnvVar_Click">
                 <Image Stretch="None" Source="{StaticResource DeleteImage}" />
             </Button>
 

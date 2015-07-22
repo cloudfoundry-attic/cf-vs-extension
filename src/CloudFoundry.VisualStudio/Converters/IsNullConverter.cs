@@ -17,7 +17,7 @@
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new InvalidOperationException("IsNullConverter can only be used OneWay.");
+            throw new InvalidOperationException("Is Null Converter can only be used One Way.");
         }
     }
 }

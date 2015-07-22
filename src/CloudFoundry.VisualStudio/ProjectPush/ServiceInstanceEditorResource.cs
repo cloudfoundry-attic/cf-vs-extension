@@ -1,17 +1,17 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Microsoft.VisualStudio.Threading;
-
-namespace CloudFoundry.VisualStudio.ProjectPush
+﻿namespace CloudFoundry.VisualStudio.ProjectPush
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using Microsoft.VisualStudio.Threading;
+
     internal class ServiceInstanceEditorResource : INotifyPropertyChanged
     {
         private readonly ObservableCollection<ListAllServicesResponse> serviceTypes = new ObservableCollection<ListAllServicesResponse>();
@@ -23,19 +23,25 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private EntityGuid selectedPlan = null;
         private bool refreshingServiceInformations;
         private bool allowFinish = true;
-        
+
+        public ServiceInstanceEditorResource(CloudFoundryClient client)
+        {
+            this.InitServicesInformation(client);
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         
         public ErrorResource Error
         {
             get 
-            { 
-                return errorResource; 
+            {
+                return this.errorResource; 
             }
+
             set 
             { 
-                this.errorResource = value; 
-                RaisePropertyChangedEvent("Error"); 
+                this.errorResource = value;
+                this.RaisePropertyChangedEvent("Error"); 
             }
         }
 
@@ -51,9 +57,9 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
-                if (SelectedServiceType != null)
+                if (this.SelectedServiceType != null)
                 {
-                    return this.servicePlans.Where(o => o.ServiceGuid == SelectedServiceType.ToGuid());
+                    return this.servicePlans.Where(o => o.ServiceGuid == this.SelectedServiceType.ToGuid());
                 }
                 else
                 {
@@ -66,15 +72,16 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
-                return selectedService;
+                return this.selectedService;
             }
+
             set
             {
-                selectedService = value;
-                RaisePropertyChangedEvent("AvailableServicePlans");
-                if (AvailableServicePlans != null)
+                this.selectedService = value;
+                this.RaisePropertyChangedEvent("AvailableServicePlans");
+                if (this.AvailableServicePlans != null)
                 {
-                    this.SelectedServicePlan = AvailableServicePlans.FirstOrDefault().EntityMetadata.Guid;
+                    this.SelectedServicePlan = this.AvailableServicePlans.FirstOrDefault().EntityMetadata.Guid;
                 }
             }
         }
@@ -83,13 +90,58 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         {
             get
             {
-                return selectedPlan;
+                return this.selectedPlan;
             }
+
             set
             {
-                selectedPlan = value;
-                RaisePropertyChangedEvent("SelectedServicePlan");
+                this.selectedPlan = value;
+                this.RaisePropertyChangedEvent("SelectedServicePlan");
             }
+        }
+      
+        public bool RefreshingServiceInformations 
+        {
+            get
+            {
+                return this.refreshingServiceInformations;
+            }
+
+            private set
+            {
+                this.refreshingServiceInformations = value;
+                this.RaisePropertyChangedEvent("RefreshingServiceInformations");
+                this.RaisePropertyChangedEvent("AllowFinish");
+            }
+        }
+
+        public bool AllowFinish
+        {
+            get
+            {
+                return this.allowFinish && !this.refreshingServiceInformations;
+            }
+
+            set
+            {
+                this.allowFinish = value;
+                this.RaisePropertyChangedEvent("AllowFinish");
+            }
+        }
+
+        protected void RaisePropertyChangedEvent(string propertyName)
+        {
+            var handler = this.PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private static void OnUIThread(Action action)
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
         }
 
         private void EnterInit()
@@ -106,7 +158,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 this.SelectedServiceType = this.ServiceTypes.FirstOrDefault().EntityMetadata.Guid;
             }
-            RaisePropertyChangedEvent("SelectedServiceType");
+
+            this.RaisePropertyChangedEvent("SelectedServiceType");
         }
 
         private void ExitInit(Exception error)
@@ -126,18 +179,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 this.Error.ErrorMessage = sb.ToString();
             }
         }
-
-
-        public ServiceInstanceEditorResource(CloudFoundryClient client)
-        {
-                InitServicesInformation(client);
-        }
-
-        private void OnUIThread(Action action)
-        {
-            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
-        }
-
 
         private void InitServicesInformation(CloudFoundryClient client)
         {
@@ -168,44 +209,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     this.ExitInit();
                 }
             }).Forget();
-        }
-
-
-        protected void RaisePropertyChangedEvent(string propertyName)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        public bool RefreshingServiceInformations 
-        {
-            get
-            {
-                return this.refreshingServiceInformations;
-            }
-            private set
-            {
-                this.refreshingServiceInformations = value;
-                RaisePropertyChangedEvent("RefreshingServiceInformations");
-                RaisePropertyChangedEvent("AllowFinish");
-            }
-        }
-
-        public bool AllowFinish
-        {
-            get
-            {
-                return this.allowFinish && !this.refreshingServiceInformations;
-            }
-            set
-            {
-                this.allowFinish = value;
-                RaisePropertyChangedEvent("AllowFinish");
-            }
         }
     }
 }

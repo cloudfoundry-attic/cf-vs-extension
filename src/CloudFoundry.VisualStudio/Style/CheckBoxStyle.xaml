@@ -51,7 +51,7 @@
                             <Rectangle x:Name="focusRect"
                                        Grid.Column="0"
                                        RenderOptions.EdgeMode="Aliased"
-                                       Stroke="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}"
+                                       Stroke="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}"
                                        StrokeThickness="1"
                                        StrokeDashArray="1 1"
                                        Visibility="Hidden" />
@@ -84,18 +84,18 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundHoverKey}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderHoverKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundHoverKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderHoverKey}}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundPressedKey}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderPressedKey}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ControlForegroundPressedKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundPressedKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderPressedKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ControlForegroundPressedKey}}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundDisabledKey}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderDisabledKey}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ControlForegroundDisabledKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundDisabledKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderDisabledKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ControlForegroundDisabledKey}}" />
             </Trigger>
         </Style.Triggers>
     </Style>

@@ -16,7 +16,7 @@
         {
             this.exception = exception;
             this.errorMessages = new List<string>();
-            ErrorFormatter.FormatExceptionMessage(exception, this.errorMessages);
+            ErrorFormatter.FormatExceptionMessage(this.exception, this.errorMessages);
         }
 
         public string FullError

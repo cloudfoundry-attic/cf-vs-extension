@@ -63,10 +63,10 @@
 
         <TextBox Grid.Row="2" Grid.Column="1" x:Name="tbName" Margin="0,0,0,3"/>
         <Button Grid.Row="2" Grid.Column="2" x:Name="btnAddHost" Margin="3,0,0,3" 
-                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnAddHost_Click">
+                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="BtnAddHost_Click">
             <Image Stretch="None" Source="{StaticResource AddGenericImage}" />
         </Button>
-        <Button Grid.Row="2" Grid.Column="3" x:Name="btnDeleteHost" Margin="3,0,0,3" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="btnDeleteHost_Click">
+        <Button Grid.Row="2" Grid.Column="3" x:Name="btnDeleteHost" Margin="3,0,0,3" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}" Click="BtnDeleteHost_Click">
             <Image Stretch="None" Source="{StaticResource DeleteImage}" />
         </Button>
         

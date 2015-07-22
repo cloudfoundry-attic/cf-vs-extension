@@ -16,13 +16,13 @@ namespace CloudFoundry.VisualStudio.UnitTests
         [TestMethod()]
         public void CreateInstance()
         {
-            CloudFoundry_VisualStudioPackage package = new CloudFoundry_VisualStudioPackage();
+            CloudFoundryVisualStudioPackage package = new CloudFoundryVisualStudioPackage();
         }
 
         [TestMethod()]
         public void IsIVsPackage()
         {
-            CloudFoundry_VisualStudioPackage package = new CloudFoundry_VisualStudioPackage();
+            CloudFoundryVisualStudioPackage package = new CloudFoundryVisualStudioPackage();
             Assert.IsNotNull(package as IVsPackage, "The object does not implement IVsPackage");
         }
 
@@ -30,7 +30,7 @@ namespace CloudFoundry.VisualStudio.UnitTests
         public void SetSite()
         {
             // Create the package
-            IVsPackage package = new CloudFoundry_VisualStudioPackage() as IVsPackage;
+            IVsPackage package = new CloudFoundryVisualStudioPackage() as IVsPackage;
             Assert.IsNotNull(package, "The object does not implement IVsPackage");
 
             // Create a basic service provider

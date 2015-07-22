@@ -12,18 +12,18 @@
  *
  * ***************************************************************************/
 
-using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media.Imaging;
-using Microsoft.VisualStudio.PlatformUI;
-using Microsoft.VisualStudio.Shell;
-
 namespace CloudFoundry.VisualStudio.Style
 {
-    public static class Controls
+    using System;
+    using System.Drawing;
+    using System.Runtime.InteropServices;
+    using System.Windows;
+    using System.Windows.Interop;
+    using System.Windows.Media.Imaging;
+    using Microsoft.VisualStudio.PlatformUI;
+    using Microsoft.VisualStudio.Shell;
+
+    public static class ControlColors
     {
         public static readonly object BackgroundKey = VsBrushes.WindowKey;
         public static readonly object BackgroundColorKey = VsColors.WindowKey;
@@ -77,11 +77,9 @@ namespace CloudFoundry.VisualStudio.Style
         public static readonly object ScrollBarArrowBackgroundPressedKey = VsBrushes.ScrollBarArrowPressedBackgroundKey;
         public static readonly object ScrollBarArrowBackgroundDisabledKey = VsBrushes.ScrollBarArrowDisabledBackgroundKey;
 
-
-        public static readonly dynamic ListItemSelectedBackgroundKey =  TreeViewColors.SelectedItemActiveBrushKey;
+        public static readonly dynamic ListItemSelectedBackgroundKey = TreeViewColors.SelectedItemActiveBrushKey;
         public static readonly dynamic ListItemSelectedForegroundKey = TreeViewColors.SelectedItemActiveTextBrushKey;
         public static readonly object ListItemHoverBackgroundKey = VsBrushes.ComboBoxMouseOverBackgroundGradientKey;
         public static readonly object ListItemHoverForegroundKey = VsBrushes.WindowTextKey;
-
     }
 }

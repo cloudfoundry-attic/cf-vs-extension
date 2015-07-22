@@ -7,9 +7,10 @@
     {
         public static void FormatExceptionMessage(Exception ex, List<string> message)
         {
-            if (ex is AggregateException)
+            var aex = ex as AggregateException;
+            if (aex != null)
             {
-                foreach (Exception iex in (ex as AggregateException).Flatten().InnerExceptions)
+                foreach (Exception iex in aex.InnerExceptions)
                 {
                     FormatExceptionMessage(iex, message);
                 }

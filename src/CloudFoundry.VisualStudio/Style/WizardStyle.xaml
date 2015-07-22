@@ -12,8 +12,8 @@
     <conv:WizardPageButtonVisibilityConverter x:Key="WizardPageButtonVisibilityConverter"/>
 
     <Style TargetType="{x:Type xctk:Wizard}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.BackgroundKey}}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.BackgroundKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderKey}}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -34,9 +34,9 @@
 
                             <ContentPresenter Content="{Binding CurrentPage, RelativeSource={RelativeSource TemplatedParent}}" />
 
-                            <Border Grid.Row="1" Background="{DynamicResource {x:Static wpf:Controls.BackgroundAccentKey}}" 
-                                    BorderBrush="{DynamicResource {x:Static wpf:Controls.ControlBorderKey}}" BorderThickness="0,1,0,0" Padding="7">
-                                <StackPanel Background="{DynamicResource {x:Static wpf:Controls.BackgroundAccentKey}}">
+                            <Border Grid.Row="1" Background="{DynamicResource {x:Static wpf:ControlColors.BackgroundAccentKey}}" 
+                                    BorderBrush="{DynamicResource {x:Static wpf:ControlColors.ControlBorderKey}}" BorderThickness="0,1,0,0" Padding="7">
+                                <StackPanel Background="{DynamicResource {x:Static wpf:ControlColors.BackgroundAccentKey}}">
                                     <Grid Margin="{TemplateBinding Padding}" Height="25">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
@@ -97,17 +97,17 @@
     <Style TargetType="{x:Type xctk:WizardPage}" BasedOn="{StaticResource {x:Type Control}}">
         <Style.Triggers>
             <Trigger Property="PageType" Value="Interior">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.BackgroundKey}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.BackgroundKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderKey}}" />
                 <Setter Property="BorderThickness" Value="0,1,0,0" />
-                <Setter Property="HeaderBackground" Value="{DynamicResource {x:Static wpf:Controls.BackgroundAccentKey}}" />
+                <Setter Property="HeaderBackground" Value="{DynamicResource {x:Static wpf:ControlColors.BackgroundAccentKey}}" />
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="PageType" Value="Interior"/>
                     <Condition Property="IsEnabled" Value="False"/>
                 </MultiTrigger.Conditions>
-                <Setter Property="HeaderBackground" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundDisabledKey}}" />
+                <Setter Property="HeaderBackground" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundDisabledKey}}" />
             </MultiTrigger>
         </Style.Triggers>
     </Style>

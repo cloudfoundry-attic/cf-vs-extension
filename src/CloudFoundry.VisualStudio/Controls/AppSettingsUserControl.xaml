@@ -55,7 +55,7 @@
         <ComboBox Grid.Row="3" Grid.Column="1" IsEditable="True"  Name="cbBuildpack"  
                   ItemsSource="{Binding Buildpacks}" 
                   Text="{Binding SelectedBuildpack}"
-                  SelectedValuePath="Name" DisplayMemberPath="Name" IsEnabled="{Binding Path=RefreshingBuildpacks, Converter={StaticResource InverseBoolean}}" TextBoxBase.TextChanged="cbBuildpack_TextChanged">
+                  SelectedValuePath="Name" DisplayMemberPath="Name" IsEnabled="{Binding Path=RefreshingBuildpacks, Converter={StaticResource InverseBoolean}}" TextBoxBase.TextChanged="CbBuildpack_TextChanged">
         </ComboBox>
 
         <TextBlock Grid.Row="3" Grid.Column="1" Margin="3" FontStyle="Italic" Name="tbBuildpackWatermark" Text="&lt;&lt;Auto-Detect&gt;&gt;" IsHitTestVisible="False">

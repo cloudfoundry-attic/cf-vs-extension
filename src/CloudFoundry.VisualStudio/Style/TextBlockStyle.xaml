@@ -10,13 +10,13 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type TextBlock}">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}" />
         <Setter Property="Margin" Value="3 0" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style x:Key="HelpText" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.GrayTextKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.GrayTextKey}}" />
         <Setter Property="Padding" Value="8 0 0 5" />
     </Style>
 </ResourceDictionary>

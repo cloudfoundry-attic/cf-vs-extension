@@ -5,7 +5,7 @@
         xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:converters="clr-namespace:CloudFoundry.VisualStudio.Converters"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"  x:Class="CloudFoundry.VisualStudio.Forms.LoginForm"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"  x:Class="CloudFoundry.VisualStudio.Forms.LogOnForm"
         Title="Cloud Foundry target login" Style="{DynamicResource DialogWindowStyle}" Height="450" Width="500" WindowStartupLocation="CenterScreen">
     <ui:DialogWindow.Resources>
         <ResourceDictionary>
@@ -18,7 +18,7 @@
     </ui:DialogWindow.Resources>
     <xctk:BusyIndicator Name="busyIndicator" BusyContent="Checking cloud connectivity...">
         <xctk:Wizard NextButtonVisibility="Collapsed" BackButtonVisibility="Collapsed" HelpButtonVisibility="Collapsed" 
-                 CancelButtonClosesWindow="False" FinishButtonContent="OK"  Cancel="Wizard_Cancel" FinishButtonClosesWindow="False" Finish="btnFinish_Click">
+                 CancelButtonClosesWindow="False" FinishButtonContent="OK"  Cancel="Wizard_Cancel" FinishButtonClosesWindow="False" Finish="BtnFinish_Click">
             <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Add Cloud Foundry Target" CanFinish="True">
                 <Grid Margin="50,0,50,0">
@@ -43,7 +43,7 @@
                     <TextBox Name="tbDescription" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" Width="auto"></TextBox>
 
                     <Label Content="Target URL" Grid.Row="2" Grid.Column="0"></Label>
-                    <TextBox Name="tbUrl" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto" LostFocus="tbUrl_LostFocus"></TextBox>
+                    <TextBox Name="tbUrl" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto" LostFocus="TbUrl_LostFocus"></TextBox>
 
                     <Label Content="Username" Grid.Row="4" Grid.Column="0"></Label>
                     <TextBox Name="tbUsername" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Width="auto"></TextBox>

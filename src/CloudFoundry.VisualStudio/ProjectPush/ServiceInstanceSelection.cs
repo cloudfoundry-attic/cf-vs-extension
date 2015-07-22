@@ -1,14 +1,14 @@
-﻿using CloudFoundry.CloudController.V2.Client.Data;
-using Microsoft.VisualStudio.PlatformUI;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.ProjectPush
+﻿namespace CloudFoundry.VisualStudio.ProjectPush
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using Microsoft.VisualStudio.PlatformUI;
+
     internal class ServiceInstanceSelection : ObservableObject
     {
         private PublishProfileEditorResources publishProfileResources;
@@ -42,6 +42,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.publishProfileResources.SelectedPublishProfile.Application.Services.Contains(this.ServiceInstance.Name);
             }
+
             set
             {
                 if (value && !this.Selected)
