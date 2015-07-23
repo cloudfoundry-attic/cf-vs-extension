@@ -34,6 +34,7 @@
             this.InitializeComponent();
             this.DataContext = new ServiceInstanceEditorResource(client);
             this.InfoMessage.Text = string.Empty;
+            this.InfoSpinner.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private async void Wizard_Finish(object sender, RoutedEventArgs e)
@@ -49,6 +50,7 @@
             {
                 viewModel.AllowFinish = false;
                 this.InfoMessage.Text = "Please wait while creating service...";
+                this.InfoSpinner.Visibility = System.Windows.Visibility.Visible;
                 CreateServiceInstanceRequest request = new CreateServiceInstanceRequest();
                 request.Name = this.tbServiceName.Text;
                 request.ServicePlanGuid = viewModel.SelectedServicePlan.ToGuid();
@@ -62,6 +64,7 @@
             catch (Exception ex)
             {
                 viewModel.AllowFinish = true;
+                this.InfoSpinner.Visibility = System.Windows.Visibility.Hidden;
                 this.InfoMessage.Text = string.Empty;
                 var errorMessages = new List<string>();
                 ErrorFormatter.FormatExceptionMessage(ex, errorMessages);
