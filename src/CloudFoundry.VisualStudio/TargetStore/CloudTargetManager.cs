@@ -22,11 +22,9 @@
             
             foreach (KeyValuePair<string, string[]> target in targets)
             {
-                Guid targetId = Guid.Empty;
-
                 try
                 {
-                    targetId = new Guid(target.Key);
+                    Guid targetId = new Guid(target.Key);
                 }
                 catch (Exception ex)
                 {
@@ -72,7 +70,10 @@
 
         public static void RemoveTarget(CloudTarget target)
         {
-            RemoveTarget(target.TargetId);
+            if (target != null)
+            {
+                RemoveTarget(target.TargetId);
+            }
         }
 
         public static void RemoveTarget(Guid targetId)

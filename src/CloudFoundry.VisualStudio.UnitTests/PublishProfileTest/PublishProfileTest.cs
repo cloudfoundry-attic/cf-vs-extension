@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CloudFoundry.VisualStudio;
 using CloudFoundry.VisualStudio.ProjectPush;
 using System.IO;
-using EnvDTE;
 using System.Collections.Generic;
 
 namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest

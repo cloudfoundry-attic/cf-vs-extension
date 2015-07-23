@@ -1,5 +1,6 @@
 ﻿namespace CloudFoundry.VisualStudio.Model
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
@@ -9,7 +10,6 @@
     using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
     using Microsoft.VisualStudio.Threading;
-    using System;
 
     internal abstract class CloudItem : INotifyPropertyChanged
     {
@@ -198,7 +198,6 @@
                     }
                     else
                     {
-                        
                         OnUIThread(() => children.Clear());
 
                         foreach (var child in antecedent.Result)
@@ -218,9 +217,14 @@
 
         protected abstract Task<IEnumerable<CloudItem>> UpdateChildren();
 
-        private void AttachToParent(CloudItem parent)
+        private static void OnUIThread(Action action)
         {
-            this.parent = parent;
+            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
+        }
+
+        private void AttachToParent(CloudItem parentItem)
+        {
+            this.parent = parentItem;
         }
 
         private void NotifyPropertyChanged(string propertyName)
@@ -229,11 +233,6 @@
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
-        }
-
-        private void OnUIThread(Action action)
-        {
-            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
         }
     }
 }

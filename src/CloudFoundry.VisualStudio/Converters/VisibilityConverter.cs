@@ -27,7 +27,7 @@
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new InvalidOperationException("VisibilityConverter can only be used OneWay.");
+            throw new InvalidOperationException("Visibility Converter can only be used OneWay.");
         }
     }
 }

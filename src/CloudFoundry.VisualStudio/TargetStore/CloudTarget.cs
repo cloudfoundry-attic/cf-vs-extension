@@ -89,7 +89,7 @@
             string[] registryText = target.Value;
             if (registryText == null || registryText.Length < 1)
             {
-                throw new ArgumentException("Invalid registry setting.", "registryText");
+                throw new ArgumentException("Invalid registry setting.", "target");
             }
 
             string apiTypeTag = registryText[(int)CloudTargetPart.TypeTag];

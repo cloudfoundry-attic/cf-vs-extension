@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CloudFoundry.VisualStudio.ProjectPush
+﻿namespace CloudFoundry.VisualStudio.ProjectPush
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
     public class PushEnvironment
     {
         public const string DefaultProfileName = "push";
         public const string Extension = ".cf.pubxml";
-        public const string DefaultWebsiteProjName = "website.cfproj";
+        public const string DefaultWebsiteProjectName = "website.cfproj";
         public const string WebsitePublishingTargets = @"$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.WebSite.Publishing.targets";
 
         private string projectDirectory;
@@ -23,7 +23,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         public PushEnvironment()
         {
-            this.targetFilePath = FileUtils.GetRelativePath(VsUtils.GetPublishProfilePath(), VsUtils.GetTargetFile());
+            this.targetFilePath = FileUtilities.GetRelativePath(VsUtils.GetPublishProfilePath(), VsUtils.GetTargetFile());
             this.isProjectWebsite = VsUtils.IsSelectedProjectWebsite;
 
             var project = VsUtils.GetSelectedProject();
@@ -42,8 +42,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
 
         public bool IsProjectWebsite
         {
-            get { return isProjectWebsite; }
-            set { isProjectWebsite = value; }
+            get { return this.isProjectWebsite; }
+            set { this.isProjectWebsite = value; }
         }
 
         public string ProjectDirectory
@@ -52,11 +52,11 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.projectDirectory;
             }
+
             set
             {
                 this.projectDirectory = value;
             }
-
         }
 
         public string ProfileFilePath
@@ -65,6 +65,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.profileFilePath;
             }
+
             set
             {
                 this.profileFilePath = value;
@@ -77,6 +78,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.targetFilePath;
             }
+
             set
             {
                 this.targetFilePath = value;
@@ -89,6 +91,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.projectName;
             }
+
             set
             {
                 this.projectName = value;

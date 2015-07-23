@@ -10,7 +10,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type Label}">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}" />
         <Setter Property="Margin" Value="0" />
     </Style>
 </ResourceDictionary>

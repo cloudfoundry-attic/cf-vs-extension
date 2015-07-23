@@ -53,21 +53,11 @@
     // used to navigate to find results from a "Find in Files" type of operation.
     [ProvideEditorLogicalView(typeof(PublishXmlEditorFactory), VSConstants.LOGVIEWID.TextView_string)]
 
-    public sealed class CloudFoundry_VisualStudioPackage : Package
+    public sealed class CloudFoundryVisualStudioPackage : Package
     {
         public const string PackageId = "cf-msbuild-tasks";
 
         private static ErrorListProvider errorList;
-
-        public IVsBuildManagerAccessor BMAccessor
-        {
-            get
-            {
-                return GetService(typeof(SVsBuildManagerAccessor)) as IVsBuildManagerAccessor;
-            }
-        }
-
-        public static CloudFoundry_VisualStudioPackage CFPackage = null;
 
         /// <summary>
         /// Default constructor of the package.
@@ -76,20 +66,30 @@
         /// not sited yet inside Visual Studio environment. The place to do all the other 
         /// initialization is the Initialize method.
         /// </summary>
-        public CloudFoundry_VisualStudioPackage()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1804:RemoveUnusedLocals", MessageId = "hackObject", Justification = "Force load needed, see comment")]
+        public CloudFoundryVisualStudioPackage()
         {
             // we need to force load an object from the Xceed assembly, otherwise the types don't get loaded on time
             var hackObject = new Xceed.Wpf.Toolkit.AutoSelectTextBox();
             hackObject = null;
 
             errorList = new ErrorListProvider(this);
-
-            CloudFoundry_VisualStudioPackage.CFPackage = this;
         }
 
-        public static ErrorListProvider GetErrorListPane()
+        public static ErrorListProvider GetErrorListPane
         {
-            return errorList;
+            get
+            {
+                return errorList;
+            }
+        }
+
+        public IVsBuildManagerAccessor BMAccessor
+        {
+            get
+            {
+                return GetService(typeof(SVsBuildManagerAccessor)) as IVsBuildManagerAccessor;
+            }
         }
 
         /////////////////////////////////////////////////////////////////////////////
@@ -159,6 +159,7 @@
         {
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Catch general exception to prevent VS crash")]
         private void ButtonBuildAndPushProjectExecuteHandler(object sender, EventArgs e)
         {
             try
@@ -169,9 +170,14 @@
                 var dialog = new PushDialog(package);
                 dialog.ShowModal();
             }
+            catch (VisualStudioException ex)
+            {
+                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "Error loading publish profile {0}", ex.Message));
+                Logger.Error("Error loading publish profile", ex);
+            }   
             catch (Exception ex)
             {
-                MessageBoxHelper.DisplayWarning(string.Format(CultureInfo.InvariantCulture, "Cannot load default profile. File is corrupt."));
+                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "An error occurred while trying to load a publish profile {0}", ex.Message));
                 Logger.Error("Error loading default profile", ex);
             }
         }

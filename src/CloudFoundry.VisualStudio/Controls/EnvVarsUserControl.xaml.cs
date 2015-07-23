@@ -1,41 +1,41 @@
-﻿using CloudFoundry.VisualStudio.Forms;
-using CloudFoundry.VisualStudio.ProjectPush;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace CloudFoundry.VisualStudio.Controls
+﻿namespace CloudFoundry.VisualStudio.Controls
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Data;
+    using System.Windows.Documents;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+    using System.Windows.Navigation;
+    using System.Windows.Shapes;
+    using CloudFoundry.VisualStudio.Forms;
+    using CloudFoundry.VisualStudio.ProjectPush;
+
     /// <summary>
     /// Interaction logic for EnvVarsUserControl.xaml
     /// </summary>
-    public partial class EnvVarsUserControl : UserControl
+    public partial class EnvironmentVariablesUserControl : UserControl
     {
-        public EnvVarsUserControl()
+        public EnvironmentVariablesUserControl()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
-        private void btnAddEnvVar_Click(object sender, RoutedEventArgs e)
+        private void BtnAddEnvVar_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(tbEnvVarKey.Text) == false)
             {
-                var dataContext = (this.DataContext as PublishProfileEditorResources);
+                var dataContext = this.DataContext as PublishProfileEditorResources;
 
                 if (dataContext == null)
                 {
-                    throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+                    throw new InvalidOperationException("Data Context is not a valid Publish Profile Editor Resources");
                 }
 
                 dataContext.SelectedPublishProfile.Application.EnvironmentVariables[tbEnvVarKey.Text] = tbEnvVarValue.Text;
@@ -46,14 +46,13 @@ namespace CloudFoundry.VisualStudio.Controls
             }
         }
 
-
-        private void btnRemoveEnvVar_Click(object sender, RoutedEventArgs e)
+        private void BtnRemoveEnvVar_Click(object sender, RoutedEventArgs e)
         {
-            var dataContext = (this.DataContext as PublishProfileEditorResources);
+            var dataContext = this.DataContext as PublishProfileEditorResources;
 
             if (dataContext == null)
             {
-                throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
+                throw new InvalidOperationException("Data Context is not a valid Publish Profile Editor Resources");
             }
 
             foreach (var item in lvEnvVars.SelectedItems)
@@ -61,10 +60,11 @@ namespace CloudFoundry.VisualStudio.Controls
                 var envVar = (KeyValuePair<string, string>)item;
                 dataContext.SelectedPublishProfile.Application.EnvironmentVariables.Remove(envVar.Key);
             }
+
             lvEnvVars.Items.Refresh();
         }
 
-        private void btnEditEnvVar_Click(object sender, RoutedEventArgs e)
+        private void BtnEditEnvVar_Click(object sender, RoutedEventArgs e)
         {
             if (lvEnvVars.SelectedItem != null)
             {
@@ -73,6 +73,5 @@ namespace CloudFoundry.VisualStudio.Controls
                 tbEnvVarValue.Text = envVar.Value;
             }
         }
-
     }
 }

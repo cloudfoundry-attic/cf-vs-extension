@@ -1,21 +1,22 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.Threading;
-using CloudFoundry.UAA;
-using CloudFoundry.VisualStudio.TargetStore;
-using System.IO;
-using System.Text.RegularExpressions;
-
-namespace CloudFoundry.VisualStudio.ProjectPush
+﻿namespace CloudFoundry.VisualStudio.ProjectPush
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using CloudFoundry.UAA;
+    using CloudFoundry.VisualStudio.TargetStore;
+    using Microsoft.VisualStudio.Threading;
+
     internal class PublishProfileEditorResources : INotifyPropertyChanged
     {
         private ObservableCollection<ListAllOrganizationsResponse> orgs = new ObservableCollection<ListAllOrganizationsResponse>();
@@ -26,35 +27,101 @@ namespace CloudFoundry.VisualStudio.ProjectPush
         private ObservableCollection<PrivateDomainsWithSelection> privateDomains = new ObservableCollection<PrivateDomainsWithSelection>();
         private ObservableCollection<ServiceInstanceSelection> serviceInstances = new ObservableCollection<ServiceInstanceSelection>();
 
+        private PublishProfile selectedPublishProfile;
+        private CancellationToken cancellationToken;
+        private CloudFoundryClient client;
+
+        private PublishProfileRefreshTarget lastRefreshTarget;
+
+        private volatile int refreshCounter;
+
+        private bool refreshingOrganizations = false;
+
+        private bool refreshingPublishProfile;
+
+        private bool refreshingClient;
+
+        private bool refreshingSpaces;
+
+        private bool refreshingServiceInstances;
+
+        private bool refreshingStacks;
+
+        private bool refreshingBuildpacks;
+
+        private bool refreshingSharedDomains;
+
+        private bool refreshingPrivateDomains;
+
         private ErrorResource errorResource = new ErrorResource();
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Ignore profiles unable to load")]
+        public PublishProfileEditorResources(PublishProfile publishProfile, CancellationToken cancellationToken)
+        {
+            this.selectedPublishProfile = publishProfile;
+            this.selectedPublishProfile.PropertyChanged += this.PublishProfile_PropertyChanged;
+            this.cancellationToken = cancellationToken;
+
+            this.CloudTargets = CloudTargetManager.GetTargets();
+
+            var publishProfiles = new List<PublishProfile>();
+
+            var publishDirectory = Directory.GetParent(this.selectedPublishProfile.Path);
+
+            if (Directory.Exists(publishDirectory.FullName))
+            {
+                foreach (var file in publishDirectory.GetFiles())
+                {
+                    if (file.Name.EndsWith(PushEnvironment.Extension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        try
+                        {
+                            PushEnvironment env = new PushEnvironment();
+                            env.ProfileFilePath = file.FullName;
+                            var profile = PublishProfile.Load(env);
+                            publishProfiles.Add(profile);
+                        }
+                        catch (Exception ex)
+                        {
+                            // Ignore profiles that cannot be loaded.
+                            Logger.Warning(string.Format(CultureInfo.InvariantCulture, "Cloud not load profile from {0}: {1}", file.Name, ex));
+                        }
+                    }
+                }
+            }
+
+            this.PublishProfiles = publishProfiles.ToArray();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ErrorResource Error
         {
-            get { return errorResource; }
+            get { return this.errorResource; }
         }
 
         public ObservableCollection<ListAllOrganizationsResponse> Orgs
         {
-            get { return orgs; }
-            set { orgs = value; }
+            get { return this.orgs; }
+            set { this.orgs = value; }
         }
 
         public ObservableCollection<ListAllSpacesForOrganizationResponse> Spaces
         {
-            get { return spaces; }
-            set { spaces = value; }
+            get { return this.spaces; }
+            set { this.spaces = value; }
         }
 
         public ObservableCollection<ListAllStacksResponse> Stacks
         {
-            get { return stacks; }
-            set { stacks = value; }
+            get { return this.stacks; }
+            set { this.stacks = value; }
         }
 
         public ObservableCollection<ListAllBuildpacksResponse> Buildpacks
         {
-            get { return buildpacks; }
-            set { buildpacks = value; }
+            get { return this.buildpacks; }
+            set { this.buildpacks = value; }
         }
 
         public ObservableCollection<SharedDomainWithSelection> SharedDomains
@@ -87,6 +154,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.selectedPublishProfile.Application.StackName;
             }
+
             set
             {
                 this.selectedPublishProfile.Application.StackName = value;
@@ -100,6 +168,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.selectedPublishProfile.Application.BuildpackUrl;
             }
+
             set
             {
                 this.selectedPublishProfile.Application.BuildpackUrl = value;
@@ -113,12 +182,14 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.selectedPublishProfile;
             }
+
             set
             {
                 if (value == null)
                 {
                     return;
                 }
+
                 this.selectedPublishProfile = value;
 
                 this.Refresh(PublishProfileRefreshTarget.PublishProfile);
@@ -139,38 +210,13 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             set;
         }
 
-        private CloudTarget ToV2CloudTarget()
-        {
-            string description = string.Empty;
-
-            // If this is a 'vanilla' publish profile, we can display it the same way; note that password can be a series of whitespaces
-            if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.RefreshToken))
-            {
-                description = string.Format("Using explicit refresh token - {0}", this.selectedPublishProfile.ServerUri);
-            }
-            else if (!string.IsNullOrEmpty(this.selectedPublishProfile.Password))
-            {
-                description = string.Format("Using clear-text password - {0}", this.selectedPublishProfile.ServerUri);
-            }
-            else if (!this.selectedPublishProfile.SavedPassword)
-            {
-                description = string.Format("Invalid credential configuration - {0}", this.selectedPublishProfile.ServerUri);
-            }
-
-            return CloudTarget.CreateV2Target(
-                this.selectedPublishProfile.ServerUri,
-                description,
-                this.selectedPublishProfile.User,
-                this.selectedPublishProfile.SkipSSLValidation,
-                string.Empty);
-        }
-
         public CloudTarget SelectedCloudTarget
         {
             get
             {
                 return this.ToV2CloudTarget();
             }
+
             set
             {
                 if (value == null)
@@ -184,8 +230,8 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 this.selectedPublishProfile.SavedPassword = true;
                 this.selectedPublishProfile.Password = null;
                 this.selectedPublishProfile.RefreshToken = null;
-                this.selectedPublishProfile.PropertyChanged -= publishProfile_PropertyChanged;
-                this.selectedPublishProfile.PropertyChanged += publishProfile_PropertyChanged;
+                this.selectedPublishProfile.PropertyChanged -= this.PublishProfile_PropertyChanged;
+                this.selectedPublishProfile.PropertyChanged += this.PublishProfile_PropertyChanged;
 
                 this.Refresh(PublishProfileRefreshTarget.Client);
                 this.RaisePropertyChangedEvent("SelectedCloudTarget");
@@ -198,23 +244,186 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.lastRefreshTarget;
             }
+
             set
             {
                 this.lastRefreshTarget = value;
-                RaisePropertyChangedEvent("LastRefreshTarget");
+                this.RaisePropertyChangedEvent("LastRefreshTarget");
             }
         }
-
-        private PublishProfile selectedPublishProfile;
-
-        private CancellationToken cancellationToken;
-        private CloudFoundryClient client;
 
         public CloudFoundryClient Client
         {
             get
             {
-                return client;
+                return this.client;
+            }
+        }
+
+        public bool RefreshingPublishProfile
+        {
+            get
+            {
+                return this.refreshingPublishProfile;
+            }
+
+            private set
+            {
+                this.refreshingPublishProfile = value;
+                this.RaisePropertyChangedEvent("RefreshingPublishProfile");
+                this.RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+
+        public bool RefreshingClient
+        {
+            get
+            {
+                return this.refreshingClient;
+            }
+
+            private set
+            {
+                this.refreshingClient = value;
+                this.RaisePropertyChangedEvent("RefreshingClient");
+                this.RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+
+        public bool RefreshingOrganizations
+        {
+            get
+            {
+                return this.refreshingOrganizations;
+            }
+
+            private set
+            {
+                this.refreshingOrganizations = value;
+                this.RaisePropertyChangedEvent("RefreshingOrganizations");
+                this.RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+
+        public bool RefreshingSpaces
+        {
+            get
+            {
+                return this.refreshingSpaces;
+            }
+
+            private set
+            {
+                this.refreshingSpaces = value;
+                this.RaisePropertyChangedEvent("RefreshingSpaces");
+                this.RaisePropertyChangedEvent("RefreshingTargetSettings");
+            }
+        }
+
+        public bool RefreshingServiceInstances
+        {
+            get
+            {
+                return this.refreshingServiceInstances;
+            }
+
+            private set
+            {
+                this.refreshingServiceInstances = value;
+                this.RaisePropertyChangedEvent("RefreshingServiceInstances");
+                this.RaisePropertyChangedEvent("RefreshingServices");
+            }
+        }
+
+        public bool RefreshingStacks
+        {
+            get
+            {
+                return this.refreshingStacks;
+            }
+
+            private set
+            {
+                this.refreshingStacks = value;
+                this.RaisePropertyChangedEvent("RefreshingStacks");
+                this.RaisePropertyChangedEvent("RefreshingAppSettings");
+            }
+        }
+
+        public bool RefreshingBuildpacks
+        {
+            get
+            {
+                return this.refreshingBuildpacks;
+            }
+
+            private set
+            {
+                this.refreshingBuildpacks = value;
+                this.RaisePropertyChangedEvent("RefreshingBuildpacks");
+                this.RaisePropertyChangedEvent("RefreshingAppSettings");
+            }
+        }
+
+        public bool RefreshingSharedDomains
+        {
+            get
+            {
+                return this.refreshingSharedDomains;
+            }
+
+            private set
+            {
+                this.refreshingSharedDomains = value;
+                this.RaisePropertyChangedEvent("RefreshingSharedDomains");
+                this.RaisePropertyChangedEvent("RefreshingRoutes");
+            }
+        }
+
+        public bool RefreshingPrivateDomains
+        {
+            get
+            {
+                return this.refreshingPrivateDomains;
+            }
+
+            private set
+            {
+                this.refreshingPrivateDomains = value;
+                this.RaisePropertyChangedEvent("RefreshingPrivateDomains");
+                this.RaisePropertyChangedEvent("RefreshingRoutes");
+            }
+        }
+
+        public bool RefreshingTargetSettings
+        {
+            get
+            {
+                return this.RefreshingClient || this.RefreshingPublishProfile || this.RefreshingOrganizations || this.RefreshingSpaces;
+            }
+        }
+
+        public bool RefreshingAppSettings
+        {
+            get
+            {
+                return this.RefreshingStacks || this.RefreshingBuildpacks;
+            }
+        }
+
+        public bool RefreshingRoutes
+        {
+            get
+            {
+                return this.RefreshingPrivateDomains || this.RefreshingSharedDomains;
+            }
+        }
+
+        public bool RefreshingServices
+        {
+            get
+            {
+                return this.RefreshingServiceInstances;
             }
         }
 
@@ -224,6 +433,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             {
                 return this.refreshCounter;
             }
+
             set
             {
                 this.refreshCounter = Math.Max(value, 0);
@@ -231,91 +441,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }
         }
 
-        public PublishProfileEditorResources(PublishProfile publishProfile, CancellationToken cancellationToken)
-        {
-            this.selectedPublishProfile = publishProfile;
-            this.selectedPublishProfile.PropertyChanged += publishProfile_PropertyChanged;
-            this.cancellationToken = cancellationToken;
-
-            this.CloudTargets = CloudTargetManager.GetTargets();
-
-            var publishProfiles = new List<PublishProfile>();
-
-            var publishDirectory = Directory.GetParent(this.selectedPublishProfile.Path);
-
-            if (Directory.Exists(publishDirectory.FullName))
-            {
-                foreach (var file in publishDirectory.GetFiles())
-                {
-                    if (file.Name.EndsWith(PushEnvironment.Extension))
-                    {
-                        try
-                        {
-                            PushEnvironment env = new PushEnvironment();
-                            env.ProfileFilePath = file.FullName;
-                            var profile = PublishProfile.Load(env);
-                            publishProfiles.Add(profile);
-                        }
-                        catch (Exception ex)
-                        {
-                            // Ignore profiles that cannot be loaded.
-                            Logger.Warning(string.Format("Cloud not load profile from {0}: {1}", file.Name, ex));
-                        }
-                    }
-                }
-            }
-            this.PublishProfiles = publishProfiles.ToArray();
-        }
-
-        private void publishProfile_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "Organization":
-                    {
-                        this.Refresh(PublishProfileRefreshTarget.Spaces);
-                        this.Refresh(PublishProfileRefreshTarget.PrivateDomains);
-                    }
-                    break;
-                case "Space":
-                    {
-                        this.Refresh(PublishProfileRefreshTarget.ServiceInstances);
-                    }
-                    break;
-            }
-        }
-
-        private void EnterRefresh()
-        {
-            this.RefreshCounter++;
-            this.Error.HasErrors = false;
-            this.Error.ErrorMessage = string.Empty;
-        }
-
-        private void ExitRefresh()
-        {
-            this.ExitRefresh(null);
-        }
-
-        private void ExitRefresh(Exception error)
-        {
-            this.RefreshCounter--;
-            this.Error.HasErrors = error != null;
-            if (this.Error.HasErrors)
-            {
-                List<string> errors = new List<string>();
-                ErrorFormatter.FormatExceptionMessage(error, errors);
-                StringBuilder sb = new StringBuilder();
-                foreach (string errorLine in errors)
-                {
-                    sb.AppendLine(errorLine);
-                }
-
-                this.Error.ErrorMessage = sb.ToString();
-            }
-        }
-
-        public void OnUIThread(Action action)
+        public static void OnUIThread(Action action)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
         }
@@ -371,6 +497,155 @@ namespace CloudFoundry.VisualStudio.ProjectPush
             }).Forget();
         }
 
+        public void ValidateRoutes()
+        {
+            Regex regex = new Regex("^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]+$");
+
+            this.Error.HasErrors = false;
+            this.Error.ErrorMessage = string.Empty;
+
+            foreach (string hostName in this.SelectedPublishProfile.Application.Hosts)
+            {
+                if (string.IsNullOrWhiteSpace(hostName))
+                {
+                    this.Error.ErrorMessage = "Hostname cannot be empty";
+                    this.Error.HasErrors = true;
+                    break;
+                }
+                else
+                {
+                    if (regex.IsMatch(hostName) == false)
+                    {
+                        this.Error.ErrorMessage = string.Format(System.Globalization.CultureInfo.InvariantCulture, "Invalid hostname {0}", hostName);
+                        this.Error.HasErrors = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        internal void CleanManifest()
+        {
+            List<string> selectedDomains = new List<string>();
+            foreach (var privateDomain in this.PrivateDomains)
+            {
+                if (privateDomain.Selected)
+                {
+                    selectedDomains.Add(privateDomain.PrivateDomain.Name);
+                }
+            }
+
+            foreach (var sharedDomain in this.SharedDomains)
+            {
+                if (sharedDomain.Selected)
+                {
+                    selectedDomains.Add(sharedDomain.SharedDomain.Name);
+                }
+            }
+
+            this.selectedPublishProfile.Application.Domains.Clear();
+            this.selectedPublishProfile.Application.Domains.AddRange(selectedDomains);
+
+            List<string> selectedServices = new List<string>();
+            foreach (var servInstance in this.serviceInstances)
+            {
+                if (servInstance.Selected)
+                {
+                    selectedServices.Add(servInstance.ServiceInstance.Name);
+                }
+            }
+
+            this.selectedPublishProfile.Application.Services.Clear();
+
+            this.selectedPublishProfile.Application.Services.AddRange(selectedServices);
+        }
+
+        protected void RaisePropertyChangedEvent(string propertyName)
+        {
+            var handler = this.PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        private CloudTarget ToV2CloudTarget()
+        {
+            string description = string.Empty;
+
+            // If this is a 'vanilla' publish profile, we can display it the same way; note that password can be a series of whitespaces
+            if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.RefreshToken))
+            {
+                description = string.Format(CultureInfo.InvariantCulture, "Using explicit refresh token - {0}", this.selectedPublishProfile.ServerUri);
+            }
+            else if (!string.IsNullOrEmpty(this.selectedPublishProfile.Password))
+            {
+                description = string.Format(CultureInfo.InvariantCulture, "Using clear-text password - {0}", this.selectedPublishProfile.ServerUri);
+            }
+            else if (!this.selectedPublishProfile.SavedPassword)
+            {
+                description = string.Format(CultureInfo.InvariantCulture, "Invalid credential configuration - {0}", this.selectedPublishProfile.ServerUri);
+            }
+
+            return CloudTarget.CreateV2Target(
+                this.selectedPublishProfile.ServerUri,
+                description,
+                this.selectedPublishProfile.User,
+                this.selectedPublishProfile.SkipSSLValidation,
+                string.Empty);
+        }
+
+        private void PublishProfile_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "Organization":
+                    {
+                        this.Refresh(PublishProfileRefreshTarget.Spaces);
+                        this.Refresh(PublishProfileRefreshTarget.PrivateDomains);
+                    }
+
+                    break;
+                case "Space":
+                    {
+                        this.Refresh(PublishProfileRefreshTarget.ServiceInstances);
+                    }
+
+                    break;
+            }
+        }
+
+        private void EnterRefresh()
+        {
+            this.RefreshCounter++;
+            this.Error.HasErrors = false;
+            this.Error.ErrorMessage = string.Empty;
+        }
+
+        private void ExitRefresh()
+        {
+            this.ExitRefresh(null);
+        }
+
+        private void ExitRefresh(Exception error)
+        {
+            this.RefreshCounter--;
+            this.Error.HasErrors = error != null;
+            if (this.Error.HasErrors)
+            {
+                List<string> errors = new List<string>();
+                ErrorFormatter.FormatExceptionMessage(error, errors);
+                StringBuilder sb = new StringBuilder();
+                foreach (string errorLine in errors)
+                {
+                    sb.AppendLine(errorLine);
+                }
+
+                this.Error.ErrorMessage = sb.ToString();
+            }
+        }
+
         private async Task RefreshPublishProfile()
         {
             await Task.Run(() =>
@@ -385,7 +660,6 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                     this.RefreshingPublishProfile = false;
                 }
             });
-
         }
 
         private async Task RefreshClient()
@@ -405,13 +679,13 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                 AuthenticationContext authenticationContext = null;
                 if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.RefreshToken))
                 {
-                    authenticationContext = await client.Login(this.selectedPublishProfile.RefreshToken);
+                    authenticationContext = await this.client.Login(this.selectedPublishProfile.RefreshToken);
                 }
                 else
                 {
                     if (!string.IsNullOrWhiteSpace(this.selectedPublishProfile.Password))
                     {
-                        authenticationContext = await client.Login(new CloudCredentials()
+                        authenticationContext = await this.client.Login(new CloudCredentials()
                         {
                             User = this.selectedPublishProfile.User,
                             Password = this.selectedPublishProfile.Password
@@ -423,7 +697,7 @@ namespace CloudFoundry.VisualStudio.ProjectPush
                             this.selectedPublishProfile.ServerUri,
                             this.selectedPublishProfile.User);
 
-                        authenticationContext = await client.Login(new CloudCredentials()
+                        authenticationContext = await this.client.Login(new CloudCredentials()
                         {
                             User = this.selectedPublishProfile.User,
                             Password = password
@@ -446,8 +720,7 @@ Please note that credentials are saved automatically in the Windows Credential M
              new Action(() => this.Refresh(PublishProfileRefreshTarget.Organizations)),
              new Action(() => this.Refresh(PublishProfileRefreshTarget.Stacks)),
              new Action(() => this.Refresh(PublishProfileRefreshTarget.Buildpacks)),
-             new Action(() => this.Refresh(PublishProfileRefreshTarget.SharedDomains))
-             );
+             new Action(() => this.Refresh(PublishProfileRefreshTarget.SharedDomains)));
         }
 
         private async Task RefreshOrganizations()
@@ -459,7 +732,7 @@ Please note that credentials are saved automatically in the Windows Credential M
 
                 List<ListAllOrganizationsResponse> orgsList = new List<ListAllOrganizationsResponse>();
 
-                PagedResponseCollection<ListAllOrganizationsResponse> orgsResponse = await client.Organizations.ListAllOrganizations();
+                PagedResponseCollection<ListAllOrganizationsResponse> orgsResponse = await this.client.Organizations.ListAllOrganizations();
 
                 while (orgsResponse != null && orgsResponse.Properties.TotalResults != 0)
                 {
@@ -583,7 +856,6 @@ Please note that credentials are saved automatically in the Windows Credential M
                         var servicePlan = await this.client.ServicePlans.RetrieveServicePlan(serviceInstance.ServicePlanGuid);
                         var systemService = await this.client.Services.RetrieveService(servicePlan.ServiceGuid);
 
-
                         ServiceInstanceSelection serviceProfile = new ServiceInstanceSelection(this);
 
                         serviceProfile.ServiceInstance = serviceInstance;
@@ -594,7 +866,6 @@ Please note that credentials are saved automatically in the Windows Credential M
 
                     serviceInstances = await serviceInstances.GetNextPage();
                 }
-
 
                 OnUIThread(() =>
                 {
@@ -641,6 +912,7 @@ Please note that credentials are saved automatically in the Windows Credential M
                     {
                         this.stacks.Add(stack);
                     }
+
                     if (stacks.Any(o => o.Name == oldSelectedStack))
                     {
                         this.SelectedStack = oldSelectedStack;
@@ -664,7 +936,6 @@ Please note that credentials are saved automatically in the Windows Credential M
 
             try
             {
-
                 this.LastRefreshTarget = PublishProfileRefreshTarget.Buildpacks;
                 List<ListAllBuildpacksResponse> buildpacksList = new List<ListAllBuildpacksResponse>();
 
@@ -679,7 +950,6 @@ Please note that credentials are saved automatically in the Windows Credential M
 
                     buildpacksResponse = await buildpacksResponse.GetNextPage();
                 }
-
 
                 OnUIThread(() =>
                 {
@@ -703,7 +973,7 @@ Please note that credentials are saved automatically in the Windows Credential M
                         }
                         else
                         {
-                            this.SelectedBuildpack = String.Empty;
+                            this.SelectedBuildpack = string.Empty;
                         }
                     }
                 });
@@ -777,6 +1047,7 @@ Please note that credentials are saved automatically in the Windows Credential M
 
                     privateDomainsResponse = await privateDomainsResponse.GetNextPage();
                 }
+
                 OnUIThread(() =>
                 {
                     this.privateDomains.Clear();
@@ -789,251 +1060,6 @@ Please note that credentials are saved automatically in the Windows Credential M
             finally
             {
                 this.RefreshingPrivateDomains = false;
-            }
-        }
-
-        internal void CleanManifest()
-        {
-            List<string> selectedDomains = new List<string>();
-            foreach (var privateDomain in this.PrivateDomains)
-            {
-                if (privateDomain.Selected)
-                {
-                    selectedDomains.Add(privateDomain.PrivateDomain.Name);
-                }
-            }
-
-            foreach (var sharedDomain in this.SharedDomains)
-            {
-                if (sharedDomain.Selected)
-                {
-                    selectedDomains.Add(sharedDomain.SharedDomain.Name);
-                }
-            }
-
-            this.selectedPublishProfile.Application.Domains.Clear();
-            this.selectedPublishProfile.Application.Domains.AddRange(selectedDomains);
-
-            List<string> selectedServices = new List<string>();
-            foreach (var servInstance in this.serviceInstances)
-            {
-                if (servInstance.Selected)
-                {
-                    selectedServices.Add(servInstance.ServiceInstance.Name);
-                }
-            }
-
-            this.selectedPublishProfile.Application.Services.Clear();
-            this.selectedPublishProfile.Application.Services.AddRange(selectedServices);
-
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private PublishProfileRefreshTarget lastRefreshTarget;
-        private volatile int refreshCounter;
-
-        protected void RaisePropertyChangedEvent(string propertyName)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-        public void ValidateRoutes()
-        {
-            Regex regex = new Regex("^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]+$");
-
-            this.Error.HasErrors = false;
-            this.Error.ErrorMessage = string.Empty;
-
-            foreach (string hostName in this.SelectedPublishProfile.Application.Hosts)
-            {
-                if (string.IsNullOrWhiteSpace(hostName))
-                {
-                    this.Error.ErrorMessage = "Hostname cannot be empty";
-                    this.Error.HasErrors = true;
-                    break;
-                }
-                else
-                {
-                    if (regex.IsMatch(hostName) == false)
-                    {
-                        this.Error.ErrorMessage = string.Format(System.Globalization.CultureInfo.InvariantCulture, "Invalid hostname {0}", hostName);
-                        this.Error.HasErrors = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        public bool RefreshingPublishProfile
-        {
-            get
-            {
-                return this.refreshingPublishProfile;
-            }
-
-            private set
-            {
-                this.refreshingPublishProfile = value;
-                RaisePropertyChangedEvent("RefreshingPublishProfile");
-                RaisePropertyChangedEvent("RefreshingTargetSettings");
-            }
-        }
-
-        public bool RefreshingClient
-        {
-            get
-            {
-                return this.refreshingClient;
-            }
-
-            private set
-            {
-                this.refreshingClient = value;
-                RaisePropertyChangedEvent("RefreshingClient");
-                RaisePropertyChangedEvent("RefreshingTargetSettings");
-            }
-        }
-
-        private bool refreshingOrganizations = false;
-        private bool refreshingPublishProfile;
-        private bool refreshingClient;
-        private bool refreshingSpaces;
-        private bool refreshingServiceInstances;
-        private bool refreshingStacks;
-        private bool refreshingBuildpacks;
-        private bool refreshingSharedDomains;
-        private bool refreshingPrivateDomains;
-        public bool RefreshingOrganizations
-        {
-            get
-            {
-                return this.refreshingOrganizations;
-            }
-
-            private set
-            {
-                this.refreshingOrganizations = value;
-                RaisePropertyChangedEvent("RefreshingOrganizations");
-                RaisePropertyChangedEvent("RefreshingTargetSettings");
-            }
-        }
-        public bool RefreshingSpaces
-        {
-            get
-            {
-                return this.refreshingSpaces;
-            }
-            private set
-            {
-                this.refreshingSpaces = value;
-                RaisePropertyChangedEvent("RefreshingSpaces");
-                RaisePropertyChangedEvent("RefreshingTargetSettings");
-            }
-        }
-        public bool RefreshingServiceInstances
-        {
-            get
-            {
-                return this.refreshingServiceInstances;
-            }
-            private set
-            {
-                this.refreshingServiceInstances = value;
-                RaisePropertyChangedEvent("RefreshingServiceInstances");
-                RaisePropertyChangedEvent("RefreshingServices");
-            }
-        }
-        public bool RefreshingStacks
-        {
-            get
-            {
-                return this.refreshingStacks;
-            }
-            private set
-            {
-                this.refreshingStacks = value;
-                RaisePropertyChangedEvent("RefreshingStacks");
-                RaisePropertyChangedEvent("RefreshingAppSettings");
-            }
-        }
-
-        public bool RefreshingBuildpacks
-        {
-            get
-            {
-                return this.refreshingBuildpacks;
-            }
-            private set
-            {
-                this.refreshingBuildpacks = value;
-                RaisePropertyChangedEvent("RefreshingBuildpacks");
-                RaisePropertyChangedEvent("RefreshingAppSettings");
-            }
-        }
-        public bool RefreshingSharedDomains
-        {
-            get
-            {
-                return this.refreshingSharedDomains;
-            }
-            private set
-            {
-                this.refreshingSharedDomains = value;
-                RaisePropertyChangedEvent("RefreshingSharedDomains");
-                RaisePropertyChangedEvent("RefreshingRoutes");
-            }
-        }
-
-        public bool RefreshingPrivateDomains
-        {
-            get
-            {
-                return this.refreshingPrivateDomains;
-            }
-            private set
-            {
-                this.refreshingPrivateDomains = value;
-                RaisePropertyChangedEvent("RefreshingPrivateDomains");
-                RaisePropertyChangedEvent("RefreshingRoutes");
-            }
-        }
-
-
-
-        public bool RefreshingTargetSettings
-        {
-            get
-            {
-                return this.RefreshingClient || this.RefreshingPublishProfile || this.RefreshingOrganizations || this.RefreshingSpaces;
-            }
-        }
-
-        public bool RefreshingAppSettings
-        {
-            get
-            {
-                return this.RefreshingStacks || this.RefreshingBuildpacks;
-            }
-        }
-
-        public bool RefreshingRoutes
-        {
-            get
-            {
-                return this.RefreshingPrivateDomains || this.RefreshingSharedDomains;
-            }
-        }
-
-        public bool RefreshingServices
-        {
-            get
-            {
-               return this.RefreshingServiceInstances;
             }
         }
     }

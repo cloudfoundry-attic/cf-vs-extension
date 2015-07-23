@@ -1,14 +1,14 @@
 ﻿namespace CloudFoundry.VisualStudio.MSBuild
 {
-    using EnvDTE;
-    using Microsoft.Build.Framework;
-    using Microsoft.VisualStudio.Shell;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using EnvDTE;
+    using Microsoft.Build.Framework;
+    using Microsoft.VisualStudio.Shell;
 
     public class MSBuildLogger : ILogger
     {
@@ -22,18 +22,41 @@
             this.errorPane = errorPane;
         }
 
+        public string Parameters
+        {
+            get;
+            set;
+        }
+
+        public LoggerVerbosity Verbosity
+        {
+            get
+            {
+                return this.verbosity;
+            }
+
+            set
+            {
+                this.verbosity = value;
+            }
+        }
+
         public void Initialize(IEventSource eventSource)
         {
             if (eventSource != null)
             {
-                eventSource.MessageRaised += eventSource_MessageRaised;
-                eventSource.ErrorRaised += eventSource_ErrorRaised;
+                eventSource.MessageRaised += this.EventSource_MessageRaised;
+                eventSource.ErrorRaised += this.EventSource_ErrorRaised;
             }
         }
 
-        void eventSource_ErrorRaised(object sender, BuildErrorEventArgs e)
+        public void Shutdown()
         {
-            errorPane.Tasks.Add(new ErrorTask()
+        }
+
+        private void EventSource_ErrorRaised(object sender, BuildErrorEventArgs e)
+        {
+            this.errorPane.Tasks.Add(new ErrorTask()
             {
                 Category = TaskCategory.BuildCompile,
                 ErrorCategory = TaskErrorCategory.Error,
@@ -44,31 +67,9 @@
             });
         }
 
-        void eventSource_MessageRaised(object sender, BuildMessageEventArgs e)
+        private void EventSource_MessageRaised(object sender, BuildMessageEventArgs e)
         {
-            outputPane.OutputString(string.Format(CultureInfo.InvariantCulture, "{0}{1}", e.Message, Environment.NewLine));
-        }
-
-        public string Parameters
-        {
-            get;
-            set;
-        }
-
-        public void Shutdown()
-        {
-        }
-
-        public LoggerVerbosity Verbosity
-        {
-            get
-            {
-                return this.verbosity;
-            }
-            set
-            {
-                this.verbosity = value;
-            }
+            this.outputPane.OutputString(string.Format(CultureInfo.InvariantCulture, "{0}{1}", e.Message, Environment.NewLine));
         }
     }
 }

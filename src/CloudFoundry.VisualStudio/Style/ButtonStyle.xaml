@@ -32,22 +32,22 @@
                 <Setter Property="Background" Value="Transparent" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundHoverKey}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderHoverKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundHoverKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderHoverKey}}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderSelectedKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderSelectedKey}}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderKey}}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True" >
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ButtonBorderHoverKey}}" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ButtonBackgroundHoverKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ButtonBorderHoverKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ButtonBackgroundHoverKey}}" />
             </Trigger>
             <Trigger Property="IsPressed" Value="True" >
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ButtonBackgroundPressedKey}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ButtonForegroundPressedKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ButtonBackgroundPressedKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ButtonForegroundPressedKey}}" />
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -56,7 +56,7 @@
                     <Condition Property="IsMouseOver" Value="False" />
                     <Condition Property="IsKeyboardFocused" Value="False" />
                 </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderSelectedKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderSelectedKey}}" />
             </MultiTrigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -64,7 +64,7 @@
                     <Condition Property="IsEnabled" Value="True" />
                     <Condition Property="IsMouseOver" Value="True" />
                 </MultiTrigger.Conditions>
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderHoverKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderHoverKey}}" />
             </MultiTrigger>
         </Style.Triggers>
     </Style>    

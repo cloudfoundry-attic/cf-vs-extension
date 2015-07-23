@@ -63,6 +63,7 @@
                 type);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "See comment")]
         private static void WriteToLog(string message, EventLogEntryType type)
         {
             try

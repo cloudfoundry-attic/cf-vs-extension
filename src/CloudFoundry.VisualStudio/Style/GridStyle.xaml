@@ -11,6 +11,6 @@
     </Style>
     
     <Style TargetType="Grid">
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.BackgroundKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.BackgroundKey}}"/>
     </Style>
 </ResourceDictionary>

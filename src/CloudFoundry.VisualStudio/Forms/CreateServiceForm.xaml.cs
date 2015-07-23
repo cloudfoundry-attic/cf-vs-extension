@@ -1,24 +1,24 @@
-﻿using CloudFoundry.CloudController.V2.Client;
-using CloudFoundry.CloudController.V2.Client.Data;
-using CloudFoundry.VisualStudio.ProjectPush;
-using Microsoft.VisualStudio.PlatformUI;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
-namespace CloudFoundry.VisualStudio.Forms
+﻿namespace CloudFoundry.VisualStudio.Forms
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Windows;
+    using System.Windows.Controls;
+    using System.Windows.Data;
+    using System.Windows.Documents;
+    using System.Windows.Input;
+    using System.Windows.Media;
+    using System.Windows.Media.Imaging;
+    using System.Windows.Shapes;
+    using CloudFoundry.CloudController.V2.Client;
+    using CloudFoundry.CloudController.V2.Client.Data;
+    using CloudFoundry.VisualStudio.ProjectPush;
+    using Microsoft.VisualStudio.PlatformUI;
+
     /// <summary>
     /// Interaction logic for CreateService.xaml
     /// </summary>
@@ -26,14 +26,14 @@ namespace CloudFoundry.VisualStudio.Forms
     {
         private CloudFoundryClient client;
         private Guid spaceGuid;
-        public CreateServiceForm(CloudFoundryClient cfclient, Guid workingSpaceGuid)
+
+        public CreateServiceForm(CloudFoundryClient client, Guid workingSpace)
         {
-            this.client = cfclient;
-            this.spaceGuid = workingSpaceGuid;
-            InitializeComponent();
+            this.client = client;
+            this.spaceGuid = workingSpace;
+            this.InitializeComponent();
             this.DataContext = new ServiceInstanceEditorResource(client);
             this.InfoMessage.Text = string.Empty;
-
         }
 
         private async void Wizard_Finish(object sender, RoutedEventArgs e)
@@ -54,7 +54,7 @@ namespace CloudFoundry.VisualStudio.Forms
                 request.ServicePlanGuid = viewModel.SelectedServicePlan.ToGuid();
                 request.SpaceGuid = this.spaceGuid;
 
-                await client.ServiceInstances.CreateServiceInstance(request);
+                await this.client.ServiceInstances.CreateServiceInstance(request);
 
                 this.DialogResult = true;
                 this.Close();

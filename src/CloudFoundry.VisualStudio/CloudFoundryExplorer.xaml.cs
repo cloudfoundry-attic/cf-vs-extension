@@ -26,6 +26,37 @@
             this.ReloadTargets();
         }
 
+        private static SortedList<string, object> GetItemList(CloudItem item)
+        {
+            var list = new SortedList<string, object>();
+            if (item == null)
+            {
+                return list;
+            }
+
+            PropertyInfo[] properties = item.GetType().GetProperties();
+            foreach (PropertyInfo pi in properties)
+            {
+                var browsable = pi.GetCustomAttribute<BrowsableAttribute>();
+                if ((browsable != null) && (!browsable.Browsable))
+                {
+                    continue;
+                }
+
+                var displayName = pi.GetCustomAttribute<DisplayNameAttribute>();
+                if (displayName != null)
+                {
+                    list.Add(displayName.DisplayName, pi.GetValue(item, null));
+                }
+                else
+                {
+                    list.Add(pi.Name, pi.GetValue(item, null));
+                }
+            }
+
+            return list;
+        }
+
         private void TreeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
@@ -83,7 +114,7 @@
             CloudItem item = e.NewValue as CloudItem;
             if (item != null)
             {
-                ListView.ItemsSource = this.GetItemList(item);
+                ListView.ItemsSource = GetItemList(item);
             }
         }
 
@@ -99,7 +130,7 @@
 
         private void AddTargetButton_Click(object sender, RoutedEventArgs e)
         {
-            var loginForm = new LoginForm();
+            var loginForm = new LogOnForm();
 
             var result = loginForm.ShowDialog();
 
@@ -134,37 +165,6 @@
             {
                 selectedItem.RefreshChildren().Forget();
             }
-        }
-
-        private SortedList<string, object> GetItemList(CloudItem item)
-        {
-            var list = new SortedList<string, object>();
-            if (item == null)
-            {
-                return list;
-            }
-
-            PropertyInfo[] properties = item.GetType().GetProperties();
-            foreach (PropertyInfo pi in properties)
-            {
-                var browsable = pi.GetCustomAttribute<BrowsableAttribute>();
-                if ((browsable != null) && (!browsable.Browsable))
-                {
-                    continue;
-                }
-
-                var displayName = pi.GetCustomAttribute<DisplayNameAttribute>();
-                if (displayName != null)
-                {
-                    list.Add(displayName.DisplayName, pi.GetValue(item, null));
-                }
-                else
-                {
-                    list.Add(pi.Name, pi.GetValue(item, null));
-                }
-            }
-
-            return list;
         }
 
         private void OnSortClick(object sender, RoutedEventArgs e)

@@ -11,7 +11,7 @@
                 <ControlTemplate>
                     <Ellipse Margin="2"
                              RenderOptions.EdgeMode="Aliased"
-                             Stroke="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}"
+                             Stroke="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}"
                              StrokeThickness="1"
                              StrokeDashArray="1 2" />
                 </ControlTemplate>
@@ -25,7 +25,7 @@
                 <ControlTemplate>
                     <Rectangle Margin="2"
                                RenderOptions.EdgeMode="Aliased"
-                               Stroke="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}"
+                               Stroke="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}"
                                StrokeThickness="1"
                                StrokeDashArray="1 1" />
                 </ControlTemplate>
@@ -34,7 +34,7 @@
     </Style>
 
     <Style x:Key="IconPath" TargetType="{x:Type Path}">
-        <Setter Property="Fill" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
+        <Setter Property="Fill" Value="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}" />
         <Setter Property="MaxWidth" Value="10" />
         <Setter Property="MaxHeight" Value="10" />
         <Setter Property="Margin" Value="3" />
@@ -42,41 +42,41 @@
     </Style>
 
     <Style TargetType="{x:Type Control}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundKey}}" />
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ControlForegroundKey}}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ControlForegroundKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderKey}}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisualStyle}" />
         <Style.Triggers>
             <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderSelectedKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderSelectedKey}}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundHoverKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundHoverKey}}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundDisabledKey}}" />
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ControlForegroundDisabledKey}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderDisabledKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundDisabledKey}}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ControlForegroundDisabledKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderDisabledKey}}" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <!-- This style should match Control as much as possible -->
     <Style x:Key="ControlLike" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundKey}}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderKey}}" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundKey}}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderKey}}" />
         <Setter Property="BorderThickness" Value="1" />
         <Style.Triggers>
             <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderSelectedKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderSelectedKey}}" />
             </Trigger>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundHoverKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundHoverKey}}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundDisabledKey}}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderDisabledKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundDisabledKey}}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderDisabledKey}}" />
             </Trigger>
         </Style.Triggers>
     </Style>

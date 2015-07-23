@@ -1,0 +1,25 @@
+<Dictionary>
+  <Words>
+	  <Recognized>
+		  <Word>IgnoreSSLErrors</Word>
+		  <Word>SkipSSLErrors</Word>
+		  <Word>IgnoreSSLErrors</Word>
+		  <Word>Helion</Word>
+		  <Word>CloudFoundry</Word>
+		  <Word>DataContext</Word>
+		  <Word>PublishProfileEditorResources</Word>
+		  <Word>OneWay</Word>
+		  <Word>nuget</Word>
+	  </Recognized>
+	  <DiscreteExceptions>
+		  <Term>CloudFoundry</Term>
+	  </DiscreteExceptions>
+  </Words>
+  <Acronyms>
+	  <CasingExceptions>
+		  <Acronym>SSL</Acronym>
+		  <Acronym>UAA</Acronym>         
+		  <Acronym>SHA</Acronym>         
+	  </CasingExceptions>      
+  </Acronyms>
+</Dictionary>

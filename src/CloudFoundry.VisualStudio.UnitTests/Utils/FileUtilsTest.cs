@@ -18,7 +18,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.Utils
             string toPath = @"c:\path\";
 
             //Act
-            string relativePath = FileUtils.GetRelativePath(fromPath, toPath);
+            string relativePath = FileUtilities.GetRelativePath(fromPath, toPath);
 
             //Assert
             Assert.AreEqual(relativePath, @"..\");
@@ -34,7 +34,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.Utils
             string toPath = @"c:\path\to";
 
             //Act
-            string relativePath = FileUtils.GetRelativePath(fromPath, toPath);
+            string relativePath = FileUtilities.GetRelativePath(fromPath, toPath);
 
             //Assert
             Assert.AreEqual(relativePath, @"to");
@@ -49,7 +49,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.Utils
             string toPath = @"c:\path\to";
 
             //Act
-            string relativePath = FileUtils.GetRelativePath(fromPath, toPath);
+            string relativePath = FileUtilities.GetRelativePath(fromPath, toPath);
 
             //Assert
             Assert.AreEqual(relativePath, toPath);
@@ -63,7 +63,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.Utils
             string toPath = @"";
 
             //Act
-            string relativePath = FileUtils.GetRelativePath(fromPath, toPath);
+            string relativePath = FileUtilities.GetRelativePath(fromPath, toPath);
 
             //Assert
             Assert.AreEqual(relativePath, fromPath);
@@ -77,7 +77,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.Utils
             string toPath = @"c:\path\to";
 
             //Act
-            string relativePath = FileUtils.GetRelativePath(fromPath, toPath);
+            string relativePath = FileUtilities.GetRelativePath(fromPath, toPath);
 
             //Assert
             Assert.AreEqual(relativePath, string.Empty);

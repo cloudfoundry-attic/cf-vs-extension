@@ -22,12 +22,12 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ListItemHoverBackgroundKey}}" />
-                            <Setter TargetName="ContentLabel" Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ListItemHoverForegroundKey}}" />
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ListItemHoverBackgroundKey}}" />
+                            <Setter TargetName="ContentLabel" Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ListItemHoverForegroundKey}}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="true">
-                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ListItemSelectedBackgroundKey}}" />
-                            <Setter TargetName="ContentLabel" Property="Foreground" Value="{DynamicResource {x:Static wpf:Controls.ListItemSelectedForegroundKey}}" />
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ListItemSelectedBackgroundKey}}" />
+                            <Setter TargetName="ContentLabel" Property="Foreground" Value="{DynamicResource {x:Static wpf:ControlColors.ListItemSelectedForegroundKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -42,7 +42,7 @@
 
 
     <Style x:Key="EditableTextBoxStyle" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type Control}}">
-        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static wpf:Controls.ForegroundKey}}" />
+        <Setter Property="CaretBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ForegroundKey}}" />
         <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -87,10 +87,10 @@
                                PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}"
                                Placement="Bottom">
                             <Border x:Name="DropDownBorder"
-                                    BorderBrush="{DynamicResource {x:Static wpf:Controls.ComboBoxPopupBorderKey}}"
+                                    BorderBrush="{DynamicResource {x:Static wpf:ControlColors.ComboBoxPopupBorderKey}}"
                                     BorderThickness="1"
-                                    Background="{DynamicResource {x:Static wpf:Controls.ComboBoxPopupBackgroundKey}}"
-                                    TextElement.Foreground="{DynamicResource {x:Static wpf:Controls.ComboBoxPopupForegroundKey}}"
+                                    Background="{DynamicResource {x:Static wpf:ControlColors.ComboBoxPopupBackgroundKey}}"
+                                    TextElement.Foreground="{DynamicResource {x:Static wpf:ControlColors.ComboBoxPopupForegroundKey}}"
                                     MaxHeight="{TemplateBinding MaxDropDownHeight}"
                                     MinWidth="{Binding ActualWidth, ElementName=templateRoot}">
                                 <ScrollViewer x:Name="DropDownScrollViewer">
@@ -173,10 +173,10 @@
                                 <Condition Property="IsMouseOver" Value="True" />
                                 <Condition Property="IsEditable" Value="True" />
                             </MultiTrigger.Conditions>
-                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderHoverKey}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderHoverKey}}" />
                         </MultiTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundHoverKey}}" />
+                            <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundHoverKey}}" />
                         </Trigger>
                         <Trigger Property="HasItems" Value="False">
                             <Setter Property="Height" TargetName="DropDownBorder" Value="95" />
@@ -191,8 +191,8 @@
                                     Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}" />
                         </Trigger>
                         <Trigger Property="IsDropDownOpen" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource {x:Static wpf:Controls.ControlBackgroundKey}}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:Controls.ControlBorderPressedKey}}" />
+                            <Setter Property="Background" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBackgroundKey}}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static wpf:ControlColors.ControlBorderPressedKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

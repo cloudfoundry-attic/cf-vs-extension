@@ -22,10 +22,8 @@
 
         </ResourceDictionary>
     </ui:DialogWindow.Resources>
-    <!--<xctk:BusyIndicator IsBusy="{Binding Refreshing}" BusyContent="{Binding RefreshMessage}">
-    </xctk:BusyIndicator>-->
-
-    <xctk:Wizard x:Name="wizardPush" Cancel="wizardPush_Cancel" FinishButtonClosesWindow="True" Finish="wizardPush_Finish" CancelButtonClosesWindow="False">
+  
+    <xctk:Wizard x:Name="wizardPush" Cancel="WizardPush_Cancel" FinishButtonClosesWindow="True" Finish="WizardPush_Finish" CancelButtonClosesWindow="False">
             <xctk:WizardPage x:Name="TargetPage" PageType= "Interior"
                          Title="Target"
                          Description="Cloud Foundry target.">
@@ -78,7 +76,7 @@
                          Title="Environment Variables"
                          Description="Application environment variables settings."
                          CanFinish="True">
-            <Controls:EnvVarsUserControl x:Name="ucEnvVars" />
+            <Controls:EnvironmentVariablesUserControl x:Name="ucEnvVars" />
         </xctk:WizardPage>
     </xctk:Wizard>
 </ui:DialogWindow>

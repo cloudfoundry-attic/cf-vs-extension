@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Globalization;
     using System.IO;
@@ -9,35 +10,34 @@
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Xml;
     using System.Xml.Serialization;
-    using CloudFoundry.VisualStudio.Forms;
-    using EnvDTE;
-    using CloudFoundry.Manifests;
-    using CloudFoundry.Manifests.Models;
     using CloudFoundry.CloudController.V2.Client;
     using CloudFoundry.CloudController.V2.Client.Data;
-    using System.Collections.ObjectModel;
-    using CloudFoundry.VisualStudio.TargetStore;
+    using CloudFoundry.Manifests;
+    using CloudFoundry.Manifests.Models;
     using CloudFoundry.UAA;
-    using System.Threading;
-    using Microsoft.VisualStudio.Threading;
+    using CloudFoundry.VisualStudio.Forms;
+    using CloudFoundry.VisualStudio.TargetStore;
+    using EnvDTE;
     using Microsoft.VisualStudio.ComponentModelHost;
+    using Microsoft.VisualStudio.Threading;
     using NuGet.VisualStudio;
 
-
-    [ComVisible(true)]
     [Serializable, XmlRoot("PropertyGroup", Namespace = "http://schemas.microsoft.com/developer/msbuild/2003")]
     public class PublishProfile : INotifyPropertyChanged
     {
         private string path;
+        [NonSerialized]
         private XmlSerializerNamespaces namespaces = null;
 
         private string user;
         private string password;
         private bool savedPassword;
         private string refreshToken;
+        [NonSerialized]
         private XmlUri serverUri;
         private bool skipSSLValidation;
         private string organization;
@@ -47,8 +47,18 @@
         private string manifest;
         private string name = string.Empty;
         private string version;
+        [NonSerialized]
         private PushEnvironment environment;
 
+        private PublishProfile()
+        {
+            this.namespaces = new XmlSerializerNamespaces(new XmlQualifiedName[] 
+            {
+                new XmlQualifiedName(string.Empty, "http://schemas.microsoft.com/developer/msbuild/2003")
+            });
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         [XmlIgnore]
         public string Path
@@ -68,12 +78,14 @@
                 {
                     this.name = this.GetProfileName();
                 }
+
                 return this.name;
             }
+
             set
             {
                 this.name = value;
-                RaisePropertyChangedEvent("Name");
+                this.RaisePropertyChangedEvent("Name");
             }
         }
 
@@ -84,10 +96,11 @@
             {
                 return this.user;
             }
+
             set
             {
                 this.user = value;
-                RaisePropertyChangedEvent("User");
+                this.RaisePropertyChangedEvent("User");
             }
         }
 
@@ -98,10 +111,11 @@
             {
                 return this.password;
             }
+
             set
             {
                 this.password = value;
-                RaisePropertyChangedEvent("Password");
+                this.RaisePropertyChangedEvent("Password");
             }
         }
 
@@ -112,10 +126,11 @@
             {
                 return this.savedPassword;
             }
+
             set
             {
                 this.savedPassword = value;
-                RaisePropertyChangedEvent("SavedPassword");
+                this.RaisePropertyChangedEvent("SavedPassword");
             }
         }
 
@@ -126,10 +141,11 @@
             {
                 return this.refreshToken;
             }
+
             set
             {
                 this.refreshToken = value;
-                RaisePropertyChangedEvent("RefreshToken");
+                this.RaisePropertyChangedEvent("RefreshToken");
             }
         }
 
@@ -140,10 +156,11 @@
             {
                 return this.serverUri;
             }
+
             set
             {
                 this.serverUri = value;
-                RaisePropertyChangedEvent("ServerUri");
+                this.RaisePropertyChangedEvent("ServerUri");
             }
         }
 
@@ -154,10 +171,11 @@
             {
                 return this.skipSSLValidation;
             }
+
             set
             {
                 this.skipSSLValidation = value;
-                RaisePropertyChangedEvent("SkipSSLValidation");
+                this.RaisePropertyChangedEvent("SkipSSLValidation");
             }
         }
 
@@ -168,10 +186,11 @@
             {
                 return this.organization;
             }
+
             set
             {
                 this.organization = value;
-                RaisePropertyChangedEvent("Organization");
+                this.RaisePropertyChangedEvent("Organization");
             }
         }
 
@@ -182,10 +201,11 @@
             {
                 return this.space;
             }
+
             set
             {
                 this.space = value;
-                RaisePropertyChangedEvent("Space");
+                this.RaisePropertyChangedEvent("Space");
             }
         }
 
@@ -196,10 +216,11 @@
             {
                 return this.deployTargetFile;
             }
+
             set
             {
                 this.deployTargetFile = value;
-                RaisePropertyChangedEvent("DeployTargetFile");
+                this.RaisePropertyChangedEvent("DeployTargetFile");
             }
         }
 
@@ -210,10 +231,11 @@
             {
                 return this.webPublishMethod;
             }
+
             set
             {
                 this.webPublishMethod = value;
-                RaisePropertyChangedEvent("WebPublishMethod");
+                this.RaisePropertyChangedEvent("WebPublishMethod");
             }
         }
 
@@ -224,10 +246,11 @@
             {
                 return this.manifest;
             }
+
             set
             {
                 this.manifest = value;
-                RaisePropertyChangedEvent("Manifest");
+                this.RaisePropertyChangedEvent("Manifest");
             }
         }
 
@@ -238,10 +261,11 @@
             {
                 return this.version;
             }
+
             set
             {
                 this.version = value;
-                RaisePropertyChangedEvent("Version");
+                this.RaisePropertyChangedEvent("Version");
             }
         }
 
@@ -279,18 +303,135 @@
             }
         }
 
+        /// <summary>
+        /// Loads the specified publish profile for the specified project.
+        /// </summary>
+        /// <param name="project">The Visual Studio EnvDTE project. Cannot be null.</param>
+        /// <param name="path">Absolute path to the publish profile to load. If the file does not exist, defaults will be loaded for the object.</param>
+        /// <returns>A new SelectedPublishProfile.</returns>
+        /// <exception cref="System.ArgumentNullException">project</exception>
+        public static PublishProfile Load(PushEnvironment pushEnvironment)
+        {
+            PublishProfile publishProfile = null;
+
+            if (pushEnvironment == null)
+            {
+                throw new InvalidOperationException("Push environment cannot be null");
+            }
+
+            try
+            {
+                if (File.Exists(pushEnvironment.ProfileFilePath))
+                {
+                    // If the file exists, we load it
+                    XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile));
+
+                    using (XmlReader xmlReader = XmlReader.Create(pushEnvironment.ProfileFilePath))
+                    {
+                        xmlReader.ReadToDescendant("PropertyGroup");
+                        publishProfile = (PublishProfile)serializer.Deserialize(xmlReader.ReadSubtree());
+                    }
+                }
+                else
+                {
+                    // If the file does not exist, we set defaults
+                    publishProfile = new PublishProfile()
+                    {
+                        Organization = string.Empty,
+                        Password = null,
+                        RefreshToken = null,
+                        SavedPassword = true,
+                        ServerUri = null,
+                        SkipSSLValidation = false,
+                        Space = string.Empty,
+                        User = string.Empty,
+                        DeployTargetFile = null,
+                        WebPublishMethod = "CloudFoundry"
+                    };
+                }
+
+                publishProfile.path = pushEnvironment.ProfileFilePath;
+                publishProfile.environment = pushEnvironment;
+                publishProfile.LoadManifest();
+            }
+            catch (Exception ex)
+            {
+                throw new VisualStudioException("Error loading profile", ex);
+            }
+
+            return publishProfile;
+        }
+
+        /// <summary>
+        /// Writes this instance as XML in the publish profile file.
+        /// It also writes the Application manifest to its corresponding YAML file.
+        /// </summary>
+        public void Save()
+        {
+            var profileDir = System.IO.Directory.GetParent(this.environment.ProfileFilePath).FullName;
+
+            if (string.IsNullOrWhiteSpace(this.name))
+            {
+                this.name = PushEnvironment.DefaultProfileName;
+            }
+
+            this.path = System.IO.Path.Combine(profileDir, string.Format(CultureInfo.InvariantCulture, "{0}{1}", this.name, PushEnvironment.Extension));
+
+            this.SaveManifest();
+
+            this.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(this.path));
+
+            XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile), new XmlRootAttribute("PropertyGroup") { Namespace = "http://schemas.microsoft.com/developer/msbuild/2003" });
+
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = true;
+
+            using (StringWriter textWriter = new StringWriter(System.Globalization.CultureInfo.InvariantCulture))
+            {
+                using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings))
+                {
+                    xmlWriter.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
+                    xmlWriter.WriteAttributeString("ToolsVersion", "4.0");
+
+                    // Import cf-msbuild-tasks
+                    xmlWriter.WriteStartElement("Import");
+                    xmlWriter.WriteAttributeString("Project", this.environment.TargetFilePath);
+                    xmlWriter.WriteEndElement();
+
+                    serializer.Serialize(xmlWriter, this, this.Namespaces);
+
+                    xmlWriter.WriteEndElement();
+                }
+
+                File.WriteAllText(this.path, textWriter.ToString());
+            }
+
+            if (this.environment.IsProjectWebsite)
+            {
+                this.SaveWebsiteProject();
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is a helper method that raises an event")]
+        protected void RaisePropertyChangedEvent(string propertyName)
+        {
+            var handler = this.PropertyChanged;
+
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         private string CalculateManifestRelativeLocation()
         {
-            return FileUtils.GetRelativePath(FileUtils.PathAddBackslash(this.environment.ProjectDirectory), this.ManifestAbsoluteSavePath);
+            return FileUtilities.GetRelativePath(FileUtilities.PathAddBackslash(this.environment.ProjectDirectory), this.ManifestAbsoluteSavePath);
         }
 
-        private PublishProfile()
-        {
-            this.namespaces = new XmlSerializerNamespaces(new XmlQualifiedName[] {
-                new XmlQualifiedName(string.Empty, "http://schemas.microsoft.com/developer/msbuild/2003")
-            });
-        }
-
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase", Justification = "Cloud controller has issues with upper case routes")]
         private void LoadManifest()
         {
             if (string.IsNullOrWhiteSpace(this.manifest))
@@ -300,18 +441,18 @@
 
             if (File.Exists(this.ManifestAbsoluteSavePath))
             {
-                var manifest = ManifestDiskRepository.ReadManifest(this.ManifestAbsoluteSavePath);
+                var manifestInfo = ManifestDiskRepository.ReadManifest(this.ManifestAbsoluteSavePath);
 
-                if (manifest.Applications().Count() > 1)
+                if (manifestInfo.Applications().Count() > 1)
                 {
                     throw new FileFormatException("Invalid CloudFoundry manifest file: more than one application is configured.");
                 }
-                else if (manifest.Applications().Count() < 1)
+                else if (manifestInfo.Applications().Count() < 1)
                 {
                     throw new FileFormatException("Invalid CloudFoundry manifest file: there is no application configured.");
                 }
 
-                this.Application = manifest.Applications().First();
+                this.Application = manifestInfo.Applications().First();
             }
             else
             {
@@ -340,59 +481,11 @@
             CloudFoundry.Manifests.Manifest.Save(new Application[] { this.Application }, this.ManifestAbsoluteSavePath);
         }
 
-        /// <summary>
-        /// Loads the specified publish profile for the specified project.
-        /// </summary>
-        /// <param name="project">The Visual Studio EnvDTE project. Cannot be null.</param>
-        /// <param name="path">Absolute path to the publish profile to load. If the file does not exist, defaults will be loaded for the object.</param>
-        /// <returns>A new SelectedPublishProfile.</returns>
-        /// <exception cref="System.ArgumentNullException">project</exception>
-        public static PublishProfile Load(PushEnvironment pushEnvironment)
-        {
-
-            PublishProfile publishProfile = null;
-
-            if (File.Exists(pushEnvironment.ProfileFilePath))
-            {
-                // If the file exists, we load it
-                XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile));
-
-                using (XmlReader xmlReader = XmlReader.Create(pushEnvironment.ProfileFilePath))
-                {
-                    xmlReader.ReadToDescendant("PropertyGroup");
-                    publishProfile = (PublishProfile)serializer.Deserialize(xmlReader.ReadSubtree());
-                }
-            }
-            else
-            {
-                // If the file does not exist, we set defaults
-                publishProfile = new PublishProfile()
-                {
-                    Organization = string.Empty,
-                    Password = null,
-                    RefreshToken = null,
-                    SavedPassword = true,
-                    ServerUri = null,
-                    SkipSSLValidation = false,
-                    Space = string.Empty,
-                    User = string.Empty,
-                    DeployTargetFile = null,
-                    WebPublishMethod = "CloudFoundry"
-                };
-            }
-        
-            publishProfile.path = pushEnvironment.ProfileFilePath;
-            publishProfile.environment = pushEnvironment;
-            publishProfile.LoadManifest();
-
-            return publishProfile;
-        }
-
         private void SaveWebsiteProject()
         {
-            string cfprojPath = System.IO.Path.Combine(this.environment.ProjectDirectory, PushEnvironment.DefaultWebsiteProjName);
+            string cfprojPath = System.IO.Path.Combine(this.environment.ProjectDirectory, PushEnvironment.DefaultWebsiteProjectName);
 
-            if(File.Exists(cfprojPath))
+            if (File.Exists(cfprojPath))
             {
                 return;
             }
@@ -427,72 +520,6 @@
             }
         }
 
-        /// <summary>
-        /// Writes this instance as XML in the publish profile file.
-        /// It also writes the Application manifest to its corresponding YAML file.
-        /// </summary>
-        public void Save()
-        {
-            var profileDir = System.IO.Directory.GetParent(this.environment.ProfileFilePath).FullName;
-
-            if (string.IsNullOrWhiteSpace(this.name))
-            {
-                this.name = PushEnvironment.DefaultProfileName;
-            }
-
-            this.path = System.IO.Path.Combine(profileDir, string.Format(CultureInfo.InvariantCulture, "{0}{1}", this.name, PushEnvironment.Extension));
-
-            SaveManifest();
-
-            this.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
-            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(this.path));
-
-            XmlSerializer serializer = new XmlSerializer(typeof(PublishProfile),
-                    new XmlRootAttribute("PropertyGroup") { Namespace = "http://schemas.microsoft.com/developer/msbuild/2003" });
-
-            XmlWriterSettings settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.OmitXmlDeclaration = true;
-
-            using (StringWriter textWriter = new StringWriter(System.Globalization.CultureInfo.InvariantCulture))
-            {
-                using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings))
-                {
-                    xmlWriter.WriteStartElement("Project", "http://schemas.microsoft.com/developer/msbuild/2003");
-                    xmlWriter.WriteAttributeString("ToolsVersion", "4.0");
-
-                    // Import cf-msbuild-tasks
-                    xmlWriter.WriteStartElement("Import");
-                    xmlWriter.WriteAttributeString("Project", this.environment.TargetFilePath);
-                    xmlWriter.WriteEndElement();
-
-                    serializer.Serialize(xmlWriter, this, this.Namespaces);
-
-                    xmlWriter.WriteEndElement();
-                }
-
-                File.WriteAllText(this.path, textWriter.ToString());
-            }
-
-            if (this.environment.IsProjectWebsite)
-            {
-                SaveWebsiteProject();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void RaisePropertyChangedEvent(string propertyName)
-        {
-            var handler = PropertyChanged;
-
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
         private string GetProfileName()
         {
             if (string.IsNullOrWhiteSpace(this.path))
@@ -501,7 +528,7 @@
             }
 
             string fullFileName = System.IO.Path.GetFileName(this.path);
-            if (!fullFileName.EndsWith(PushEnvironment.Extension, StringComparison.InvariantCultureIgnoreCase))
+            if (!fullFileName.EndsWith(PushEnvironment.Extension, StringComparison.OrdinalIgnoreCase))
             {
                 return string.Empty;
             }
