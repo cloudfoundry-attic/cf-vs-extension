@@ -32,6 +32,8 @@
         public LogOnForm()
         {
             this.InitializeComponent();
+            this.InfoSpinner.Visibility = System.Windows.Visibility.Hidden;
+            this.InfoMessage.Text = string.Empty;
             this.DataContext = new ErrorResource();
         }
 
@@ -45,7 +47,8 @@
 
         private async void BtnFinish_Click(object sender, RoutedEventArgs e)
         {
-            this.busyIndicator.IsBusy = true;
+            this.InfoSpinner.Visibility = System.Windows.Visibility.Visible;
+            this.InfoMessage.Text = "Checking cloud connectivity...";
             var targetUrl = this.tbUrl.Text;
 
             var errorResource = this.DataContext as ErrorResource;
@@ -81,13 +84,13 @@
             }
             catch (Exception ex)
             {
+                this.InfoSpinner.Visibility = System.Windows.Visibility.Hidden;
+                this.InfoMessage.Text = string.Empty;
                 var errorMessages = new List<string>();
                 ErrorFormatter.FormatExceptionMessage(ex, errorMessages);
                 errorResource.ErrorMessage = string.Join(Environment.NewLine, errorMessages.ToArray());
                 errorResource.HasErrors = true;
             }
-
-            this.busyIndicator.IsBusy = false;
         }
 
         private void TbUrl_LostFocus(object sender, RoutedEventArgs e)
