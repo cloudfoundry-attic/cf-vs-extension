@@ -65,6 +65,10 @@
                           DisplayMemberPath="Name" SelectedValuePath="EntityMetadata.Guid" SelectedValue="{Binding SelectedServicePlan}" 
                           IsEnabled="{Binding RefreshingServiceInformations, Converter={StaticResource InverseBoolean}}"></ComboBox>
 
+                <Image Grid.Row="6" Grid.Column="0" Stretch="Fill" HorizontalAlignment="Right" Name="InfoSpinner"
+                       Source="{StaticResource LoadingImage}" Margin="0,0,5,0" Style="{StaticResource Spinner}">
+                </Image>
+
                 <TextBox Name="InfoMessage" Grid.Row="6" Grid.Column="1" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" BorderBrush="Transparent"></TextBox>
                 
                 <TextBox Grid.Row="7" Grid.Column="1" IsReadOnly="True" TextWrapping="Wrap" 
