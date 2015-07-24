@@ -164,7 +164,8 @@
         {
             try
             {
-                PushEnvironment environment = new PushEnvironment();
+                var selectedProject = VsUtils.GetSelectedProject();
+                PushEnvironment environment = new PushEnvironment(selectedProject);
                 var package = PublishProfile.Load(environment);
 
                 var dialog = new PushDialog(package);
@@ -174,7 +175,7 @@
             {
                 MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "Error loading publish profile {0}", ex.Message));
                 Logger.Error("Error loading publish profile", ex);
-            }   
+            }
             catch (Exception ex)
             {
                 MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "An error occurred while trying to load a publish profile {0}", ex.Message));

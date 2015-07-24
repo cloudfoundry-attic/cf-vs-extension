@@ -22,7 +22,8 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         public void LoadExistingProfileTest()
         {
             // Arrange
-            PushEnvironment environment = new PushEnvironment();
+            var selectedProject = VsUtils.GetSelectedProject();
+            PushEnvironment environment = new PushEnvironment(selectedProject);
             environment.ProjectDirectory = Util.PublishProfileProjectDir;
             environment.ProfileFilePath = Util.PublishProfilePath;
             environment.ProjectName = "foobar-project";
@@ -47,7 +48,8 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         public void LoadExistingManifestTest()
         {
             // Arrange
-            PushEnvironment environment = new PushEnvironment();
+            var selectedProject = VsUtils.GetSelectedProject();
+            PushEnvironment environment = new PushEnvironment(selectedProject);
             environment.ProjectDirectory = Util.PublishProfileProjectDir;
             environment.ProfileFilePath = Util.PublishProfilePath;
             environment.ProjectName = "foobar-project";
@@ -80,7 +82,8 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         public void LoadNonExistingProfile()
         {
             // Arrange
-            PushEnvironment environment = new PushEnvironment();
+            var selectedProject = VsUtils.GetSelectedProject();
+            PushEnvironment environment = new PushEnvironment(selectedProject);
             environment.ProjectDirectory = @"c:\somedirthatdoesntexist\";
             environment.ProfileFilePath = @"c:\foo-bar.cf.pubxml";
             environment.ProjectName = "foo-bar";
@@ -105,7 +108,8 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
         public void LoadNonExistingManifest()
         {
             // Arrange
-            PushEnvironment environment = new PushEnvironment();
+            var selectedProject = VsUtils.GetSelectedProject();
+            PushEnvironment environment = new PushEnvironment(selectedProject);
             environment.ProjectDirectory = @"c:\somedirthatdoesntexist";
             environment.ProfileFilePath = @"c:\foo-bar.cf.pubxml";
             environment.ProjectName = "foo-bar";
@@ -138,7 +142,8 @@ namespace CloudFoundry.VisualStudio.UnitTests.PublishProfileTest
             // Arrange
             string testProjectDir = Path.Combine(Path.GetTempPath(), string.Format("savetest-{0}\\", Guid.NewGuid().ToString("N")));
             Directory.CreateDirectory(testProjectDir);
-            PushEnvironment environment = new PushEnvironment();
+            var selectedProject = VsUtils.GetSelectedProject();
+            PushEnvironment environment = new PushEnvironment(selectedProject);
             environment.ProjectDirectory = testProjectDir;
 
 

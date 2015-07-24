@@ -46,7 +46,8 @@
             PublishProfile packageFile;
             try
             {
-                PushEnvironment environment = new PushEnvironment();
+                var selectedProject = VsUtils.GetSelectedProject();
+                PushEnvironment environment = new PushEnvironment(selectedProject);
                 environment.ProjectName = project.Name;
                 environment.ProfileFilePath = pszMkDocument;
 

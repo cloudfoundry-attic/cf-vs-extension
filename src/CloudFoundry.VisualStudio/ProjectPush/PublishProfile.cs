@@ -502,7 +502,7 @@
                     xmlWriter.WriteAttributeString("ToolsVersion", "4.0");
 
                     xmlWriter.WriteStartElement("PropertyGroup");
-                    
+
                     xmlWriter.WriteStartElement("SourceWebPhysicalPath");
                     xmlWriter.WriteValue(@"$(MSBuildThisFileDirectory)");
                     xmlWriter.WriteEndElement();
