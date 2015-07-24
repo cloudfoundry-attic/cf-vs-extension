@@ -16,32 +16,27 @@
 
     internal class VsUtils
     {
-        public static bool IsSelectedProjectWebsite
+        public static bool IsProjectWebsite(Project project)
         {
-            get
+            if (project != null)
             {
-                var project = VsUtils.GetSelectedProject();
-                if (project != null)
-                {
-                    return project.Object is VsWebSite.VSWebSite;
-                }
-                else
-                {
-                    return false;
-                }
+                return project.Object is VsWebSite.VSWebSite;
+            }
+            else
+            {
+                return false;
             }
         }
 
-        public static string GetPublishProfilePath()
+        public static string GetPublishProfilePath(Project project)
         {
-            var project = GetSelectedProject();
             IVsSolution solution = (IVsSolution)CloudFoundryVisualStudioPackage.GetGlobalService(typeof(IVsSolution));
             if (solution == null)
             {
                 return string.Empty;
             }
 
-            string projectFolder = GetProjectDirectory();
+            string projectFolder = GetProjectDirectory(project);
 
             IVsHierarchy hierarchy;
 
@@ -77,9 +72,8 @@
             return FileUtilities.PathAddBackslash(result);
         }
 
-        public static string GetProjectDirectory()
+        public static string GetProjectDirectory(Project project)
         {
-            var project = GetSelectedProject();
             DTE dte = (DTE)CloudFoundryVisualStudioPackage.GetGlobalService(typeof(DTE));
             if (dte == null)
             {

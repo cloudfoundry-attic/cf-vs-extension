@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using EnvDTE;
 
     public class PushEnvironment
     {
@@ -21,18 +22,17 @@
         private string projectName;
         private bool isProjectWebsite;
 
-        public PushEnvironment()
+        public PushEnvironment(Project project)
         {
-            this.targetFilePath = FileUtilities.GetRelativePath(VsUtils.GetPublishProfilePath(), VsUtils.GetTargetFile());
-            this.isProjectWebsite = VsUtils.IsSelectedProjectWebsite;
-
-            var project = VsUtils.GetSelectedProject();
+            var publishProfilePath = VsUtils.GetPublishProfilePath(project);
+            this.targetFilePath = FileUtilities.GetRelativePath(publishProfilePath, VsUtils.GetTargetFile());
+            this.isProjectWebsite = VsUtils.IsProjectWebsite(project);
 
             this.profileFilePath = Path.Combine(
-                VsUtils.GetPublishProfilePath(),
+                publishProfilePath,
                 string.Format(CultureInfo.InvariantCulture, "{0}{1}", DefaultProfileName, Extension));
 
-            this.projectDirectory = VsUtils.GetProjectDirectory();
+            this.projectDirectory = VsUtils.GetProjectDirectory(project);
 
             if (project != null)
             {

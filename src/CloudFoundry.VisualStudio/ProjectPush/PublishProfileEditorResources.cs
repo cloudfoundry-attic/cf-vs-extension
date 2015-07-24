@@ -76,7 +76,8 @@
                     {
                         try
                         {
-                            PushEnvironment env = new PushEnvironment();
+                            var selectedProject = VsUtils.GetSelectedProject();
+                            PushEnvironment env = new PushEnvironment(selectedProject);
                             env.ProfileFilePath = file.FullName;
                             var profile = PublishProfile.Load(env);
                             publishProfiles.Add(profile);
@@ -781,7 +782,7 @@ Please note that credentials are saved automatically in the Windows Credential M
             try
             {
                 this.LastRefreshTarget = PublishProfileRefreshTarget.Spaces;
-          
+
                 List<ListAllSpacesForOrganizationResponse> spacesList = new List<ListAllSpacesForOrganizationResponse>();
 
                 var org = this.orgs.FirstOrDefault(o => o.Name == this.selectedPublishProfile.Organization);
@@ -837,7 +838,7 @@ Please note that credentials are saved automatically in the Windows Credential M
             try
             {
                 this.LastRefreshTarget = PublishProfileRefreshTarget.ServiceInstances;
-            
+
                 List<ServiceInstanceSelection> serviceInstancesList = new List<ServiceInstanceSelection>();
 
                 var space = this.spaces.FirstOrDefault(s => s.Name == this.selectedPublishProfile.Space);
