@@ -140,6 +140,9 @@
 
                 if (target != null)
                 {
+                    CloudTargetManager.SaveTarget(target);
+                    CloudCredentialsManager.Save(target.TargetUrl, target.Email, loginForm.Credentials.Password);
+
                     this.ReloadTargets();
                 }
             }

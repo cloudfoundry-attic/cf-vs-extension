@@ -28,6 +28,7 @@
     {
         private string version = string.Empty;
         private CloudTarget cloudTarget = null;
+        private CloudCredentials credentials;
 
         public LogOnForm()
         {
@@ -42,6 +43,14 @@
             get
             {
                 return this.cloudTarget;
+            }
+        }
+
+        public CloudCredentials Credentials
+        {
+            get 
+            { 
+                return this.credentials; 
             }
         }
 
@@ -76,9 +85,7 @@
                             (bool)this.cbIgnoreSSK.IsChecked,
                             this.version);
 
-                CloudTargetManager.SaveTarget(this.cloudTarget);
-                CloudCredentialsManager.Save(this.cloudTarget.TargetUrl, this.cloudTarget.Email, this.pbPassword.Password);
-
+                this.credentials = creds;
                 this.DialogResult = true;
                 this.Close();
             }
