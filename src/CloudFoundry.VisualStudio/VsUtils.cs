@@ -28,6 +28,27 @@
             }
         }
 
+        public static object GetVisualStudioSetting(string category, string page, string propertyName)
+        {
+            DTE dte = (DTE)CloudFoundryVisualStudioPackage.GetGlobalService(typeof(DTE));
+
+            if (dte == null)
+            {
+                return null;
+            }
+
+            EnvDTE.Properties propertyList = dte.get_Properties(category, page);
+            foreach (EnvDTE.Property prop in propertyList)
+            {
+                if (prop.Name == propertyName)
+                {
+                    return prop.Value;
+                }
+            }
+
+            return null;
+        }
+
         public static string GetPublishProfilePath(Project project)
         {
             IVsSolution solution = (IVsSolution)CloudFoundryVisualStudioPackage.GetGlobalService(typeof(IVsSolution));

@@ -26,6 +26,16 @@
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "Tight coupling needed")]
         public static void Publish(EnvDTE.Project project, Dictionary<string, string> buildProperties, Microsoft.Build.Framework.LoggerVerbosity verbosity)
         {
+            if (project == null)
+            {
+                throw new ArgumentNullException("project");
+            }
+
+            if (buildProperties == null)
+            {
+                throw new ArgumentNullException("buildProperties");
+            }
+
             System.Threading.Tasks.Task.Factory.StartNew(() =>
             {
                 DTE dte = (DTE)CloudFoundryVisualStudioPackage.GetGlobalService(typeof(DTE));
@@ -39,6 +49,16 @@
                 if (pane == null)
                 {
                     pane = output.OutputWindowPanes.Add("Publish");
+                }
+
+                var showOutputWindowPropertyValue = VsUtils.GetVisualStudioSetting("Environment", "ProjectsAndSolution", "ShowOutputWindowBeforeBuild");
+
+                if (showOutputWindowPropertyValue != null)
+                {
+                    if ((bool)showOutputWindowPropertyValue == true)
+                    {
+                        window.Visible = true;
+                    }
                 }
 
                 pane.Activate();
