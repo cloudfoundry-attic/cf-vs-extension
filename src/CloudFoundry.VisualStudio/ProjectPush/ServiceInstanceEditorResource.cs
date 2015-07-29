@@ -190,7 +190,10 @@
                 var services = await client.Services.ListAllServices();
                 foreach (var service in services)
                 {
-                    OnUIThread(() => { ServiceTypes.Add(service); });
+                    if (service.Active == true)
+                    {
+                        OnUIThread(() => { ServiceTypes.Add(service); });
+                    }
                 }
 
                 var plans = await client.ServicePlans.ListAllServicePlans();
