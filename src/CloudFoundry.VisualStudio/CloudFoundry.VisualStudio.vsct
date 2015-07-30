@@ -73,6 +73,7 @@
 			<Parent guid="guidCloudFoundry_VisualStudioCmdSet" id="ProjectMenuGroup" />
 			<Icon guid="guidImages" id="pngPic1" />
 			<CommandFlag>TextChanges</CommandFlag>
+			<CommandFlag>DefaultInvisible</CommandFlag>
 			<CommandFlag>DynamicVisibility</CommandFlag>
 			<Strings>
 				<CommandName>cmdidButtonBuildAndPushProject</CommandName>
@@ -84,6 +85,7 @@
 			<Parent guid="guidCloudFoundry_VisualStudioCmdSet" id="WebMenuGroup" />
 			<Icon guid="guidImages" id="pngPic1" />
 			<CommandFlag>TextChanges</CommandFlag>
+			<CommandFlag>DefaultInvisible</CommandFlag>
 			<CommandFlag>DynamicVisibility</CommandFlag>
 			<Strings>
 				<CommandName>cmdidButtonBuildAndPushProject</CommandName>
