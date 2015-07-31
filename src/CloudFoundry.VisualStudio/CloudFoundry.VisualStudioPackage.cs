@@ -47,6 +47,7 @@
 
     [ProvideEditorFactory(typeof(PublishXmlEditorFactory), 101)]
     [ProvideEditorExtension(typeof(PublishXmlEditorFactory), ".pubxml", 100)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
 
     // Our Editor supports Find and Replace therefore we need to declare support for LOGVIEWID_TextView.
     // This attribute declares that your EditorPane class implements IVsCodeWindow interface
