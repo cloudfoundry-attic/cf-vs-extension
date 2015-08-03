@@ -160,7 +160,7 @@
             get
             {
                 return this.cloudItemType != CloudItemType.LoadingPlaceholder &&
-                    this.cloudItemType != CloudItemType.App &&
+                    this.cloudItemType != CloudItemType.AppFile &&
                     this.cloudItemType != CloudItemType.Route &&
                     this.cloudItemType != CloudItemType.Service &&
                     this.cloudItemType != CloudItemType.Error;

@@ -120,9 +120,17 @@
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
-            return await Task<CloudItem[]>.Run(() =>
+            return await Task<List<AppInstances>>.Run(() =>
             {
-                return new CloudItem[] { };
+                List<AppInstances> instancesList = new List<AppInstances>();
+
+                for (int i = 0; i < this.app.RunningInstances; i++)
+                {
+                    AppInstances item = new AppInstances(this.app, i, client);
+                    instancesList.Add(item);
+                }
+
+                return instancesList;
             });
         }
 
