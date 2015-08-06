@@ -15,15 +15,13 @@
         private readonly ICollection<GetAppSummaryResponse> appsSummary;
         private readonly RetrieveServicePlanResponse servicePlan;
         private readonly RetrieveServiceResponse systemService;
-        private readonly PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> serviceBindings;
         private CloudFoundryClient client;
 
         public Service(
-            ListAllServiceInstancesForSpaceResponse service, 
+            ListAllServiceInstancesForSpaceResponse service,
             ICollection<GetAppSummaryResponse> appsSummary,
-            RetrieveServicePlanResponse servicePlan, 
+            RetrieveServicePlanResponse servicePlan,
             RetrieveServiceResponse systemService,
-            PagedResponseCollection<ListAllServiceBindingsForServiceInstanceResponse> serviceBindings, 
             CloudFoundryClient client)
             : base(CloudItemType.Service)
         {
@@ -32,7 +30,6 @@
             this.appsSummary = appsSummary;
             this.servicePlan = servicePlan;
             this.systemService = systemService;
-            this.serviceBindings = serviceBindings;
         }
 
         public override string Text
@@ -116,7 +113,7 @@
                     new CloudItemAction(this, "Delete", Resources.Delete, this.Delete, CloudItemActionContinuation.RefreshParent)
                 };
             }
-        }      
+        }
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
@@ -128,20 +125,32 @@
 
         private async Task Delete()
         {
-            var answer = MessageBoxHelper.WarningQuestion(
-                string.Format(
-                CultureInfo.InvariantCulture,
-                "Are you sure you want to delete service '{0}'?",
-                this.service.Name));
-
-            if (answer == System.Windows.Forms.DialogResult.Yes)
+            try
             {
-                foreach (var serviceBinding in this.serviceBindings)
-                {
-                    await this.client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
-                }
+                this.EnableNodes(this.service.EntityMetadata.Guid, false);
+                var answer = MessageBoxHelper.WarningQuestion(
+                    string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Are you sure you want to delete service '{0}'?",
+                    this.service.Name));
 
-                await this.client.ServiceInstances.DeleteServiceInstance(this.service.EntityMetadata.Guid);
+                if (answer == System.Windows.Forms.DialogResult.Yes)
+                {
+                    var serviceBindings = await this.client.ServiceInstances.ListAllServiceBindingsForServiceInstance(this.service.EntityMetadata.Guid);
+                    if (serviceBindings.Properties.TotalResults != 0)
+                    {
+                        foreach (var serviceBinding in serviceBindings)
+                        {
+                            await this.client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
+                        }
+                    }
+
+                    await this.client.ServiceInstances.DeleteServiceInstance(this.service.EntityMetadata.Guid);
+                }
+            }
+            finally
+            {
+                this.EnableNodes(this.service.EntityMetadata.Guid, false);
             }
         }
     }

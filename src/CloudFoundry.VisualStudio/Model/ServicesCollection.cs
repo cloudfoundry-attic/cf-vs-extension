@@ -65,7 +65,7 @@
                     var servicePlan = await this.client.ServicePlans.RetrieveServicePlan(service.ServicePlanGuid);
                     var systemService = await this.client.Services.RetrieveService(servicePlan.ServiceGuid);
 
-                    result.Add(new Service(service, appsSummary, servicePlan, systemService, serviceBindings, this.client));
+                    result.Add(new Service(service, appsSummary, servicePlan, systemService, this.client));
                 }
 
                 services = await services.GetNextPage();

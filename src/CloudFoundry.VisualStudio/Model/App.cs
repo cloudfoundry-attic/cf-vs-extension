@@ -23,48 +23,48 @@
         }
 
         [Description("The buildpack of the application.")]
-        public string Buildpack 
-        { 
-            get { return this.app.Buildpack; } 
+        public string Buildpack
+        {
+            get { return this.app.Buildpack; }
         }
 
         [DisplayName("Detected buildpack")]
-        [Description("The buildpack that was detected by the Cloud Constroller.")]
-        public string DetectedBuildpack 
-        { 
-            get { return this.app.DetectedBuildpack; } 
+        [Description("The buildpack that was detected by the Cloud Controller.")]
+        public string DetectedBuildpack
+        {
+            get { return this.app.DetectedBuildpack; }
         }
 
         [Description("Number of instances that the application has.")]
-        public int? Instances 
-        { 
-            get { return this.app.Instances; } 
+        public int? Instances
+        {
+            get { return this.app.Instances; }
         }
 
         [Description("Number of running instances.")]
-        public int? RunningInstances 
-        { 
-            get { return this.app.RunningInstances;  } 
+        public int? RunningInstances
+        {
+            get { return this.app.RunningInstances; }
         }
 
         [DisplayName("Maximum memory")]
         [Description("Maximum memory of the application.")]
-        public int? Memory 
-        { 
-            get { return this.app.Memory; } 
+        public int? Memory
+        {
+            get { return this.app.Memory; }
         }
 
         [Description("The name of the application.")]
-        public string Name 
-        { 
-            get { return this.app.Name; } 
+        public string Name
+        {
+            get { return this.app.Name; }
         }
 
         [DisplayName("Last package update")]
         [Description("Date when the application's package was last updated.")]
-        public string CreationDate 
-        { 
-            get { return this.app.PackageUpdatedAt; } 
+        public string CreationDate
+        {
+            get { return this.app.PackageUpdatedAt; }
         }
 
         public override string Text
@@ -188,22 +188,31 @@
 
         private async Task Delete()
         {
-            var answer = MessageBoxHelper.WarningQuestion(
-                string.Format(
-                CultureInfo.InvariantCulture,
-                "Are you sure you want to delete application '{0}'? By deleting this application, all it's service bindings will be deleted.",
-                this.app.Name));
-
-            if (answer == System.Windows.Forms.DialogResult.Yes)
+            try
             {
-                var serviceBindings = await this.client.Apps.ListAllServiceBindingsForApp(this.app.Guid);
+                this.EnableNodes(this.app.Guid, false);
 
-                foreach (var serviceBinding in serviceBindings)
+                var answer = MessageBoxHelper.WarningQuestion(
+                    string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Are you sure you want to delete application '{0}'? By deleting this application, all it's service bindings will be deleted.",
+                    this.app.Name));
+
+                if (answer == System.Windows.Forms.DialogResult.Yes)
                 {
-                    await this.client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
-                }
+                    var serviceBindings = await this.client.Apps.ListAllServiceBindingsForApp(this.app.Guid);
 
-                await this.client.Apps.DeleteApp(this.app.Guid);
+                    foreach (var serviceBinding in serviceBindings)
+                    {
+                        await this.client.ServiceBindings.DeleteServiceBinding(serviceBinding.EntityMetadata.Guid);
+                    }
+
+                    await this.client.Apps.DeleteApp(this.app.Guid);
+                }
+            }
+            finally
+            {
+                this.EnableNodes(this.app.Guid, true);
             }
         }
 

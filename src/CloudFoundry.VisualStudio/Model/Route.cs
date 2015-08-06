@@ -75,7 +75,7 @@
                     new CloudItemAction(this, "Delete", Resources.Delete, this.Delete, CloudItemActionContinuation.RefreshParent)
                 };
             }
-        }     
+        }
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
@@ -87,15 +87,23 @@
 
         private async Task Delete()
         {
-            var answer = MessageBoxHelper.WarningQuestion(
-                string.Format(
-                CultureInfo.InvariantCulture,
-                "Are you sure you want to delete route '{0}'?",
-                this.route.Host));
-
-            if (answer == System.Windows.Forms.DialogResult.Yes)
+            try
             {
-                await this.client.Routes.DeleteRoute(this.route.EntityMetadata.Guid);
+                this.EnableNodes(this.route.EntityMetadata.Guid, false);
+                var answer = MessageBoxHelper.WarningQuestion(
+                    string.Format(
+                    CultureInfo.InvariantCulture,
+                    "Are you sure you want to delete route '{0}'?",
+                    this.route.Host));
+
+                if (answer == System.Windows.Forms.DialogResult.Yes)
+                {
+                    await this.client.Routes.DeleteRoute(this.route.EntityMetadata.Guid);
+                }
+            }
+            finally
+            {
+                this.EnableNodes(this.route.EntityMetadata.Guid, true);
             }
         }
     }
