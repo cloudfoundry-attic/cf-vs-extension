@@ -9,7 +9,7 @@
     using System.Threading.Tasks;
     using CloudFoundry.CloudController.V2.Client;
     using CloudFoundry.CloudController.V2.Client.Data;
-    
+
     internal class AppFile : CloudItem
     {
         private readonly string fileName;
@@ -18,7 +18,8 @@
         private readonly GetAppSummaryResponse app;
         private readonly int instanceNumber;
 
-        public AppFile(string fileName, string filePath, int instanceNumber, GetAppSummaryResponse app, CloudFoundryClient client) : base(CloudItemType.AppFile)
+        public AppFile(string fileName, string filePath, int instanceNumber, GetAppSummaryResponse app, CloudFoundryClient client)
+            : base(CloudItemType.AppFile)
         {
             this.fileName = fileName;
             this.filePath = filePath;
@@ -38,34 +39,13 @@
         }
 
         protected override IEnumerable<CloudItemAction> MenuActions
-        {   
+        {
             get
-            {   
+            {
                 return new CloudItemAction[]
                 {
                     new CloudItemAction(this, "Download file", Resources.Synchronizing, this.DownloadFile),
                 };
-            }   
-        }
-
-        private async Task DownloadFile()
-        {
-            List<RetrieveFileResponse> file = await this.client.Files.RetrieveFile(this.app.Guid, this.instanceNumber, this.filePath);
-
-            if (file.Count == 1)
-            {
-                string content = file[0].FileContent;
-
-                string downloadPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), this.fileName);
-
-                System.IO.File.WriteAllText(downloadPath, content);
-
-                EnvDTE.DTE dte = (EnvDTE.DTE)CloudFoundryVisualStudioPackage.GetGlobalService(typeof(EnvDTE.DTE));
-                dte.ItemOperations.OpenFile(downloadPath);
-            }
-            else
-            {
-                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Error retrieving file contents {0}", this.fileName));
             }
         }
 
@@ -74,7 +54,6 @@
             await this.DownloadFile();
             return await Task<CloudItem[]>.Run(() => { return new CloudItem[] { }; });
         }
-
 
         private static System.Drawing.Icon GetFileIcon(string name, bool getLargeIcon, bool linkOverlay)
         {
@@ -104,6 +83,27 @@
             NativeMethods.DestroyIcon(shfi.hIcon); // Cleanup
 
             return icon;
+        }
+
+        private async Task DownloadFile()
+        {
+            List<RetrieveFileResponse> file = await this.client.Files.RetrieveFile(this.app.Guid, this.instanceNumber, this.filePath);
+
+            if (file.Count == 1)
+            {
+                string content = file[0].FileContent;
+
+                string downloadPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), this.fileName);
+
+                System.IO.File.WriteAllText(downloadPath, content);
+
+                EnvDTE.DTE dte = (EnvDTE.DTE)CloudFoundryVisualStudioPackage.GetGlobalService(typeof(EnvDTE.DTE));
+                dte.ItemOperations.OpenFile(downloadPath);
+            }
+            else
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Error retrieving file contents {0}", this.fileName));
+            }
         }
     }
 }

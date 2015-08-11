@@ -57,7 +57,7 @@
               DataContext="{Binding SelectedValue, ElementName=ExplorerTree}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type model:CloudItem}" ItemsSource="{Binding Children}">
-                    <StackPanel Orientation="Horizontal" Height="22">
+                    <StackPanel Orientation="Horizontal" Height="22" >
                         <Grid Width="16" Height="16" VerticalAlignment="Center" Margin="5,0,0,0">
                             <Image Source="{Binding Icon}" />
                             <Image Source="{StaticResource SynchronizeSmallImage}" 
@@ -81,13 +81,14 @@
                         <DataTrigger Binding="{Binding Actions, Converter={StaticResource IsNull}}" Value="False">
                             <Setter Property="ContextMenu">
                                 <Setter.Value>
-                                    <ContextMenu ItemsSource="{Binding Actions}" Name="pelerinul">
+                                    <ContextMenu ItemsSource="{Binding Actions}" >
                                         <ContextMenu.ItemContainerStyle>
                                             <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItemEventStyle}">
                                                 <Setter Property="Tag" Value="{Binding}"/>
                                                 <Setter Property="Header" Value="{Binding Text}"/>
                                                 <Setter Property="Icon" Value="{Binding Icon}"/>
-
+                                                <Setter Property="IsEnabled" Value ="{Binding CloudItem.IsEnabled}"/>
+                                                
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Text}" Value="-">
                                                         <Setter Property="Template">

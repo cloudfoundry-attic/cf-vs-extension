@@ -1,14 +1,17 @@
 ﻿namespace CloudFoundry.VisualStudio.Model
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Drawing;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
+    using CloudFoundry.CloudController.V2.Client;
     using Microsoft.VisualStudio.Threading;
 
     internal abstract class CloudItem : INotifyPropertyChanged
@@ -21,6 +24,7 @@
         private System.Threading.CancellationToken cancellationToken;
         private CloudItem parent = null;
         private bool executingBackgroundAction;
+        private bool isEnabled = true;
 
         protected CloudItem(CloudItemType cloudItemType)
         {
@@ -167,6 +171,20 @@
             }
         }
 
+        protected bool IsEnabled
+        {
+            get
+            {
+                return this.isEnabled;
+            }
+
+            set
+            {
+                this.isEnabled = value;
+                this.NotifyPropertyChanged("IsEnabled");
+            }
+        }
+
         protected abstract Bitmap IconBitmap
         {
             get;
@@ -215,11 +233,117 @@
             });
         }
 
+        protected static HashSet<CloudItem> GetNodesWithConnection(CloudItem cloudItem, EntityGuid id)
+        {
+            HashSet<CloudItem> result = new HashSet<CloudItem>();
+
+            Type thisType = cloudItem.GetType();
+            var fields = thisType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
+
+            foreach (var field in fields)
+            {
+                if (field.FieldType.Assembly.FullName.StartsWith("CloudFoundry.CloudController", StringComparison.OrdinalIgnoreCase))
+                {
+                    var value = field.GetValue(cloudItem);
+                    var collection = value as IEnumerable;
+                    if (collection != null)
+                    {
+                        foreach (var obj in collection)
+                        {
+                            if (ValueIsConnected(obj, id))
+                            {
+                                result.Add(cloudItem);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (ValueIsConnected(value, id))
+                        {
+                            result.Add(cloudItem);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            foreach (var child in cloudItem.children)
+            {
+                foreach (var node in GetNodesWithConnection(child, id))
+                {
+                    result.Add(node);
+                }
+            }
+
+            return result;
+        }
+
+        protected static CloudItem GetRootItem(CloudItem ci)
+        {
+            if (ci.parent == null)
+            {
+                return ci;
+            }
+            else
+            {
+                return GetRootItem(ci.parent);
+            }
+        }
+
         protected abstract Task<IEnumerable<CloudItem>> UpdateChildren();
+
+        protected void EnableNodes(EntityGuid entityID, bool enabled)
+        {
+            var rootItem = GetRootItem(this);
+            var nodesWithConnection = GetNodesWithConnection(rootItem, entityID);
+
+            foreach (var node in nodesWithConnection)
+            {
+                node.IsEnabled = enabled;
+            }
+        }
 
         private static void OnUIThread(Action action)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
+        }
+
+        private static bool ValueIsConnected(object obj, EntityGuid id)
+        {
+            var entityMetadataProperty = obj.GetType().GetProperty("EntityMetadata");
+            if (entityMetadataProperty != null)
+            {
+                var meta = entityMetadataProperty.GetValue(obj) as Metadata;
+                if (meta != null)
+                {
+                    if ((Guid?)meta.Guid == (Guid?)id)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            var properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+
+            foreach (var property in properties)
+            {
+                var propertyValue = property.GetValue(obj);
+
+                if (propertyValue != null)
+                {
+                    var guidValue = propertyValue as Guid?;
+                    if (guidValue != null)
+                    {
+                        if ((Guid?)guidValue == (Guid?)id)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         private void AttachToParent(CloudItem parentItem)
