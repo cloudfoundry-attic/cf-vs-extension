@@ -78,5 +78,6 @@
                 // If we can't write to log, there's really nothing we can do, and we can't let Visual Studio crash
             }
         }
+
     }
 }
