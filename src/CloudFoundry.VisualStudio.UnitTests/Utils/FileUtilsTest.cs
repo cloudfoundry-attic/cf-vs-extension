@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,20 +41,6 @@ namespace CloudFoundry.VisualStudio.UnitTests.Utils
             Assert.AreEqual(relativePath, @"to");
         }
 
-        [TestMethod()]
-        public void TestRelativeEmptyFrom()
-        {
-
-            //Arrange
-            string fromPath = "";
-            string toPath = @"c:\path\to";
-
-            //Act
-            string relativePath = FileUtilities.GetRelativePath(fromPath, toPath);
-
-            //Assert
-            Assert.AreEqual(relativePath, toPath);
-        }
 
         [TestMethod()]
         public void TestRelativeEmptyTo()
@@ -68,6 +55,31 @@ namespace CloudFoundry.VisualStudio.UnitTests.Utils
             //Assert
             Assert.AreEqual(relativePath, fromPath);
         }
+
+
+        [TestMethod()]
+        public void TestAddBackslash()
+        {
+            //Arrange
+            string testPathSingleDirWithBackSlash = @"c:\windows\";
+            string testPathSubDirWithBackSlash = @"c:\windows\temp\";
+            string testPathSingleDirWithoutBackSlash = @"c:\windows";
+            string testPathSubDirWithoutBackSlash = @"c:\windows\temp";
+
+            //Act
+            string pathSingleDirWithBackSlash = FileUtilities.PathAddBackslash(testPathSingleDirWithBackSlash);
+            string pathSubDirWithBackSlash = FileUtilities.PathAddBackslash(testPathSubDirWithBackSlash);
+            string pathSingleDirWithoutBackSlash = FileUtilities.PathAddBackslash(testPathSingleDirWithoutBackSlash);
+            string pathSubDirWithoutBackSlash = FileUtilities.PathAddBackslash(testPathSubDirWithoutBackSlash);
+            
+            //Assert
+            Assert.AreEqual(testPathSingleDirWithBackSlash, pathSingleDirWithBackSlash);
+            Assert.AreEqual(testPathSubDirWithBackSlash, pathSubDirWithBackSlash);
+            Assert.AreNotEqual(testPathSingleDirWithoutBackSlash, pathSingleDirWithoutBackSlash);
+            Assert.AreNotEqual(testPathSubDirWithoutBackSlash, pathSubDirWithoutBackSlash);
+        }
+
+
 
         [TestMethod()]
         public void TestRelativeEqual()
