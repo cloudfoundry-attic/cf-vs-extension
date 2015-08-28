@@ -511,6 +511,7 @@
                 {
                     this.Error.ErrorMessage = "Hostname cannot be empty";
                     this.Error.HasErrors = true;
+                    this.SelectedPublishProfile.Application.Hosts.Remove(hostName);
                     break;
                 }
                 else
