@@ -670,6 +670,11 @@
 
             try
             {
+                if (this.selectedPublishProfile.ServerUri == null)
+                {
+                    throw new InvalidOperationException("Please provide a target.");
+                }
+
                 this.LastRefreshTarget = PublishProfileRefreshTarget.Client;
 
                 this.client = new CloudFoundryClient(

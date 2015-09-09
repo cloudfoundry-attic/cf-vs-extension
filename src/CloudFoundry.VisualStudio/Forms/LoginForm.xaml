@@ -57,7 +57,7 @@
 
                 <TextBox Name="InfoMessage" Grid.Row="9" Grid.Column="1" Margin="25,0,0,0" Background="Transparent" IsReadOnly="True" TextWrapping="Wrap" BorderBrush="Transparent"></TextBox>
 
-                <TextBox Grid.Row="10" Grid.Column="0"  IsReadOnly="True" TextWrapping="Wrap"
+                <TextBox Grid.Row="10" Grid.Column="0" Margin="5"  IsReadOnly="True" TextWrapping="Wrap"
                  BorderBrush="Transparent" ScrollViewer.VerticalScrollBarVisibility="Auto"
                  Foreground="Crimson" MinLines="3" MaxLines="3" Background="Transparent"
                  Text="{Binding Path=ErrorMessage}" 

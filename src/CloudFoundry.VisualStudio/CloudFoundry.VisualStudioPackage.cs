@@ -174,12 +174,12 @@
             }
             catch (VisualStudioException ex)
             {
-                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "Error loading publish profile {0}", ex.Message));
+                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "Error loading publish profile: {0}", ex.Message));
                 Logger.Error("Error loading publish profile", ex);
             }
             catch (Exception ex)
             {
-                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "An error occurred while trying to load a publish profile {0}", ex.Message));
+                MessageBoxHelper.DisplayError(string.Format(CultureInfo.InvariantCulture, "An error occurred while trying to load a publish profile: {0}", ex.Message));
                 Logger.Error("Error loading default profile", ex);
             }
         }

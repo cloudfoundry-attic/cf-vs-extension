@@ -331,6 +331,11 @@
                         xmlReader.ReadToDescendant("PropertyGroup");
                         publishProfile = (PublishProfile)serializer.Deserialize(xmlReader.ReadSubtree());
                     }
+
+                    if (string.IsNullOrWhiteSpace(publishProfile.Version))
+                    {
+                        throw new VisualStudioException("This publish profile is not compatible with the current version, please recreate it");
+                    }
                 }
                 else
                 {
@@ -353,6 +358,10 @@
                 publishProfile.path = pushEnvironment.ProfileFilePath;
                 publishProfile.environment = pushEnvironment;
                 publishProfile.LoadManifest();
+            }
+            catch (VisualStudioException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
