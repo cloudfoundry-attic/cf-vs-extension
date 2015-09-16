@@ -123,11 +123,12 @@
   <!-- Target for automatically versioning the assemblies -->
   <Target Name="Versioning">
     <Message Text="Version: $(version)" />
-
+	
     <ItemGroup>
       <AssemblyInfoFiles Include="$(LibraryRoot)\src\CloudFoundry.VisualStudio\Properties\AssemblyInfo.cs"/>
     </ItemGroup>
-
+	<XmlPoke Condition="'$(version)' != ''" XmlInputPath=".\src\CloudFoundry.VisualStudio\source.extension.vsixmanifest"   Query="/n:PackageManifest/n:Metadata/n:Identity/@Version" Value="$(version)"
+	Namespaces="&lt;Namespace Prefix='n' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011' /&gt;" />
     <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="@(AssemblyInfoFiles)"
       AssemblyVersion="$(version)"
       AssemblyFileVersion="$(version)" />
