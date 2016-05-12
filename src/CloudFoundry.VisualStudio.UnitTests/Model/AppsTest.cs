@@ -22,7 +22,7 @@ namespace CloudFoundry.VisualStudio.UnitTests.Model
             CloudFoundryClient appClient = new CloudFoundryClient(new Uri("http://test.app.xip.io"),new System.Threading.CancellationToken());
             //Act
 
-            App testApp = new App(appResponse, appClient);
+            App testApp = new App(appResponse,appResponse.Diego, appClient);
             
 
             //Assert
