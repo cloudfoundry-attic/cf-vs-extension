@@ -14,12 +14,14 @@
     {
         private readonly GetAppSummaryResponse app;
         private CloudFoundryClient client;
+        private bool? isDiego;
 
-        public App(GetAppSummaryResponse app, CloudFoundryClient client)
+        public App(GetAppSummaryResponse app,bool? diego, CloudFoundryClient client)
             : base(CloudItemType.App)
         {
             this.client = client;
             this.app = app;
+            isDiego = diego;
         }
 
         [Description("The buildpack of the application.")]
@@ -120,17 +122,27 @@
 
         protected override async Task<IEnumerable<CloudItem>> UpdateChildren()
         {
-            return await Task<List<AppInstances>>.Run(() =>
+            if (isDiego.HasValue)
             {
-                List<AppInstances> instancesList = new List<AppInstances>();
+                if (isDiego == false)
+                { 
+                    return await Task<List<AppInstances>>.Run(() =>
+                    {
+                        List<AppInstances> instancesList = new List<AppInstances>();
 
-                for (int i = 0; i < this.app.RunningInstances; i++)
-                {
-                    AppInstances item = new AppInstances(this.app, i, client);
-                    instancesList.Add(item);
+                        for (int i = 0; i < this.app.RunningInstances; i++)
+                        {
+                            AppInstances item = new AppInstances(this.app, i, client);
+                            instancesList.Add(item);
+                        }
+
+                        return instancesList;
+                    });
                 }
-
-                return instancesList;
+            }
+            return await Task<CloudItem[]>.Run(() =>
+            {
+                return new CloudItem[] { };
             });
         }
 

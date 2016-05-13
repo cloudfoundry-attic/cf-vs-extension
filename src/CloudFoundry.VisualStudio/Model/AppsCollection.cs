@@ -53,7 +53,7 @@
                 foreach (var app in apps)
                 {
                     var appSummary = await this.client.Apps.GetAppSummary(app.EntityMetadata.Guid);
-                    result.Add(new App(appSummary, this.client));
+                    result.Add(new App(appSummary,app.Diego, this.client));
                 }
 
                 apps = await apps.GetNextPage();
