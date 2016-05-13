@@ -98,7 +98,7 @@
 
                 if (answer == System.Windows.Forms.DialogResult.Yes)
                 {
-                    await this.client.Routes.DeleteRoute(this.route.EntityMetadata.Guid);
+                    await this.client.Routes.DeleteRoute(this.route.EntityMetadata.Guid, true);
                 }
             }
             finally
