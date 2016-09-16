@@ -481,7 +481,7 @@
                     UseRandomHostName = false
                 };
 
-                this.Application.Hosts.Add(this.environment.ProjectName.ToLowerInvariant());
+                this.Application.Hosts.Add(this.environment.ProjectName.Replace(".",string.Empty).ToLowerInvariant());
             }
         }
 

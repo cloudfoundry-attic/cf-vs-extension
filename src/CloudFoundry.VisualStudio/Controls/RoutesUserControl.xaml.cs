@@ -65,5 +65,11 @@
 
             dataContext.ValidateRoutes();
         }
+
+        private void tbName_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.OemPeriod)
+                e.Handled = true;
+        }
     }
 }
