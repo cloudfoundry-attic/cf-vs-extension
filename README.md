@@ -17,7 +17,7 @@ The Cloud Foundry Visual Studio Extension enables Cloud Foundry users to publish
 ##Building
 
 ###Prerequisites
-- Visual Studio 2013
+- Visual Studio 2013 or Visual Studio 2015
 - Visual Studio SDK - [https://www.microsoft.com/en-us/download/details.aspx?id=40758](https://www.microsoft.com/en-us/download/details.aspx?id=40758)
 - Git client
 
