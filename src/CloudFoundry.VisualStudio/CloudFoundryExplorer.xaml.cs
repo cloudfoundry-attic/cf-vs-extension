@@ -59,6 +59,7 @@
 
         private void TreeMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            ListView.ItemsSource = null;
             var menuItem = sender as MenuItem;
 
             if (menuItem == null)
