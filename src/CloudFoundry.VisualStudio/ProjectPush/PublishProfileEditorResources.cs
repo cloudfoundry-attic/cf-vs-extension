@@ -53,6 +53,8 @@
 
         private bool refreshingPrivateDomains;
 
+        private bool loggedIn;
+
         private ErrorResource errorResource = new ErrorResource();
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Ignore profiles unable to load")]
@@ -101,6 +103,11 @@
             get { return this.errorResource; }
         }
 
+        public bool LoggedIn
+        {
+            get { return loggedIn; }
+            set { loggedIn = value; }
+        }
         public ObservableCollection<ListAllOrganizationsResponse> Orgs
         {
             get { return this.orgs; }
@@ -228,12 +235,17 @@
                 this.selectedPublishProfile.ServerUri = value.TargetUrl;
                 this.selectedPublishProfile.User = value.Email;
                 this.selectedPublishProfile.SkipSSLValidation = value.IgnoreSSLErrors;
-                this.selectedPublishProfile.SavedPassword = true;
-                this.selectedPublishProfile.Password = null;
-                this.selectedPublishProfile.RefreshToken = null;
+                
+                if (this.LoggedIn == false)
+                {
+                    this.selectedPublishProfile.SavedPassword = true;
+                    this.selectedPublishProfile.Password = null;
+                    this.selectedPublishProfile.RefreshToken = null;
+                }
+                
                 this.selectedPublishProfile.PropertyChanged -= this.PublishProfile_PropertyChanged;
                 this.selectedPublishProfile.PropertyChanged += this.PublishProfile_PropertyChanged;
-
+                
                 this.Refresh(PublishProfileRefreshTarget.Client);
                 this.RaisePropertyChangedEvent("SelectedCloudTarget");
             }

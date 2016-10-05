@@ -30,6 +30,7 @@ namespace CloudFoundry.VisualStudio.Controls
 
         private void ButtonSetTarget_Click(object sender, RoutedEventArgs e)
         {
+            this.cbTarget.SelectedValue = null;
             var dataContext = this.DataContext as PublishProfileEditorResources;
 
             if (dataContext == null)
@@ -44,6 +45,11 @@ namespace CloudFoundry.VisualStudio.Controls
             if (result == true)
             {
                 var target = loginForm.CloudTarget;
+
+                dataContext.LoggedIn = true;
+                
+                dataContext.SelectedPublishProfile.User = loginForm.Credentials.User;
+                dataContext.SelectedPublishProfile.Password = loginForm.Credentials.Password;
                 this.cbTarget.SelectedValue = target;
             }
         }
