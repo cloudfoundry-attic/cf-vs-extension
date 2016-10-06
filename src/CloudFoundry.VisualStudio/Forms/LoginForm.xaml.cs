@@ -30,12 +30,13 @@
         private CloudTarget cloudTarget = null;
         private CloudCredentials credentials;
 
-        public LogOnForm()
+        public LogOnForm(Window owner)
         {
             this.InitializeComponent();
             this.InfoSpinner.Visibility = System.Windows.Visibility.Hidden;
             this.InfoMessage.Text = string.Empty;
             this.DataContext = new ErrorResource();
+            this.Owner = owner;
         }
 
         public CloudTarget CloudTarget
@@ -117,7 +118,7 @@
         private void Wizard_Cancel(object sender, RoutedEventArgs e)
         {
             var dialogResult = MessageBoxHelper.WarningQuestion("Do you really want to cancel ?");
-            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+            if (dialogResult == MessageBoxResult.Yes)
             {
                 this.Close();
             }

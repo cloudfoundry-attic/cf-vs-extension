@@ -210,7 +210,7 @@
                     "Are you sure you want to delete application '{0}'? By deleting this application, all it's service bindings will be deleted.",
                     this.app.Name));
 
-                if (answer == System.Windows.Forms.DialogResult.Yes)
+                if (answer == System.Windows.MessageBoxResult.Yes)
                 {
                     var serviceBindings = await this.client.Apps.ListAllServiceBindingsForApp(this.app.Guid);
 

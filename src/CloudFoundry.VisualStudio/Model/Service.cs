@@ -134,7 +134,7 @@
                     "Are you sure you want to delete service '{0}'?",
                     this.service.Name));
 
-                if (answer == System.Windows.Forms.DialogResult.Yes)
+                if (answer == System.Windows.MessageBoxResult.Yes)
                 {
                     var serviceBindings = await this.client.ServiceInstances.ListAllServiceBindingsForServiceInstance(this.service.EntityMetadata.Guid);
                     if (serviceBindings.Properties.TotalResults != 0)

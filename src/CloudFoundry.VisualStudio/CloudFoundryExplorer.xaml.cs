@@ -131,7 +131,8 @@
 
         private void AddTargetButton_Click(object sender, RoutedEventArgs e)
         {
-            var loginForm = new LogOnForm();
+            Window parent = Window.GetWindow(this);
+            var loginForm = new LogOnForm(parent);
 
             var result = loginForm.ShowDialog();
 

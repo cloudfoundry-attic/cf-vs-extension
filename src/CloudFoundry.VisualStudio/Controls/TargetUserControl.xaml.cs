@@ -38,7 +38,7 @@ namespace CloudFoundry.VisualStudio.Controls
                 throw new InvalidOperationException("DataContext is not a valid PublishProfileEditorResources");
             }
 
-            var loginForm = new LogOnForm();
+            var loginForm = new LogOnForm(Application.Current.MainWindow);
 
             var result = loginForm.ShowDialog();
 
