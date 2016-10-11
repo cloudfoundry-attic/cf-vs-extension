@@ -96,7 +96,7 @@
                     "Are you sure you want to delete route '{0}'?",
                     this.route.Host));
 
-                if (answer == System.Windows.Forms.DialogResult.Yes)
+                if (answer == System.Windows.MessageBoxResult.Yes)
                 {
                     await this.client.Routes.DeleteRoute(this.route.EntityMetadata.Guid, true);
                 }

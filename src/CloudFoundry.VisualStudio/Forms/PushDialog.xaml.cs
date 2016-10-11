@@ -19,6 +19,7 @@ namespace CloudFoundry.VisualStudio.Forms
     using CloudFoundry.VisualStudio.ProjectPush;
     using Microsoft.VisualStudio.PlatformUI;
     using Microsoft.VisualStudio.Threading;
+    using System.Windows.Forms;
     
     /// <summary>
     /// Interaction logic for PushDialog.xaml
@@ -29,11 +30,11 @@ namespace CloudFoundry.VisualStudio.Forms
         private PublishProfileEditorResources publishProfileResources;
 
         public PushDialog(PublishProfile package)
-        {
+        {   
             this.cancellationToken = new CancellationToken();
             this.publishProfileResources = new PublishProfileEditorResources(package, this.cancellationToken);
             this.DataContext = this.publishProfileResources;
-
+            this.Owner = System.Windows.Application.Current.MainWindow;
             this.InitializeComponent();
         }
 
@@ -65,7 +66,7 @@ namespace CloudFoundry.VisualStudio.Forms
         private void WizardPush_Cancel(object sender, RoutedEventArgs e)
         {
             var dialogResult = MessageBoxHelper.WarningQuestion("Do you really want to cancel ?");
-            if (dialogResult == System.Windows.Forms.DialogResult.Yes)
+            if (dialogResult == MessageBoxResult.Yes)
             {
                 this.Close();
             }

@@ -116,7 +116,7 @@
                 "Are you sure you want to delete target '{0}'?",
                 this.target.DisplayName));
 
-            if (answer == System.Windows.Forms.DialogResult.Yes)
+            if (answer == System.Windows.MessageBoxResult.Yes)
             {
                 await Task.Factory.StartNew(() => CloudTargetManager.RemoveTarget(this.target));
             }

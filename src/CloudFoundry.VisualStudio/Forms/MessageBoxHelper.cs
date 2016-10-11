@@ -7,7 +7,7 @@
 namespace CloudFoundry.VisualStudio.Forms
 {
     using System;
-    using System.Windows.Forms;
+    using System.Windows;
     using Microsoft.VisualStudio.Shell;
 
     /// <summary>
@@ -15,76 +15,76 @@ namespace CloudFoundry.VisualStudio.Forms
     /// </summary>
     public static class MessageBoxHelper
     {
-        public static DialogResult ErrorWithMessageBox(string message)
+        public static MessageBoxResult ErrorWithMessageBox(string message)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(message, Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(message, Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult ErrorWithMessageBox(Exception ex)
+        public static MessageBoxResult ErrorWithMessageBox(Exception ex)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(ex.Message, Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(ex.Message, Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult ErrorWithMessageBox(string message, Exception ex)
+        public static MessageBoxResult ErrorWithMessageBox(string message, Exception ex)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(message + "\r\n\r\n" + ex.Message, Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(message + "\r\n\r\n" + ex.Message, Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult DisplayError(string message)
+        public static MessageBoxResult DisplayError(string message)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(message, Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(message, Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult DisplayError(string message, Exception ex)
+        public static MessageBoxResult DisplayError(string message, Exception ex)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(message + "\r\n\r\n" + ex.ToString(), Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(message + "\r\n\r\n" + ex.ToString(), Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult DisplayError(Exception ex)
+        public static MessageBoxResult DisplayError(Exception ex)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(ex.ToString(), Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(ex.ToString(), Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult DisplayInfo(string message)
+        public static MessageBoxResult DisplayInfo(string message)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(message, Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(message, Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult DisplayWarning(string message)
+        public static MessageBoxResult DisplayWarning(string message)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
             {
-                return MessageBox.Show(message, Logger.EventSource, MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
+                return MessageBox.Show(message, Logger.EventSource, MessageBoxButton.OK, MessageBoxImage.Warning, MessageBoxResult.OK, MessageBoxOptions.None);
             });
         }
 
-        public static DialogResult WarningQuestion(string message)
+        public static MessageBoxResult WarningQuestion(string message)
         {
-            return ThreadHelper.Generic.Invoke<DialogResult>(() =>
-            {
-                return MessageBox.Show(message, Logger.EventSource, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.DefaultDesktopOnly);
-            });
+            return ThreadHelper.Generic.Invoke<MessageBoxResult>(() =>
+           {
+               return MessageBox.Show(message, Logger.EventSource, MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No, MessageBoxOptions.None);
+           });
         }
     }
 }
