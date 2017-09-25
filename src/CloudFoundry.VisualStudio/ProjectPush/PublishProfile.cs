@@ -22,8 +22,6 @@
     using CloudFoundry.VisualStudio.Forms;
     using CloudFoundry.VisualStudio.TargetStore;
     using EnvDTE;
-    using Microsoft.VisualStudio.ComponentModelHost;
-    using Microsoft.VisualStudio.Threading;
     using NuGet.VisualStudio;
 
     [Serializable, XmlRoot("PropertyGroup", Namespace = "http://schemas.microsoft.com/developer/msbuild/2003")]
@@ -306,8 +304,6 @@
         /// <summary>
         /// Loads the specified publish profile for the specified project.
         /// </summary>
-        /// <param name="project">The Visual Studio EnvDTE project. Cannot be null.</param>
-        /// <param name="path">Absolute path to the publish profile to load. If the file does not exist, defaults will be loaded for the object.</param>
         /// <returns>A new SelectedPublishProfile.</returns>
         /// <exception cref="System.ArgumentNullException">project</exception>
         public static PublishProfile Load(PushEnvironment pushEnvironment)

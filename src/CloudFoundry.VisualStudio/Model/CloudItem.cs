@@ -12,7 +12,11 @@
     using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
     using CloudFoundry.CloudController.V2.Client;
+
+    using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Threading;
+
+    using Task = System.Threading.Tasks.Task;
 
     internal abstract class CloudItem : INotifyPropertyChanged
     {
@@ -306,7 +310,13 @@
 
         private static void OnUIThread(Action action)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
+            ThreadHelper.JoinableTaskFactory.Run(
+                async () =>
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        action();
+                        await TaskScheduler.Default;
+                    });
         }
 
         private static bool ValueIsConnected(object obj, EntityGuid id)
