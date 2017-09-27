@@ -15,6 +15,9 @@
     using Microsoft.VisualStudio.Threading;
     using Xceed.Wpf.Toolkit;
 
+
+    using Task = System.Threading.Tasks.Task;
+
     /// <summary>
     /// Interaction logic for MyControl.xaml
     /// </summary>
@@ -93,7 +96,12 @@
                             case CloudItemActionContinuation.RefreshParent:
                                 if (cloudItemAction.CloudItem.ItemType == CloudItemType.Target)
                                 {
-                                    ThreadHelper.Generic.Invoke(() => this.ReloadTargets());
+                                    ThreadHelper.JoinableTaskFactory.Run(
+                                        () =>
+                                            {
+                                                this.ReloadTargets();
+                                                return Task.FromResult(0);
+                                            });
                                 }
                                 else
                                 {

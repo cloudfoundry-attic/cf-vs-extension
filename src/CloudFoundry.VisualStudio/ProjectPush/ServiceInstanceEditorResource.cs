@@ -12,6 +12,8 @@
     using CloudFoundry.CloudController.V2.Client.Data;
     using Microsoft.VisualStudio.Threading;
 
+    using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
+
     internal class ServiceInstanceEditorResource : INotifyPropertyChanged
     {
         private readonly ObservableCollection<ListAllServicesResponse> serviceTypes = new ObservableCollection<ListAllServicesResponse>();
@@ -141,7 +143,13 @@
 
         private static void OnUIThread(Action action)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
+            ThreadHelper.JoinableTaskFactory.Run(
+                async () =>
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        action();
+                        await TaskScheduler.Default;
+                    });
         }
 
         private void EnterInit()

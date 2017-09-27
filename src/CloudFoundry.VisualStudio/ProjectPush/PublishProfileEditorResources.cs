@@ -17,6 +17,8 @@
     using CloudFoundry.VisualStudio.TargetStore;
     using Microsoft.VisualStudio.Threading;
 
+    using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
+
     internal class PublishProfileEditorResources : INotifyPropertyChanged
     {
         private ObservableCollection<ListAllOrganizationsResponse> orgs = new ObservableCollection<ListAllOrganizationsResponse>();
@@ -235,17 +237,17 @@
                 this.selectedPublishProfile.ServerUri = value.TargetUrl;
                 this.selectedPublishProfile.User = value.Email;
                 this.selectedPublishProfile.SkipSSLValidation = value.IgnoreSSLErrors;
-                
+
                 if (this.LoggedIn == false)
                 {
                     this.selectedPublishProfile.SavedPassword = true;
                     this.selectedPublishProfile.Password = null;
                     this.selectedPublishProfile.RefreshToken = null;
                 }
-                
+
                 this.selectedPublishProfile.PropertyChanged -= this.PublishProfile_PropertyChanged;
                 this.selectedPublishProfile.PropertyChanged += this.PublishProfile_PropertyChanged;
-                
+
                 this.Refresh(PublishProfileRefreshTarget.Client);
                 this.RaisePropertyChangedEvent("SelectedCloudTarget");
             }
@@ -456,7 +458,13 @@
 
         public static void OnUIThread(Action action)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.Generic.Invoke(action);
+            ThreadHelper.JoinableTaskFactory.Run(
+                async () =>
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        action();
+                        await TaskScheduler.Default;
+                    });
         }
 
         public void Refresh(PublishProfileRefreshTarget refreshTarget)

@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections;
-using System.Text;
-using System.Reflection;
-using Microsoft.VsSDK.UnitTestLibrary;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VSSDK.Tools.VsIdeTesting;
-using CloudFoundry.VisualStudio;
-using CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest;
-
-namespace CloudFoundry.VisualStudio.UnitTests.MyToolWindowTest
+﻿namespace CloudFoundry.VisualStudio.UnitTests.MyToolWindowTest
 {
+    using System;
+    using System.Reflection;
+
+    using CloudFoundry.VisualStudio;
+    using CloudFoundry.VisualStudio_UnitTests.MyToolWindowTest;
+
+    using Microsoft.VisualStudio.Shell.Interop;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Microsoft.VsSDK.UnitTestLibrary;
+
     [TestClass()]
     public class ShowToolWindowTest
     {
-
         [TestMethod()]
         public void ValidateToolWindowShown()
         {
