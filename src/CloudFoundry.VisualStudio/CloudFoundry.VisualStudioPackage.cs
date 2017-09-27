@@ -1,24 +1,20 @@
 ﻿namespace CloudFoundry.VisualStudio
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.Design;
     using System.Diagnostics;
     using System.Globalization;
-    using System.IO;
     using System.Linq;
     using System.Runtime.InteropServices;
-    using System.Threading.Tasks;
+
     using CloudFoundry.VisualStudio.Forms;
-    using CloudFoundry.VisualStudio.Model;
     using CloudFoundry.VisualStudio.ProjectPush;
     using EnvDTE;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.ComponentModelHost;
-    using Microsoft.VisualStudio.OLE.Interop;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.Shell.Interop;
-    using Microsoft.Win32;
+
     using NuGet.VisualStudio;
 
     /// <summary>

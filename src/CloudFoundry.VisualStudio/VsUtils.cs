@@ -68,7 +68,12 @@
                 throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Error retrieving project of unique name, error code: {0}", getProjectResult));
             }
 
-            IVsAggregatableProject aggregatable = (IVsAggregatableProject)hierarchy;
+            string result = System.IO.Path.Combine(projectFolder, "PublishProfiles");
+            IVsAggregatableProject aggregatable = hierarchy as IVsAggregatableProject;
+            if (aggregatable == null)
+            {
+                return result;
+            }
 
             string projectTypes = string.Empty;
             int projectTypeResult = aggregatable.GetAggregateProjectTypeGuids(out projectTypes);
@@ -77,8 +82,6 @@
             {
                 throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Error retrieving aggregate project types, error code: {0}", projectTypeResult));
             }
-
-            string result = System.IO.Path.Combine(projectFolder, "PublishProfiles");
 
             if (projectTypes.ToUpperInvariant().Contains("{E24C65DC-7377-472B-9ABA-BC803B73C61A}"))
             {
