@@ -1,27 +1,27 @@
-#Cloud Foundry Visual Studio Extension
+# Cloud Foundry Visual Studio Extension
 
 The Cloud Foundry Visual Studio Extension enables Cloud Foundry users to publish applications from Visual Studio directly to a Cloud Foundry deployment.
 
-##Features
+## Features
 
 - Supports multiple Cloud Foundry targets
 - User interface for pushing applications using the Cloud Foundry MSBuild Tasks
 - View organizations, spaces, apps, services
 - Manage apps, services and bindings
 
-##Installing
+## Installing
 - Download and install CloudFoundry.VisualStudio.vsix from the Visual Studio Gallery
 - Restart Visual Studio
 
 
-##Building
+## Building
 
-###Prerequisites
+### Prerequisites
 - Visual Studio 2013 or Visual Studio 2015
 - Visual Studio SDK - [https://www.microsoft.com/en-us/download/details.aspx?id=40758](https://www.microsoft.com/en-us/download/details.aspx?id=40758)
 - Git client
 
-###Build:
+### Build:
 
 - Clone this repository
 - Open cf-vs-extension.sln in Visual Studio
@@ -29,18 +29,18 @@ The Cloud Foundry Visual Studio Extension enables Cloud Foundry users to publish
 
 For information about the Cloud Foundry MSBuild Tasks, visit: [https://github.com/hpcloud/cf-msbuild-tasks](https://github.com/hpcloud/cf-msbuild-tasks)
 
-###Debugging CloudFoundry.VisualStudio
+### Debugging CloudFoundry.VisualStudio
 - Set your debug start action to `Start external program` and use the following path: `C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe` 
 - Set the `Command line arguments` to `/rootsuffix Exp`
 
 ## Using the Extension
 
-###Cloud Foundry Explorer
+### Cloud Foundry Explorer
 
 The Explorer is a TreeView that enables you to browse your organizations, view application states and delete apps and services.
 You can view the Cloud Foundry Eplorer window by opening it selecting View -> Other Windows -> Cloud Foundry Explorer or using the keyboard shortcut: Ctrl+K, Shift+C
 
-####TreeView Nodes
+#### TreeView Nodes
 
 - `CloudFoundryTarget`
  - actions: refresh, remove
@@ -61,13 +61,13 @@ You can view the Cloud Foundry Eplorer window by opening it selecting View -> Ot
  - actions: delete
  - details: domain for route, apps bound to route
 
-###Publish app to Cloud Foundry
+### Publish app to Cloud Foundry
 You can push a Web Application to Cloud Foundry using the cf-msbuild-tasks - [https://github.com/hpcloud/cf-msbuild-tasks](https://github.com/hpcloud/cf-msbuild-tasks)
 
 - Add nuget package `cf-msbuild-tasks` in your project
 - Right click on your web project -> Publish to Cloud Foundry
 - Fill out the publish form and click Publish or save your publish profile for later.
 
-##Contributing
+## Contributing
 We are looking forward to contributions from the Cloud Foundry community.
 Feel free to open a pull request or an issue if you find one.
